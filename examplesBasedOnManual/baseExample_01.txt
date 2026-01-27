@@ -1,0 +1,4 @@
+# with newlines - html format
+# semi-colon separated columns
+banana; yellow; long
+apple; red; round</br>apple shaped

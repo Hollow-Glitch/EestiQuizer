@@ -1,0 +1,4 @@
+# Just simple fields without newlines or anything fance
+# semi-colon separated columns
+apple;banana;grape
+first field;second field;third field
