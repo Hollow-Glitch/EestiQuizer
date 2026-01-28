@@ -227,30 +227,6 @@ public partial class MainWindow : Window
     }
 
 
-    const string SgN = nameof(SgN);
-
-    string? getFormSgN(SonapiResponse? response) {
-        var formSgN = response?.SearchResults
-            ?.FirstOrDefault()
-            ?.WordForms
-            ?.First(form => form.Code is "SgN")
-            .Value;
-
-        return formSgN;
-    }
-
-    string? getFormSgG(SonapiResponse? response) {
-        var formSgN = response?.SearchResults
-            ?.FirstOrDefault()
-            ?.WordForms
-            ?.First(form => form.Code is "SgG")
-            .Value;
-
-        return formSgN;
-    }
-
-
-
     void WriteNewLine() {
         OutputBox.Text += "\n";
     }

@@ -1,0 +1,32 @@
+# page 52 - todo
+suurepärane
+kord
+normaalne
+enam
+vähem
+enam-vähem
+nagu
+alati
+haige
+
+# page 54 - todo
+toimuma
+üritus
+kaart
+säästukaart
+kliendikaart
+partnerkaart
+sent
+euro
+
+# page 55 - todo
+õigus
+palavik
+nohu
+köha
+pea
+Mis sul viga on?
+sellepärast
+valutama
+kurk
+

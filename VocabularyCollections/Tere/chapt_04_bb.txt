@@ -1,0 +1,32 @@
+# page 31 - done
+eesnimi
+nimi
+perekonnanimi
+sõber
+sõbranna
+naaber
+kolleeg
+töökaaslane
+
+# page 32 - done
+ülemus
+tuttav
+samuti
+tuttavaks saama
+või
+meeldiv
+
+# page 34 - todo
+ema
+isa
+töö
+park
+restoran
+polikliinik
+pank
+kontor
+kott
+number
+kursus
+raamat
+koht
