@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 
 namespace EestiQuizer;
@@ -24,23 +25,24 @@ public partial class MainWindow : Window
         string[] words = [
             // verb
             "mõtlema",  // special verb with alternative da
-            //"tulema",   // basic verb
+            "tulema",   // basic verb
 
             // noomen
             "õpik",     // basic noun
-            //"kõik",     // asesõna
-            //"roheline", // adjective
-            //"arv",      // number
+            "kõik",     // asesõna
+            "roheline", // adjective
+            "arv",      // number
 
             //muutumatu
             "muidugi",  // 
-            //"muidugi",  // sidesõna
-            //"koos",     // eessõna
-            //"koos",     // määrsõna
+            "muidugi",  // sidesõna
+            "koos",     // eessõna
+            "koos",     // määrsõna
         ];
 
         //foreach(var word in words) GetFromSonapi(word);
-        foreach(var word in words) ConvertToAnkiFormat(word);
+        //foreach(var word in words) ConvertToAnkiFormat(word);
+        LoadWords(words);
     }
 
 
@@ -224,6 +226,46 @@ public partial class MainWindow : Window
 
         //>> tags
         WriteLine("generated");
+    }
+
+
+    async Task LoadWords(IEnumerable<string> words) {
+        using var client = new HttpClient();
+
+        List<Task<string>> asyncResponseStrings = [];
+        foreach(var word in words) {
+            var url = $"https://api.sonapi.ee/v2/{word}";
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            using var response = client.Send(request);
+            var readAsStringAsync = response.Content.ReadAsStringAsync();
+            asyncResponseStrings.Add(readAsStringAsync);
+        }
+
+        List<string> responseStrings = [];
+        foreach(var asyncResponseString in asyncResponseStrings) {
+            responseStrings.Add(await asyncResponseString);
+        }
+
+        const string interFieldSeparator = "|";
+        const string intraFieldSeparator = ", ";
+        const int meaningsToConsider = 3;
+        const int maxExampleCount = 4;
+        const int translationCount = 3;
+        var groupedCardData = responseStrings
+            .Select(response => 
+                JsonSerializer.Deserialize<SonapiResponse>(response)
+            )
+            .Where(r => r is not null).Select(r => r!) // filter then tell compiler.
+            .Select(response => new CardData(response, intraFieldSeparator, translationCount, meaningsToConsider, maxExampleCount) )
+            .GroupBy(cardData => cardData.myWordClass);
+
+        foreach (var group in groupedCardData) { 
+            var rows = group.Select(cardData => cardData.ToAnkiRow(interFieldSeparator) );
+            WriteLine($"{group.Key}");
+            foreach(var row in rows) {
+                WriteLine(row);
+            }
+        }
     }
 
 
