@@ -66,19 +66,35 @@ internal class CardData {
     internal WordClass? myWordClass { get; set; }
     internal ICardDataFragment? VariableCardData { get; set; }
 
+    //public string WordIAskedFor { get; }
+    internal string? RequestedWord { get; set; }
+
     internal string Translations { get; set; }
     internal string Examples { get; set; }
     internal string Tags { get; set; }
 
     internal CardData(
+        //string wordIAskedFor,
         SonapiResponse? response,
         string intraFieldSeparator,
         uint translationCount,
         int meaningsToConsider,
         uint maxExampleCount
     ) {
+        // RequestedWord = response
+        //     ?.RequestedWord ?? throw new ArgumentNullException("RequestedWord was null in response.");
+        // //<< argument is that since we are sending something it may never happen that it would be null.
+        //
+        //<< was causing a fucking bug due to null or whatever...
+
+        // WordIAskedFor = wordIAskedFor;
+        //
+        //<< can't even do this now because in the caller it is overcomplicated so can't just trivially pass arround the word, would have to restructure.
+        //   Let's try again the other way
+        RequestedWord = response?.RequestedWord;
+
         var wordClasses = response
-            ?.SearchResults?.FirstOrDefault()
+            ?.SearchResults?.FirstOrDefault() //TODO: such first or default which is not null???
             ?.WordClasses?.Where(wc => wc is not null)
             ??[];
         myWordClass = wordClasses?.FirstOrDefault();
@@ -86,6 +102,7 @@ internal class CardData {
             WordClass.noomen => new NoomenCardData(response, intraFieldSeparator),
             WordClass.verb => new VerbCardData(response, intraFieldSeparator),
             WordClass.muutumatu => new MuutumatuCardData(response, intraFieldSeparator),
+            null => null,
             _ => throw new NotImplementedException(),
         };
 
@@ -101,6 +118,9 @@ internal class CardData {
 
     internal string ToAnkiRow(string interFieldSeparator) {
         var s = interFieldSeparator;
-        return $"{VariableCardData?.ToAnkiRowFragment(interFieldSeparator)}{s}{Translations}{s}{Examples}{s}{Tags}";
+        return myWordClass switch {
+            not null => $"{VariableCardData?.ToAnkiRowFragment(interFieldSeparator)}{s}{Translations}{s}{Examples}{s}{Tags}",
+            null => $"ERROR FOR: {RequestedWord}",
+        };
     }
 }

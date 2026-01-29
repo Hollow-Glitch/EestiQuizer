@@ -2,24 +2,24 @@
 eesnimi
 nimi
 perekonnanimi
-sõber
-sõbranna
+sÃµber
+sÃµbranna
 naaber
 kolleeg
-töökaaslane
+tÃ¶Ã¶kaaslane
 
 # page 32 - done
-ülemus
+Ã¼lemus
 tuttav
 samuti
 tuttavaks saama
-või
+vÃµi
 meeldiv
 
 # page 34 - todo
 ema
 isa
-töö
+tÃ¶Ã¶
 park
 restoran
 polikliinik

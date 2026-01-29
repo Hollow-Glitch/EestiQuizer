@@ -1,0 +1,5 @@
+[x] dirty load the chapter files to check whether the grouping looks and feels as expected
+[ ] figure out whether I want the extra data: page, Tere translation, etc.
+    transfered as well
+    [ ] create new translation loading algo which would read the meaning translations rather than the top list
+    [ ] if done => compare the Tere translations with the collected meaning translations

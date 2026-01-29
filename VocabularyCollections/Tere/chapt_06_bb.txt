@@ -1,32 +1,32 @@
 # page 52 - todo
-suurepärane
+suurepÃ¤rane
 kord
 normaalne
 enam
-vähem
-enam-vähem
+vÃ¤hem
+enam-vÃ¤hem
 nagu
 alati
 haige
 
 # page 54 - todo
 toimuma
-üritus
+Ã¼ritus
 kaart
-säästukaart
+sÃ¤Ã¤stukaart
 kliendikaart
 partnerkaart
 sent
 euro
 
 # page 55 - todo
-õigus
+Ãµigus
 palavik
 nohu
-köha
+kÃ¶ha
 pea
 Mis sul viga on?
-sellepärast
+sellepÃ¤rast
 valutama
 kurk
 

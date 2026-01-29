@@ -24,6 +24,10 @@
                 Header="To anki format"
                 Click="ConvertToAnkiFormat_Click"
             />
+            <MenuItem
+                Header="Load from folder"
+                Click="LoadFilesFromFolder_Click"
+            />
         </Menu>
 
         <TextBox 

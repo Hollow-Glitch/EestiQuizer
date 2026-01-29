@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Win32;
+using System.IO;
 
 
 namespace EestiQuizer;
@@ -57,6 +59,36 @@ public partial class MainWindow : Window
         if (sender is null) throw new NullReferenceException();
         MenuItem menuItem = (MenuItem)sender;
         GetFromSonapi(InputBox.Text);
+    }
+
+
+    private void LoadFilesFromFolder_Click(object sender, RoutedEventArgs e) {
+        // var folderDialog = new OpenFolderDialog {
+        //     Title = "Vyberte priečinok",
+        //     InitialDirectory = @"C:\"
+        // };
+        // if (folderDialog.ShowDialog() == true) {
+        //     string folderPath = folderDialog.FolderName;
+        //     // tu spracujte cestu k priečinku
+        // }
+
+        var fileDialog = new OpenFileDialog {
+            Multiselect = true,
+        };
+        if (fileDialog.ShowDialog() == true) {
+            WriteLine("File names:");
+            foreach(var name in fileDialog.FileNames) {
+                WriteLine($"- {name}");
+            }
+
+            var saveFolder = Directory.GetParent(fileDialog.FileNames[0]);
+
+            var allWordsWithoutComments = fileDialog.FileNames
+                .SelectMany(File.ReadAllLines)
+                .Where(line => ! line.Contains("#") && ! string.IsNullOrWhiteSpace(line) );
+            WriteLine(allWordsWithoutComments.StringJoin("\n") );
+            LoadWords(allWordsWithoutComments).Wait();
+        }
     }
 
 
