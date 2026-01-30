@@ -1,4 +1,5 @@
 [x] dirty load the chapter files to check whether the grouping looks and feels as expected
+[ ] write files actually in the same folder as the source files under the current datetime so that it can't colide with anything.
 [ ] figure out whether I want the extra data: page, Tere translation, etc.
     transfered as well
     [ ] create new translation loading algo which would read the meaning translations rather than the top list
