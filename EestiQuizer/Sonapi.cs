@@ -194,23 +194,29 @@ public class SonapiResponse {
 
 
     /// <summary>
-    /// TODO
+    /// Goes through each meaning and collect all of their examples. 
+    /// With round-robin try to fulfill constraints (`maxExampleCount`, `firstNMeaningsToConsider`).
+    /// Ensures that we can't get a result like: M1, M1, M2, M1;
+    /// by actually collecting into an internal structure per meaning and the in the end collecting all examples per meaning.
     /// </summary>
+    /// <returns>
+    /// Returns examples per "meaning" while trying to fulfill given constraints such that it is prioritizing meanings in their order.
+    /// </returns>
     //public List<string>? ExamplesBalancedPerMeanings(
     public IEnumerable<string>? ExamplesBalancedGroupedPerMeanings(
         uint maxExampleCount, 
         int firstNMeaningsToConsider = -1, // if `-1` then consider all
-        string defPrefix = "D", 
+        string idPrefix = "M", 
         string separator = ": "
     ) {
         var exampleEnumeratorsPerMeaning = SearchResults
             ?.FirstOrDefault()
             ?.Meanings
-            ?.Select( (meaning, defId) => 
+            ?.Select( (meaning, id) => 
                 meaning
                     ?.Examples
                     ?.OrderBy(ex => ex.Length)
-                    ?.Select(example => $"{defPrefix}{defId+1}{separator}{example}") // `+1` to convert from index to "ordinal" (i.e. base 1).
+                    ?.Select(example => $"{idPrefix}{id+1}{separator}{example}") // `+1` to convert from index to "ordinal" (i.e. base 1).
                     ?? Enumerable.Empty<string>()
             )
             .Where(examples => examples.Count() != 0)
@@ -221,14 +227,14 @@ public class SonapiResponse {
 
         if (exampleEnumeratorsPerMeaning is null) return null;
 
-        // We want to give higher relevance to the first definitions.
+        // We want to give higher relevance to the first meanings.
         // If it would happen for example that we want 2 examples preferably per meaning, but we have:
-        // - def1 has 5 examples
-        // - def2 has 1 example
-        // then we definitely don't want 3 examples: 2 for def1 & 1 for def2.
-        // What we want is 4 examples: 3 for def1 & 1 for def2 - so that we reach the max.
+        // - M1 has 5 examples
+        // - M2 has 1 example
+        // then we definitely don't want 3 examples: 2 for M1 & 1 for M2.
+        // What we want is 4 examples: 3 for M1 & 1 for M2 - so that we reach the max.
         //
-        // We need to do a round-robin algo here.
+        //>> We need to do a round-robin algo here.
 
         int collectedExamples = 0;
         while (true) {

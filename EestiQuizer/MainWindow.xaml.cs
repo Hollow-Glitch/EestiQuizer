@@ -17,9 +17,14 @@ namespace EestiQuizer;
 /// </summary>
 public partial class MainWindow : Window
 {
+    Settings settings;
+
     public MainWindow()
     {
         InitializeComponent();
+
+        //TODO: just temp location, probably should be called sooner, since settings is not UI related.
+        settings = Settings.Load();
     }
 
     protected override void OnContentRendered(EventArgs e) {
@@ -327,8 +332,8 @@ public partial class MainWindow : Window
             if (saveFolder is not null) {
                 var timePrefix = DateTime.Now.ToString($"yyyy-MM-dd_HH-mm-ss");
                 var fileName = $"{timePrefix}_{group.Key}.txt";
-                var filePath = Path.Combine(saveFolder.FullName, fileName);
-                File.WriteAllText(filePath, rows.StringJoin("\n"), Encoding.UTF8);
+                var filePath = Path.Combine(settings.OutputFolderPath, fileName);
+                Common.EnsureFileAndWriteAllText(filePath, rows.StringJoin("\n") );
             }
         }
     }

@@ -1,8 +1,20 @@
 [x] dirty load the chapter files to check whether the grouping looks and feels as expected
 [x] write files actually in the same folder as the source files under the current datetime so that it can't colide with anything.
+[x] create a settings file (in .config ?)
+    and a default save location ? or should it ask explicitly if it never asked before?
+    if I would go with a very automaticized way then the decision whether onedrive or not could be called `preferableOnderive`
+    - benefit here would be that I don't have to deal with rogue generated files in my changelist
+
+----------------------------------------------------------------------------------------------------
+
 [ ] maybe create a cache (maybe of only words with wordclass) and if a word has data there 
     (like wordclass) then load it from there otherwise go to sonapi.
+    - this just gained priority because even with the added sleep-s sometimes I still get garbage 
+    - garbage seems to be differentiable from those which just lack info by the absence of the requestedWord field - which thus for me manifests as null.
+
 [ ] figure out whether I want the extra data: page, Tere translation, etc.
     transfered as well
     [ ] create new translation loading algo which would read the meaning translations rather than the top list
     [ ] if done => compare the Tere translations with the collected meaning translations
+    - probably the chapter number from the file name should become a tag
+    - maybe if the file is found in multiple file (thus multiple chapters - bluebox, or other), then all where it was present shall be added.

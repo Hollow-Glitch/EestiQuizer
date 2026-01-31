@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EestiQuizer;
+
+
+internal static class Common {
+    /// <summary>
+    /// Wrapper arround <see cref="Directory.CreateDirectory(string)"/> and <see cref="File.WriteAllText(string, string?, Encoding)"/>
+    /// with defaulting to <see cref="Encoding.UTF8"/> in case the optional param <paramref name="encoding"/> is <code>null</code>.
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <param name="content"></param>
+    /// <param name="encoding"></param>
+    internal static void EnsureFileAndWriteAllText(string filePath, string content, Encoding? encoding = null) {
+        if (encoding is null) {
+            encoding = Encoding.UTF8;
+        }
+
+        FileInfo fileInfo = new FileInfo(filePath);
+        if (fileInfo.DirectoryName is null) {
+            throw new ArgumentException($"fileInfo.DirectoryName would fail with null exception; filePath = {filePath}");
+        }
+
+        Directory.CreateDirectory(fileInfo.DirectoryName);
+        File.WriteAllText(filePath, content, encoding);
+    }
+}
