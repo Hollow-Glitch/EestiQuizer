@@ -1,10 +1,12 @@
 ﻿using System.Net.Http;
 using System.Windows;
+using System.Text;
 using System.Windows.Controls;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using System.IO;
+using System.Diagnostics;
 
 
 namespace EestiQuizer;
@@ -44,7 +46,7 @@ public partial class MainWindow : Window
 
         //foreach(var word in words) GetFromSonapi(word);
         //foreach(var word in words) ConvertToAnkiFormat(word);
-        LoadWords(words);
+        LoadWords(words).Wait();
     }
 
 
@@ -58,7 +60,7 @@ public partial class MainWindow : Window
     private void ConvertToAnkiFormat_Click(object sender, RoutedEventArgs e) {
         if (sender is null) throw new NullReferenceException();
         MenuItem menuItem = (MenuItem)sender;
-        GetFromSonapi(InputBox.Text);
+        LoadWords([InputBox.Text]).Wait();
     }
 
 
@@ -87,7 +89,7 @@ public partial class MainWindow : Window
                 .SelectMany(File.ReadAllLines)
                 .Where(line => ! line.Contains("#") && ! string.IsNullOrWhiteSpace(line) );
             WriteLine(allWordsWithoutComments.StringJoin("\n") );
-            LoadWords(allWordsWithoutComments).Wait();
+            LoadWords(allWordsWithoutComments, saveFolder).Wait();
         }
     }
 
@@ -261,41 +263,72 @@ public partial class MainWindow : Window
     }
 
 
-    async Task LoadWords(IEnumerable<string> words) {
+    async Task LoadWords(IEnumerable<string> words, DirectoryInfo? saveFolder = null) {
         using var client = new HttpClient();
 
-        List<Task<string>> asyncResponseStrings = [];
+        //>> Send requests
+        List<(Task<string> asyncContent, string word)> asyncResponseStrings = [];
+        int pauseCounter = 0;
+        int pauseTreshold = 5;
         foreach(var word in words) {
             var url = $"https://api.sonapi.ee/v2/{word}";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             using var response = client.Send(request);
             var readAsStringAsync = response.Content.ReadAsStringAsync();
-            asyncResponseStrings.Add(readAsStringAsync);
+            asyncResponseStrings.Add( (readAsStringAsync, word) );
+            Thread.Sleep(50);
+            if (pauseCounter % pauseTreshold == 0) Thread.Sleep(200);
         }
 
-        List<string> responseStrings = [];
+        //>> await requests and transform to string
+        List<(string jsonContent, string word)> responseWordPair = [];
         foreach(var asyncResponseString in asyncResponseStrings) {
-            responseStrings.Add(await asyncResponseString);
+            responseWordPair.Add( (await asyncResponseString.asyncContent, asyncResponseString.word) );
         }
 
+        // //>> save to cache
+        // var serializedJson = JsonSerializer.Serialize(responseWordPair);
+        //
+        //<< let's keep focus for now on the current blockers and issues.
+
+        //>> deserialize and transform to card data grouped by wordclass
         const string interFieldSeparator = "|";
         const string intraFieldSeparator = ", ";
         const int meaningsToConsider = 3;
         const int maxExampleCount = 4;
         const int translationCount = 3;
-        var groupedCardData = responseStrings
-            .Select(response => 
-                JsonSerializer.Deserialize<SonapiResponse>(response)
+        var groupedCardData = responseWordPair
+            .Select(pair => 
+                (json: JsonSerializer.Deserialize<SonapiResponse>(pair.jsonContent), pair.word)
             )
-            .Where(r => r is not null).Select(r => r!) // filter then tell compiler.
-            .Select(response => new CardData(response, intraFieldSeparator, translationCount, meaningsToConsider, maxExampleCount) )
+            .Where(pair => pair.json is not null).Select(r => (sonapiResponse: r.json!, word: r.word)) // filter then tell compiler.
+            .Select(response =>
+                new CardData(
+                    response.word,
+                    response.sonapiResponse,
+                    intraFieldSeparator,
+                    translationCount,
+                    meaningsToConsider,
+                    maxExampleCount
+                )
+            )
             .GroupBy(cardData => cardData.myWordClass);
 
+        //>> save into files (one file per wordClass)
         foreach (var group in groupedCardData) { 
             var rows = group.Select(cardData => cardData.ToAnkiRow(interFieldSeparator) );
+
+            WriteNewLine();
             WriteLine($"{group.Key}");
             foreach(var row in rows) {
-                WriteLine(row);
+                WriteLine("    " + row);
+            }
+
+            if (saveFolder is not null) {
+                var timePrefix = DateTime.Now.ToString($"yyyy-MM-dd_HH-mm-ss");
+                var fileName = $"{timePrefix}_{group.Key}.txt";
+                var filePath = Path.Combine(saveFolder.FullName, fileName);
+                File.WriteAllText(filePath, rows.StringJoin("\n"), Encoding.UTF8);
             }
         }
     }

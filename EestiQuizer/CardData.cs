@@ -66,7 +66,7 @@ internal class CardData {
     internal WordClass? myWordClass { get; set; }
     internal ICardDataFragment? VariableCardData { get; set; }
 
-    //public string WordIAskedFor { get; }
+    public string TextWeAskedFor { get; }
     internal string? RequestedWord { get; set; }
 
     internal string Translations { get; set; }
@@ -74,23 +74,14 @@ internal class CardData {
     internal string Tags { get; set; }
 
     internal CardData(
-        //string wordIAskedFor,
+        string textWeAskedFor,
         SonapiResponse? response,
         string intraFieldSeparator,
         uint translationCount,
         int meaningsToConsider,
         uint maxExampleCount
     ) {
-        // RequestedWord = response
-        //     ?.RequestedWord ?? throw new ArgumentNullException("RequestedWord was null in response.");
-        // //<< argument is that since we are sending something it may never happen that it would be null.
-        //
-        //<< was causing a fucking bug due to null or whatever...
-
-        // WordIAskedFor = wordIAskedFor;
-        //
-        //<< can't even do this now because in the caller it is overcomplicated so can't just trivially pass arround the word, would have to restructure.
-        //   Let's try again the other way
+        TextWeAskedFor = textWeAskedFor;
         RequestedWord = response?.RequestedWord;
 
         var wordClasses = response
@@ -120,7 +111,7 @@ internal class CardData {
         var s = interFieldSeparator;
         return myWordClass switch {
             not null => $"{VariableCardData?.ToAnkiRowFragment(interFieldSeparator)}{s}{Translations}{s}{Examples}{s}{Tags}",
-            null => $"ERROR FOR: {RequestedWord}",
+            null => $"ERROR FOR: requestedWord = {RequestedWord}; TextWeAskedFor = {TextWeAskedFor}",
         };
     }
 }
