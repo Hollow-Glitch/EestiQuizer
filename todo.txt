@@ -7,6 +7,17 @@
 
 ----------------------------------------------------------------------------------------------------
 
+[?] translation problem with words like - outer vs inner translations
+    (outer = top level translations | inner = meaning translations)
+    examples:
+    - nimisõna: outer - some | inner - some
+    - sõbranna: outer - none | inner - 1 eng
+    subtasks:
+    [x] some have no top level translations but in the meanings they do
+    [x] then there are words where the opposite is true - ,
+    [x] then there are those which have both.
+    [?] then which have none..., all of these cases need handling.
+
 [ ] maybe create a cache (maybe of only words with wordclass) and if a word has data there 
     (like wordclass) then load it from there otherwise go to sonapi.
     - this just gained priority because even with the added sleep-s sometimes I still get garbage 

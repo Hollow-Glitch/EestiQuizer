@@ -11,13 +11,14 @@ internal static class SettingValues {
 }
 
 
-internal sealed class Settings {
+public sealed class Settings {
     public string OutputFolderPath { get; set; } = SettingValues.defaultOutputFolderPath;
 
     /// <summary>
-    /// Use <see cref="Settings.Load"/> instead to obtain an instance.
+    /// Use <see cref="Settings.Load"/> to load from file, this only creates a default instance.
+    /// It must be internal so that the JsonSerializer can work with it.
     /// </summary>
-    private Settings() { }
+    public Settings() { }
 
     internal static Settings Load() {
         var exists = File.Exists(SettingValues.configFilePath);

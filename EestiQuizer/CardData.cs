@@ -97,7 +97,7 @@ internal class CardData {
             _ => throw new NotImplementedException(),
         };
 
-        Translations = response?.SipmleEngTranslations(translationCount)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
+        Translations = response?.MergedEngTranslations(translationCount)?.StringJoin(intraFieldSeparator) ?? "";
 
         //>> examples
         //const int meaningsToConsider = 3;

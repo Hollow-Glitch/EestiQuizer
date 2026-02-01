@@ -173,7 +173,7 @@ public partial class MainWindow : Window
         }
 
         const int translationCount = 3;
-        var translations   = result?.SipmleEngTranslations(translationCount)?.StringJoin(", ");
+        var translations   = result?.OuterEngTranslations(translationCount)?.StringJoin(", ");
         WriteLine("translations = " + translations   ?? errorMissingData);
 
         const int meaningsToConsider = 3;
@@ -254,7 +254,7 @@ public partial class MainWindow : Window
 
         //>> translation / meaning(in my anki note type sense)
         const int translationCount = 3;
-        var translations   = result?.SipmleEngTranslations(translationCount)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
+        var translations   = result?.OuterEngTranslations(translationCount)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
         Write(translations + interFieldSeparator);
 
         //>> examples
@@ -270,32 +270,42 @@ public partial class MainWindow : Window
 
     async Task LoadWords(IEnumerable<string> words, DirectoryInfo? saveFolder = null) {
         using var client = new HttpClient();
-
+                            
+        var sw_asyncSend = Stopwatch.StartNew();
         //>> Send requests
         List<(Task<string> asyncContent, string word)> asyncResponseStrings = [];
         int pauseCounter = 0;
         int pauseTreshold = 5;
-        foreach(var word in words) {
-            var url = $"https://api.sonapi.ee/v2/{word}";
-            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            using var response = client.Send(request);
-            var readAsStringAsync = response.Content.ReadAsStringAsync();
-            asyncResponseStrings.Add( (readAsStringAsync, word) );
-            Thread.Sleep(50);
-            if (pauseCounter % pauseTreshold == 0) Thread.Sleep(200);
+        try {
+            foreach(var word in words) {
+                var url = $"https://api.sonapi.ee/v2/{word}";
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                using var response = client.Send(request);
+                var readAsStringAsync = response.Content.ReadAsStringAsync();
+                asyncResponseStrings.Add( (readAsStringAsync, word) );
+                Thread.Sleep(50);
+                if (pauseCounter % pauseTreshold == 0) Thread.Sleep(200);
+            }
+        } catch(Exception e) {
+            WriteLine($"exception: {e.Message}");
+            return;
         }
+        WriteLine($"{nameof(sw_asyncSend)} = {sw_asyncSend}");
 
+        var sw_await = Stopwatch.StartNew();
         //>> await requests and transform to string
         List<(string jsonContent, string word)> responseWordPair = [];
         foreach(var asyncResponseString in asyncResponseStrings) {
             responseWordPair.Add( (await asyncResponseString.asyncContent, asyncResponseString.word) );
         }
+        WriteLine($"{nameof(sw_await)} = {sw_await}");
 
         // //>> save to cache
         // var serializedJson = JsonSerializer.Serialize(responseWordPair);
         //
         //<< let's keep focus for now on the current blockers and issues.
 
+        var sw_transform = Stopwatch.StartNew();
         //>> deserialize and transform to card data grouped by wordclass
         const string interFieldSeparator = "|";
         const string intraFieldSeparator = ", ";
@@ -318,7 +328,9 @@ public partial class MainWindow : Window
                 )
             )
             .GroupBy(cardData => cardData.myWordClass);
+        WriteLine($"{nameof(sw_transform)} = {sw_transform}");
 
+        var sw_save = Stopwatch.StartNew();
         //>> save into files (one file per wordClass)
         foreach (var group in groupedCardData) { 
             var rows = group.Select(cardData => cardData.ToAnkiRow(interFieldSeparator) );
@@ -336,6 +348,7 @@ public partial class MainWindow : Window
                 Common.EnsureFileAndWriteAllText(filePath, rows.StringJoin("\n") );
             }
         }
+        WriteLine($"{nameof(sw_save)} = {sw_save}");
     }
 
 

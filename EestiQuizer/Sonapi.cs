@@ -254,12 +254,15 @@ public class SonapiResponse {
 
 
     /// <summary>
+    /// <para>
     /// Instead of digging the translations withing the meanings(aka "definitions" - but that is a field actually)
     /// Here we are just pulling the immediate translations list.
     /// Still the purpose here is that if in the future changes something this serves as a layer.
+    /// </para>
+    /// Postcondition: distinctness ensured.
     /// </summary>
     /// <returns></returns>
-    public IEnumerable<string>? SipmleEngTranslations(uint countPerDef) {
+    public IEnumerable<string>? OuterEngTranslations(uint countPerDef) {
         const string from = "et";
         const string to = "en";
         return Translations
@@ -268,7 +271,65 @@ public class SonapiResponse {
                 && translation.From is from
             )
             ?.Translations
-            ?.Take( (int) countPerDef);
+            ?.Distinct()
+            .Take( (int) countPerDef);
+    }
+
+
+    /// <summary>
+    /// Postcondition: distinctness ensured.
+    /// </summary>
+    /// <param name="countPerDef"></param>
+    /// <returns></returns>
+    public IEnumerable<string>? InnerEngTranslations(uint countPerDef) {
+        var innerTranslations =
+            SearchResults
+            ?.FirstOrDefault()
+            ?.Meanings
+            ?.Select(meaning => meaning.Translations)
+            //>> Filter & tell compiler that: translation is not null
+            .Where(translation => translation is not null).Select(t => t!)
+            //>> Filter & tell compiler that: translation.EnglishTranslations is not null
+            .Where(translation => translation.EnglishTranslations is not null)
+            .SelectMany(translation => translation.EnglishTranslations! )
+            //>> End of type theory trickery.
+            .OrderByDescending(engTrans => engTrans.Weight).Take( (int) countPerDef)
+            .SelectMany(engTrans => engTrans.WordsSeparated() )
+            .Distinct().Take( (int) countPerDef);
+
+        return innerTranslations;
+    }
+
+
+    /// <summary>
+    /// Postcondition: distinctness ensured.
+    /// </summary>
+    /// <param name="countPerDef"></param>
+    /// <returns></returns>
+    public IEnumerable<string>? MergedEngTranslations(uint countPerDef) {
+        List<string> outers = OuterEngTranslations(countPerDef)?.ToList() ?? [];
+        List<string> inners = InnerEngTranslations(countPerDef)?.ToList() ?? [];
+        if (outers.Count == 0) return inners;
+        if (inners.Count == 0) return outers;
+        if (outers.Count == 0 && inners.Count == 0) return inners; //<< Irrelevant which, but let's avoid creating a new empty instance.
+
+        Dictionary<string, int> wordToWeight = new();
+
+        // Assuming that it is ensured that values of `outers` and `inners` are distinct.
+        foreach(var outer in outers) {
+            wordToWeight.Add(outer, 0);
+        }
+
+        foreach(var inner in inners) {
+            if ( wordToWeight.TryGetValue(inner, out var weight) ) {
+                weight++;
+            }
+        }
+
+        return wordToWeight
+            .OrderByDescending(kvp => kvp.Value)
+            .Take( (int) countPerDef)
+            .Select(kvp => kvp.Key);
     }
 }
 
@@ -339,6 +400,12 @@ public class TranslationMeaning {
 
         [JsonPropertyName("weight")]
         public float? Weight { get; set; }
+
+        public IEnumerable<string> WordsSeparated() {
+            return Words
+                ?.Split(',')
+                .Select(word => word.Trim() ) ?? [];
+        }
     }
 
     [JsonPropertyName("eng")]
