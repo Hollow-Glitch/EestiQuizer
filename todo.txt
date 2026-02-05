@@ -18,6 +18,9 @@
     [x] then there are those which have both.
     [?] then which have none..., all of these cases need handling.
 
+[ ] mauybe deprecate the current `SonapiResponse.WordFormValues` function and make it take a `SearchResult` since that is the only thing it is currently
+    operating upon.
+
 [ ] maybe create a cache (maybe of only words with wordclass) and if a word has data there 
     (like wordclass) then load it from there otherwise go to sonapi.
     - this just gained priority because even with the added sleep-s sometimes I still get garbage 

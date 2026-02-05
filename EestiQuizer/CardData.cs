@@ -75,9 +75,10 @@ internal class CardData {
 
     internal CardData(
         string textWeAskedFor,
+        IEnumerable<string> tagsWeWant,
         SonapiResponse? response,
         string intraFieldSeparator,
-        uint translationCount,
+        int translationCount, //<< <0 means all
         int meaningsToConsider,
         uint maxExampleCount
     ) {
@@ -104,7 +105,8 @@ internal class CardData {
         //const int maxExampleCount = 4;
         Examples = response?.ExamplesBalancedGroupedPerMeanings(maxExampleCount, meaningsToConsider)?.Distinct()?.StringJoin("<br>") ?? "";
 
-        Tags = "generated";
+        const string generatedTag = "generated";
+        Tags = generatedTag + " " + tagsWeWant.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
     }
 
     internal string ToAnkiRow(string interFieldSeparator) {

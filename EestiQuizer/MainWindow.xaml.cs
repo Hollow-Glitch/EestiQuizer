@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Win32;
 using System.IO;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 
 
 namespace EestiQuizer;
@@ -51,7 +52,7 @@ public partial class MainWindow : Window
 
         //foreach(var word in words) GetFromSonapi(word);
         //foreach(var word in words) ConvertToAnkiFormat(word);
-        LoadWords(words).Wait();
+        LoadWords(words.Select(word => new WordToLoad(word, []) ) ).Wait();
     }
 
 
@@ -65,7 +66,7 @@ public partial class MainWindow : Window
     private void ConvertToAnkiFormat_Click(object sender, RoutedEventArgs e) {
         if (sender is null) throw new NullReferenceException();
         MenuItem menuItem = (MenuItem)sender;
-        LoadWords([InputBox.Text]).Wait();
+        LoadWords([new WordToLoad(InputBox.Text, [])]).Wait();
     }
 
 
@@ -90,10 +91,20 @@ public partial class MainWindow : Window
 
             var saveFolder = Directory.GetParent(fileDialog.FileNames[0]);
 
-            var allWordsWithoutComments = fileDialog.FileNames
-                .SelectMany(File.ReadAllLines)
-                .Where(line => ! line.Contains("#") && ! string.IsNullOrWhiteSpace(line) );
-            WriteLine(allWordsWithoutComments.StringJoin("\n") );
+            //var allWordsWithoutComments = fileDialog.FileNames
+            //    .SelectMany(File.ReadAllLines)
+            //    .Where(line => ! line.Contains("#") && ! string.IsNullOrWhiteSpace(line) );
+            var allWordsWithoutComments = new List<WordToLoad>();
+            foreach(var fileName in fileDialog.FileNames) {
+                var wordsOfFile = File.ReadAllLines(fileName)
+                    .Where(line => ! line.Contains("#") && ! string.IsNullOrWhiteSpace(line) );
+                string[] tags = Path.GetFileNameWithoutExtension(fileName).Split("__") ?? [];
+                var wordsToLoad = wordsOfFile.Select(word => new WordToLoad(word, tags) );
+                foreach(var wordToLoad in wordsToLoad) allWordsWithoutComments.Add(wordToLoad);
+            }
+
+            if (false) WriteLine(allWordsWithoutComments.Select(wordToLoad => wordToLoad.Word).StringJoin("\n") );
+
             LoadWords(allWordsWithoutComments, saveFolder).Wait();
         }
     }
@@ -268,42 +279,56 @@ public partial class MainWindow : Window
     }
 
 
-    async Task LoadWords(IEnumerable<string> words, DirectoryInfo? saveFolder = null) {
+    async Task LoadWords(IEnumerable<WordToLoad> wordsToLoad, DirectoryInfo? saveFolder = null) {
         using var client = new HttpClient();
                             
+        List<string> wordsWithMultipleSearchResults = [];
+
         var sw_asyncSend = Stopwatch.StartNew();
         //>> Send requests
-        List<(Task<string> asyncContent, string word)> asyncResponseStrings = [];
-        int pauseCounter = 0;
-        int pauseTreshold = 5;
+        List<(SonapiResponse sonapiResponse, WordToLoad wordToLoad)> responseWordPair = [];
         try {
-            foreach(var word in words) {
-                var url = $"https://api.sonapi.ee/v2/{word}";
-                using var request = new HttpRequestMessage(HttpMethod.Get, url);
-                using var response = client.Send(request);
-                var readAsStringAsync = response.Content.ReadAsStringAsync();
-                asyncResponseStrings.Add( (readAsStringAsync, word) );
-                Thread.Sleep(50);
-                if (pauseCounter % pauseTreshold == 0) Thread.Sleep(200);
+            const int maxRetryCount = 5;
+            foreach(var wordToLoad in wordsToLoad) {
+                for (var retryCounter = 0; retryCounter < maxRetryCount; retryCounter++) {
+                    var url = $"https://api.sonapi.ee/v2/{wordToLoad.Word}";
+                    using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    using var response = client.Send(request);
+                    var jsonText = await response.Content.ReadAsStringAsync();
+                    var json = JsonSerializer.Deserialize<SonapiResponse>(jsonText);
+                    if (json is null) {
+                        WriteLine($"Error: Json was null for word: {wordToLoad.Word}");
+                        break;
+                    }
+                    //>> assuming that whether `RequestedWord` is null or not is a good indication.
+                    if (json.RequestedWord is null && retryCounter == maxRetryCount-1) { 
+                        WriteLine("Error: last retry reached without resolving issue. Adding in malformed state to be reported later as well.");
+                        responseWordPair.Add( (json, wordToLoad) );
+                        break;
+                    }
+                    if (json.RequestedWord is not null) { 
+                        if (retryCounter is not 0) {
+                            WriteLine("Info: retry helped!");
+                        }
+                        responseWordPair.Add( (json, wordToLoad) );
+                        if (json.SearchResults is not null && json.SearchResults.Length > 1) {
+                            wordsWithMultipleSearchResults.Add(wordToLoad.Word);
+                        }
+                        break;
+                    } else {
+                        WriteLine($"Warning: Attempting retry ({1+retryCounter}) for word: {wordToLoad.Word}");
+                        Thread.Sleep(2000 * (1+retryCounter) );
+                    }
+                };
             }
         } catch(Exception e) {
             WriteLine($"exception: {e.Message}");
             return;
         }
         WriteLine($"{nameof(sw_asyncSend)} = {sw_asyncSend}");
-
-        var sw_await = Stopwatch.StartNew();
-        //>> await requests and transform to string
-        List<(string jsonContent, string word)> responseWordPair = [];
-        foreach(var asyncResponseString in asyncResponseStrings) {
-            responseWordPair.Add( (await asyncResponseString.asyncContent, asyncResponseString.word) );
+        foreach(var word in wordsWithMultipleSearchResults) {
+            WriteLine($"Warning: multiple search results detected for word: {word}");
         }
-        WriteLine($"{nameof(sw_await)} = {sw_await}");
-
-        // //>> save to cache
-        // var serializedJson = JsonSerializer.Serialize(responseWordPair);
-        //
-        //<< let's keep focus for now on the current blockers and issues.
 
         var sw_transform = Stopwatch.StartNew();
         //>> deserialize and transform to card data grouped by wordclass
@@ -313,13 +338,10 @@ public partial class MainWindow : Window
         const int maxExampleCount = 4;
         const int translationCount = 3;
         var groupedCardData = responseWordPair
-            .Select(pair => 
-                (json: JsonSerializer.Deserialize<SonapiResponse>(pair.jsonContent), pair.word)
-            )
-            .Where(pair => pair.json is not null).Select(r => (sonapiResponse: r.json!, word: r.word)) // filter then tell compiler.
             .Select(response =>
                 new CardData(
-                    response.word,
+                    response.wordToLoad.Word,
+                    response.wordToLoad.Tags,
                     response.sonapiResponse,
                     intraFieldSeparator,
                     translationCount,

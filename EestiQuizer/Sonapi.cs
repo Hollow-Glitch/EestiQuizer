@@ -262,17 +262,20 @@ public class SonapiResponse {
     /// Postcondition: distinctness ensured.
     /// </summary>
     /// <returns></returns>
-    public IEnumerable<string>? OuterEngTranslations(uint countPerDef) {
+    public IEnumerable<string>? OuterEngTranslations(int countPerDef) {
         const string from = "et";
         const string to = "en";
-        return Translations
+        var outerTranslations =  Translations
             ?.FirstOrDefault(translation
                 => translation.To is to
                 && translation.From is from
             )
             ?.Translations
-            ?.Distinct()
-            .Take( (int) countPerDef);
+            ?.Distinct();
+        return countPerDef switch {
+            < 0 => outerTranslations,
+            _ => outerTranslations?.Take( countPerDef)
+        };
     }
 
 
@@ -281,7 +284,7 @@ public class SonapiResponse {
     /// </summary>
     /// <param name="countPerDef"></param>
     /// <returns></returns>
-    public IEnumerable<string>? InnerEngTranslations(uint countPerDef) {
+    public IEnumerable<string>? InnerEngTranslations(int countPerDef) {
         var innerTranslations =
             SearchResults
             ?.FirstOrDefault()
@@ -293,11 +296,14 @@ public class SonapiResponse {
             .Where(translation => translation.EnglishTranslations is not null)
             .SelectMany(translation => translation.EnglishTranslations! )
             //>> End of type theory trickery.
-            .OrderByDescending(engTrans => engTrans.Weight).Take( (int) countPerDef)
+            .OrderByDescending(engTrans => engTrans.Weight) // .Take( (int) countPerDef) //<< this doesn't work if `countPerDef` is `-1`
             .SelectMany(engTrans => engTrans.WordsSeparated() )
-            .Distinct().Take( (int) countPerDef);
+            .Distinct();
 
-        return innerTranslations;
+        return countPerDef switch {
+            < 0 => innerTranslations,
+            _ => innerTranslations?.Take( countPerDef)
+        };
     }
 
 
@@ -306,11 +312,11 @@ public class SonapiResponse {
     /// </summary>
     /// <param name="countPerDef"></param>
     /// <returns></returns>
-    public IEnumerable<string>? MergedEngTranslations(uint countPerDef) {
-        List<string> outers = OuterEngTranslations(countPerDef)?.ToList() ?? [];
-        List<string> inners = InnerEngTranslations(countPerDef)?.ToList() ?? [];
-        if (outers.Count == 0) return inners;
-        if (inners.Count == 0) return outers;
+    public IEnumerable<string>? MergedEngTranslations(int countPerDef) {
+        List<string> outers = OuterEngTranslations(/*countPerDef*/ (-1)/*i.e. all*/)?.ToList() ?? [];
+        List<string> inners = InnerEngTranslations(/*countPerDef*/ (-1)/*i.e. all*/)?.ToList() ?? [];
+        if (outers.Count == 0) return inners.Take(countPerDef);
+        if (inners.Count == 0) return outers.Take(countPerDef);
         if (outers.Count == 0 && inners.Count == 0) return inners; //<< Irrelevant which, but let's avoid creating a new empty instance.
 
         Dictionary<string, int> wordToWeight = new();
@@ -321,15 +327,21 @@ public class SonapiResponse {
         }
 
         foreach(var inner in inners) {
-            if ( wordToWeight.TryGetValue(inner, out var weight) ) {
-                weight++;
+            if ( wordToWeight.ContainsKey(inner) ) {
+                wordToWeight[inner]++;
+            } else {
+                wordToWeight.Add(inner, 0);
             }
         }
 
-        return wordToWeight
+        var translations = wordToWeight
             .OrderByDescending(kvp => kvp.Value)
-            .Take( (int) countPerDef)
             .Select(kvp => kvp.Key);
+
+        return countPerDef switch {
+            < 0 => translations,
+            _ => translations?.Take( countPerDef)
+        };
     }
 }
 
