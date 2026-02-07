@@ -8,7 +8,15 @@ namespace EestiQuizer;
 
 
 internal interface ICardDataFragment {
+    [Obsolete(
+        $"Part of initial design, but now that we are trying to supply data " +
+        $"for only 1 universal anki note type, replaced with: {nameof(Form1)}, {nameof(Form2)}, {nameof(Form3)}.")
+    ]
     internal string ToAnkiRowFragment(string interFieldSeparator);
+
+    internal string Form1 { get; }
+    internal string Form2 { get; }
+    internal string Form3 { get; }
 }
 
 
@@ -22,6 +30,10 @@ internal class NoomenCardData : ICardDataFragment{
         sgG = response?.WordFormValues(WordFormCode.noomen_SgG)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
         sgP = response?.WordFormValues(WordFormCode.noomen_SgP)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
     }
+
+    string ICardDataFragment.Form1 => sgN;
+    string ICardDataFragment.Form2 => sgG;
+    string ICardDataFragment.Form3 => sgP;
 
     string ICardDataFragment.ToAnkiRowFragment(string interFieldSeparator) {
         var s = interFieldSeparator;
@@ -41,6 +53,10 @@ internal class VerbCardData : ICardDataFragment{
         sg1p = response?.WordFormValues(WordFormCode.verb_Sg1P)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
     }
 
+    string ICardDataFragment.Form1 => ma;
+    string ICardDataFragment.Form2 => da;
+    string ICardDataFragment.Form3 => sg1p;
+
     string ICardDataFragment.ToAnkiRowFragment(string interFieldSeparator) {
         var s = interFieldSeparator;
         return $"{ma}{s}{da}{s}{sg1p}";
@@ -56,8 +72,21 @@ internal class MuutumatuCardData : ICardDataFragment{
     }
 
     string ICardDataFragment.ToAnkiRowFragment(string interFieldSeparator) {
+        return ToAnkiRowFragment_v1(interFieldSeparator);
+    }
+
+    string ICardDataFragment.Form1 => form;
+    string ICardDataFragment.Form2 => "";
+    string ICardDataFragment.Form3 => "";
+
+    string ToAnkiRowFragment_v0(string interFieldSeparator) {
         var s = interFieldSeparator;
         return $"{form}";
+    }
+
+    string ToAnkiRowFragment_v1(string interFieldSeparator) {
+        var s = interFieldSeparator;
+        return $"{form}{s}{s}";
     }
 }
 
@@ -69,9 +98,22 @@ internal class CardData {
     public string TextWeAskedFor { get; }
     internal string? RequestedWord { get; set; }
 
+    internal string? PartOfSpeech { get; set; }
     internal string Translations { get; set; }
     internal string Examples { get; set; }
     internal string Tags { get; set; }
+
+    const string asesõna = nameof(asesõna);
+    const string määrsõna = nameof(määrsõna);
+    const string nimisõna = nameof(nimisõna);
+    const string omadussõna = nameof(omadussõna);
+    const string sidesõna = nameof(sidesõna);
+    const string tegusõna = nameof(tegusõna);
+    const string arvsõna = nameof(arvsõna);
+    const string tagasõna = nameof(tagasõna);
+    const string eessõna  = nameof(eessõna);
+    const string hüüdsõna = nameof(hüüdsõna);
+
 
     internal CardData(
         string textWeAskedFor,
@@ -107,12 +149,56 @@ internal class CardData {
 
         const string generatedTag = "generated";
         Tags = generatedTag + " " + tagsWeWant.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
+
+        var partOfSpeechValue = response
+            ?.SearchResults?.FirstOrDefault()
+            ?.Meanings?.FirstOrDefault()
+            ?.LexicalCategories?.FirstOrDefault()
+            ?.Value;
+
+        if      (partOfSpeechValue?.Contains(asesõna   ) ?? false)  PartOfSpeech =   asesõna;
+        else if (partOfSpeechValue?.Contains(määrsõna  ) ?? false)  PartOfSpeech =  määrsõna;
+        else if (partOfSpeechValue?.Contains(nimisõna  ) ?? false)  PartOfSpeech =  nimisõna;
+        else if (partOfSpeechValue?.Contains(omadussõna) ?? false)  PartOfSpeech = omadussõna;
+        else if (partOfSpeechValue?.Contains(sidesõna  ) ?? false)  PartOfSpeech =  sidesõna;
+        else if (partOfSpeechValue?.Contains(tegusõna  ) ?? false)  PartOfSpeech =  tegusõna;
+        else if (partOfSpeechValue?.Contains(arvsõna   ) ?? false)  PartOfSpeech =   arvsõna;
+        else if (partOfSpeechValue?.Contains(tagasõna  ) ?? false)  PartOfSpeech =  tagasõna;
+        else if (partOfSpeechValue?.Contains(eessõna   ) ?? false)  PartOfSpeech =   eessõna;
+        else if (partOfSpeechValue?.Contains(hüüdsõna  ) ?? false)  PartOfSpeech =  hüüdsõna;
+        else if (partOfSpeechValue is null)  PartOfSpeech =  null;
+        else throw new NotImplementedException();
     }
 
+
     internal string ToAnkiRow(string interFieldSeparator) {
-        var s = interFieldSeparator;
+        var v = VariableCardData;
+        var id = v?.Form1;
+        //var partOfSpeech = 
+
+        //>> these are intentionally left blank for now
+        var image     = "";
+        var audio     = "";
+        var frontHint = "";
+        var backHint  = "";
+
         return myWordClass switch {
-            not null => $"{VariableCardData?.ToAnkiRowFragment(interFieldSeparator)}{s}{Translations}{s}{Examples}{s}{Tags}",
+            not null => 
+                new string?[] {
+                    id,
+                    v?.Form1,
+                    v?.Form2,
+                    v?.Form3,
+                    //partOfSpeech,
+                    PartOfSpeech,
+                    Translations,
+                    Examples,
+                    image,
+                    audio,
+                    frontHint,
+                    backHint,
+                    Tags,
+                }.StringJoin(interFieldSeparator),
             null => $"ERROR FOR: requestedWord = {RequestedWord}; TextWeAskedFor = {TextWeAskedFor}",
         };
     }

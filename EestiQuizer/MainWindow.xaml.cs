@@ -52,7 +52,7 @@ public partial class MainWindow : Window
 
         //foreach(var word in words) GetFromSonapi(word);
         //foreach(var word in words) ConvertToAnkiFormat(word);
-        LoadWords(words.Select(word => new WordToLoad(word, []) ) ).Wait();
+        LoadWords(words.Select(word => new WordToLoad(word, []) ) );
     }
 
 
@@ -66,7 +66,7 @@ public partial class MainWindow : Window
     private void ConvertToAnkiFormat_Click(object sender, RoutedEventArgs e) {
         if (sender is null) throw new NullReferenceException();
         MenuItem menuItem = (MenuItem)sender;
-        LoadWords([new WordToLoad(InputBox.Text, [])]).Wait();
+        LoadWords([new WordToLoad(InputBox.Text, [])]);
     }
 
 
@@ -105,7 +105,7 @@ public partial class MainWindow : Window
 
             if (false) WriteLine(allWordsWithoutComments.Select(wordToLoad => wordToLoad.Word).StringJoin("\n") );
 
-            LoadWords(allWordsWithoutComments, saveFolder).Wait();
+            LoadWords(allWordsWithoutComments, saveFolder);
         }
     }
 
@@ -279,7 +279,7 @@ public partial class MainWindow : Window
     }
 
 
-    async Task LoadWords(IEnumerable<WordToLoad> wordsToLoad, DirectoryInfo? saveFolder = null) {
+    void LoadWords(IEnumerable<WordToLoad> wordsToLoad, DirectoryInfo? saveFolder = null) {
         using var client = new HttpClient();
                             
         List<string> wordsWithMultipleSearchResults = [];
@@ -294,7 +294,7 @@ public partial class MainWindow : Window
                     var url = $"https://api.sonapi.ee/v2/{wordToLoad.Word}";
                     using var request = new HttpRequestMessage(HttpMethod.Get, url);
                     using var response = client.Send(request);
-                    var jsonText = await response.Content.ReadAsStringAsync();
+                    var jsonText = response.Content.ReadAsStringAsync().Result;
                     var json = JsonSerializer.Deserialize<SonapiResponse>(jsonText);
                     if (json is null) {
                         WriteLine($"Error: Json was null for word: {wordToLoad.Word}");
