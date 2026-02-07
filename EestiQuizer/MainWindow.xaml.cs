@@ -193,89 +193,11 @@ public partial class MainWindow : Window
         //var ex = "    " + result?.ExamplesPerConsideredMeanings(examplesPerMeaning, meaningsToConsider)?.StringJoin(",\n    ");
         //var ex = "    " + result?.ExamplesCappedPerMeanings(maxExampleCount, examplesPerMeaning)?.StringJoin(",\n    ");
         //var ex = "    " + result?.ExamplesBalancedPerMeanings(maxExampleCount, meaningsToConsider)?.StringJoin(",\n    ");
-        var ex = "    " + result?.ExamplesBalancedGroupedPerMeanings(maxExampleCount, meaningsToConsider)?.StringJoin(",\n    ");
+        var ex = "    " + result?.SearchResults?.FirstOrDefault()
+            ?.ExamplesBalancedGroupedPerMeanings(maxExampleCount, meaningsToConsider)?.StringJoin(",\n    ");
         WriteLine("ex =\n" + ex   ?? errorMissingData);
 
         WriteLine("------------------------------------------------------------");
-    }
-
-
-    private void ConvertToAnkiFormat(string payload) {
-        //var payload = InputBox.Text;
-        var url = $"https://api.sonapi.ee/v2/{payload}";
-
-        using var client = new HttpClient();
-        using var request = new HttpRequestMessage(HttpMethod.Get, url);
-        using var response = client.Send(request);
-        var readAsStringAsync = response.Content.ReadAsStringAsync();
-
-        var responseString = readAsStringAsync.Result;
-        //WriteLine(responseString);
-
-        SonapiResponse? result = JsonSerializer
-            .Deserialize<SonapiResponse>(responseString);
-
-        var wordClasses = result
-            ?.SearchResults?.FirstOrDefault()
-            ?.WordClasses?.Where(wc => wc is not null)
-            ??[];
-
-        if (wordClasses.Count() == 0) {
-            WriteLine("ERROR  --  no word classes found.");
-        }
-        if (wordClasses.Count() > 1) {
-            WriteLine("WARNING  --  multiple word classes found: " + wordClasses.Select(wc => wc.ToString()).StringJoin(", "));
-            WriteLine("         --  The first will be chosen.");
-        }
-
-        var chosenWordClass = wordClasses?.FirstOrDefault();
-        const string interFieldSeparator = "|";
-        const string intraFieldSeparator = ", ";
-
-        //== Write anki txt file rows
-
-        //>> word forms (in anki note type sense): ma-da-sg1p, N-G-P, single-form
-        switch(chosenWordClass) {
-            case null:
-                WriteLine("ERROR  --  word class is null.");
-                break;
-            case WordClass.verb: {
-                var ma   = result?.WordFormValues(WordFormCode.verb_Ma  )?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
-                var da   = result?.WordFormValues(WordFormCode.verb_Da  )?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
-                var sg1p = result?.WordFormValues(WordFormCode.verb_Sg1P)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
-                Write(ma   + interFieldSeparator);
-                Write(da   + interFieldSeparator);
-                Write(sg1p + interFieldSeparator);
-            } break;
-            case WordClass.noomen: {
-                var sgN = result?.WordFormValues(WordFormCode.noomen_SgN)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
-                var sgG = result?.WordFormValues(WordFormCode.noomen_SgG)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
-                var sgP = result?.WordFormValues(WordFormCode.noomen_SgP)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
-                Write(sgN + interFieldSeparator);
-                Write(sgG + interFieldSeparator);
-                Write(sgP + interFieldSeparator);
-            } break;
-            case WordClass.muutumatu: {
-                var theOnlyForm = result?.WordFormValues(WordFormCode.muutumatu_ID)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
-                Write(theOnlyForm + interFieldSeparator);
-            } break;
-            default:
-                break;
-        }
-
-        //>> translation / meaning(in my anki note type sense)
-        const int translationCount = 3;
-        var translations   = result?.OuterEngTranslations(translationCount)?.Distinct()?.StringJoin(intraFieldSeparator) ?? "";
-        Write(translations + interFieldSeparator);
-
-        //>> examples
-        const int meaningsToConsider = 3;
-        const int maxExampleCount = 4;
-        var ex = result?.ExamplesBalancedGroupedPerMeanings(maxExampleCount, meaningsToConsider)?.Distinct()?.StringJoin("<br>") ?? "";
-        Write(ex + interFieldSeparator);
-
-        //>> tags
-        WriteLine("generated");
     }
 
 

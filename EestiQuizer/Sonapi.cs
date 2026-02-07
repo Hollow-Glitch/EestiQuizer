@@ -73,6 +73,75 @@ public class SonapiResponse {
     }
 
 
+    /// <summary>
+    /// <para>
+    /// Instead of digging the translations withing the meanings(aka "definitions" - but that is a field actually)
+    /// Here we are just pulling the immediate translations list.
+    /// Still the purpose here is that if in the future changes something this serves as a layer.
+    /// </para>
+    /// Postcondition: distinctness ensured.
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<string>? OuterEngTranslations(int countPerDef) {
+        const string from = "et";
+        const string to = "en";
+        var outerTranslations =  Translations
+            ?.FirstOrDefault(translation
+                => translation.To is to
+                && translation.From is from
+            )
+            ?.Translations
+            ?.Distinct();
+        return countPerDef switch {
+            < 0 => outerTranslations,
+            _ => outerTranslations?.Take( countPerDef)
+        };
+    }
+}
+
+
+public class SearchResult {
+    //[JsonPropertyName("wordClasses")]
+    //public string[]? WordClasses { get; set; }
+    [JsonPropertyName("wordClasses")]
+    public WordClass?[]? WordClasses { get; set; }
+
+    [JsonPropertyName("wordForms")]
+    public WordForm[]? WordForms { get; set; }
+
+    [JsonPropertyName("meanings")]
+    public Meaning[]? Meanings { get; set; }
+
+    [JsonPropertyName("similarWords")]
+    public string[]? SimilarWords { get; set; }
+
+
+    /// <summary>
+    /// Postcondition: distinctness ensured.
+    /// </summary>
+    /// <param name="countPerDef"></param>
+    /// <returns></returns>
+    public IEnumerable<string>? InnerEngTranslations(int countPerDef) {
+        var innerTranslations =
+            Meanings
+            ?.Select(meaning => meaning.Translations)
+            //>> Filter & tell compiler that: translation is not null
+            .Where(translation => translation is not null).Select(t => t!)
+            //>> Filter & tell compiler that: translation.EnglishTranslations is not null
+            .Where(translation => translation.EnglishTranslations is not null)
+            .SelectMany(translation => translation.EnglishTranslations! )
+            //>> End of type theory trickery.
+            .OrderByDescending(engTrans => engTrans.Weight) // .Take( (int) countPerDef) //<< this doesn't work if `countPerDef` is `-1`
+            .SelectMany(engTrans => engTrans.WordsSeparated() )
+            .Distinct();
+
+        return countPerDef switch {
+            < 0 => innerTranslations,
+            _ => innerTranslations?.Take( countPerDef)
+        };
+    }
+
+
     /// <returns>
     /// Returns <paramref name="examplesPerMeaning"/> number of example sentences 
     /// per <paramref name="meaningsToConsider"/> meanings. Thus if params are 2 & 2, but first has 3 while second has 1
@@ -84,9 +153,8 @@ public class SonapiResponse {
         string defPrefix = "D", 
         string separator = ": "
     ) {
-        IEnumerable<string>? examples = SearchResults
-            ?.FirstOrDefault()
-            ?.Meanings
+        IEnumerable<string>? examples =
+            Meanings
             ?.Take( (int) meaningsToConsider)
             ?.SelectMany( (meaning, defId) => 
                 meaning
@@ -111,9 +179,8 @@ public class SonapiResponse {
         string defPrefix = "D", 
         string separator = ": "
     ) {
-        IEnumerable<string>? examples = SearchResults
-            ?.FirstOrDefault()
-            ?.Meanings
+        IEnumerable<string>? examples =
+            Meanings
             ?.SelectMany( (meaning, defId) => 
                 meaning
                     ?.Examples
@@ -138,9 +205,8 @@ public class SonapiResponse {
         string defPrefix = "D", 
         string separator = ": "
     ) {
-        var exampleEnumeratorsPerMeaning = SearchResults
-            ?.FirstOrDefault()
-            ?.Meanings
+        var exampleEnumeratorsPerMeaning =
+            Meanings
             ?.Select( (meaning, defId) => 
                 meaning
                     ?.Examples
@@ -209,9 +275,8 @@ public class SonapiResponse {
         string idPrefix = "M", 
         string separator = ": "
     ) {
-        var exampleEnumeratorsPerMeaning = SearchResults
-            ?.FirstOrDefault()
-            ?.Meanings
+        var exampleEnumeratorsPerMeaning =
+            Meanings
             ?.Select( (meaning, id) => 
                 meaning
                     ?.Examples
@@ -250,75 +315,6 @@ public class SonapiResponse {
         }
         AdditionFinished:
         return exampleEnumeratorsPerMeaning.SelectMany(pair => pair.chosens);
-    }
-
-
-    /// <summary>
-    /// <para>
-    /// Instead of digging the translations withing the meanings(aka "definitions" - but that is a field actually)
-    /// Here we are just pulling the immediate translations list.
-    /// Still the purpose here is that if in the future changes something this serves as a layer.
-    /// </para>
-    /// Postcondition: distinctness ensured.
-    /// </summary>
-    /// <returns></returns>
-    public IEnumerable<string>? OuterEngTranslations(int countPerDef) {
-        const string from = "et";
-        const string to = "en";
-        var outerTranslations =  Translations
-            ?.FirstOrDefault(translation
-                => translation.To is to
-                && translation.From is from
-            )
-            ?.Translations
-            ?.Distinct();
-        return countPerDef switch {
-            < 0 => outerTranslations,
-            _ => outerTranslations?.Take( countPerDef)
-        };
-    }
-}
-
-
-public class SearchResult {
-    //[JsonPropertyName("wordClasses")]
-    //public string[]? WordClasses { get; set; }
-    [JsonPropertyName("wordClasses")]
-    public WordClass?[]? WordClasses { get; set; }
-
-    [JsonPropertyName("wordForms")]
-    public WordForm[]? WordForms { get; set; }
-
-    [JsonPropertyName("meanings")]
-    public Meaning[]? Meanings { get; set; }
-
-    [JsonPropertyName("similarWords")]
-    public string[]? SimilarWords { get; set; }
-
-
-    /// <summary>
-    /// Postcondition: distinctness ensured.
-    /// </summary>
-    /// <param name="countPerDef"></param>
-    /// <returns></returns>
-    public IEnumerable<string>? InnerEngTranslations(int countPerDef) {
-        var innerTranslations =
-            Meanings
-            ?.Select(meaning => meaning.Translations)
-            //>> Filter & tell compiler that: translation is not null
-            .Where(translation => translation is not null).Select(t => t!)
-            //>> Filter & tell compiler that: translation.EnglishTranslations is not null
-            .Where(translation => translation.EnglishTranslations is not null)
-            .SelectMany(translation => translation.EnglishTranslations! )
-            //>> End of type theory trickery.
-            .OrderByDescending(engTrans => engTrans.Weight) // .Take( (int) countPerDef) //<< this doesn't work if `countPerDef` is `-1`
-            .SelectMany(engTrans => engTrans.WordsSeparated() )
-            .Distinct();
-
-        return countPerDef switch {
-            < 0 => innerTranslations,
-            _ => innerTranslations?.Take( countPerDef)
-        };
     }
 }
 

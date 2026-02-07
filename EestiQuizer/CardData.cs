@@ -150,7 +150,10 @@ internal class CardData {
         //>> examples
         //const int meaningsToConsider = 3;
         //const int maxExampleCount = 4;
-        Examples = response?.ExamplesBalancedGroupedPerMeanings(maxExampleCount, meaningsToConsider)?.Distinct()?.StringJoin("<br>") ?? "";
+        Examples = response
+            ?.SearchResults
+            ?.FirstOrDefault()
+            ?.ExamplesBalancedGroupedPerMeanings(maxExampleCount, meaningsToConsider)?.Distinct()?.StringJoin("<br>") ?? "";
 
         const string generatedTag = "generated";
         Tags = generatedTag + " " + tagsWeWant.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
