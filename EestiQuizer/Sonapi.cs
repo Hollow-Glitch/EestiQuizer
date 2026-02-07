@@ -277,72 +277,6 @@ public class SonapiResponse {
             _ => outerTranslations?.Take( countPerDef)
         };
     }
-
-
-    /// <summary>
-    /// Postcondition: distinctness ensured.
-    /// </summary>
-    /// <param name="countPerDef"></param>
-    /// <returns></returns>
-    public IEnumerable<string>? InnerEngTranslations(int countPerDef) {
-        var innerTranslations =
-            SearchResults
-            ?.FirstOrDefault()
-            ?.Meanings
-            ?.Select(meaning => meaning.Translations)
-            //>> Filter & tell compiler that: translation is not null
-            .Where(translation => translation is not null).Select(t => t!)
-            //>> Filter & tell compiler that: translation.EnglishTranslations is not null
-            .Where(translation => translation.EnglishTranslations is not null)
-            .SelectMany(translation => translation.EnglishTranslations! )
-            //>> End of type theory trickery.
-            .OrderByDescending(engTrans => engTrans.Weight) // .Take( (int) countPerDef) //<< this doesn't work if `countPerDef` is `-1`
-            .SelectMany(engTrans => engTrans.WordsSeparated() )
-            .Distinct();
-
-        return countPerDef switch {
-            < 0 => innerTranslations,
-            _ => innerTranslations?.Take( countPerDef)
-        };
-    }
-
-
-    /// <summary>
-    /// Postcondition: distinctness ensured.
-    /// </summary>
-    /// <param name="countPerDef"></param>
-    /// <returns></returns>
-    public IEnumerable<string>? MergedEngTranslations(int countPerDef) {
-        List<string> outers = OuterEngTranslations(/*countPerDef*/ (-1)/*i.e. all*/)?.ToList() ?? [];
-        List<string> inners = InnerEngTranslations(/*countPerDef*/ (-1)/*i.e. all*/)?.ToList() ?? [];
-        if (outers.Count == 0) return inners.Take(countPerDef);
-        if (inners.Count == 0) return outers.Take(countPerDef);
-        if (outers.Count == 0 && inners.Count == 0) return inners; //<< Irrelevant which, but let's avoid creating a new empty instance.
-
-        Dictionary<string, int> wordToWeight = new();
-
-        // Assuming that it is ensured that values of `outers` and `inners` are distinct.
-        foreach(var outer in outers) {
-            wordToWeight.Add(outer, 0);
-        }
-
-        foreach(var inner in inners) {
-            if ( wordToWeight.ContainsKey(inner) ) {
-                wordToWeight[inner]++;
-            } else {
-                wordToWeight.Add(inner, 0);
-            }
-        }
-
-        var translations = wordToWeight
-            .OrderByDescending(kvp => kvp.Value)
-            .Select(kvp => kvp.Key);
-
-        return countPerDef switch {
-            < 0 => translations,
-            _ => translations?.Take( countPerDef)
-        };
-    }
 }
 
 
@@ -360,6 +294,32 @@ public class SearchResult {
 
     [JsonPropertyName("similarWords")]
     public string[]? SimilarWords { get; set; }
+
+
+    /// <summary>
+    /// Postcondition: distinctness ensured.
+    /// </summary>
+    /// <param name="countPerDef"></param>
+    /// <returns></returns>
+    public IEnumerable<string>? InnerEngTranslations(int countPerDef) {
+        var innerTranslations =
+            Meanings
+            ?.Select(meaning => meaning.Translations)
+            //>> Filter & tell compiler that: translation is not null
+            .Where(translation => translation is not null).Select(t => t!)
+            //>> Filter & tell compiler that: translation.EnglishTranslations is not null
+            .Where(translation => translation.EnglishTranslations is not null)
+            .SelectMany(translation => translation.EnglishTranslations! )
+            //>> End of type theory trickery.
+            .OrderByDescending(engTrans => engTrans.Weight) // .Take( (int) countPerDef) //<< this doesn't work if `countPerDef` is `-1`
+            .SelectMany(engTrans => engTrans.WordsSeparated() )
+            .Distinct();
+
+        return countPerDef switch {
+            < 0 => innerTranslations,
+            _ => innerTranslations?.Take( countPerDef)
+        };
+    }
 }
 
 
