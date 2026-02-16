@@ -128,9 +128,7 @@ internal class Processor {
             }
         }
 
-        // 9) Level of proficiency
-        // 	api/word/details/{wordId}
-        // 		$.lexemes[*].lexemeProficiencyLevelCode
+        var proficiencyLevel = lexeme.lexemeProficiencyLevelCode ?? "";
         var usages = lexeme.usages.Select(usage => usage.value);
         string pos = lexeme.pos.FirstOrDefault()?.code ?? throw new NotImplementedException();
         const string generatedTag = "generated";
@@ -147,8 +145,9 @@ internal class Processor {
             PartOfSpeech = pos,
             Translations = translations.StringJoin(", "),
             Examples = usages.StringJoin("<br>"),
-
             Tags = tags,
+
+            ProficiencyLevel = proficiencyLevel,
         };
     }
 }

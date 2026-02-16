@@ -19,6 +19,7 @@ public class CardData {
     required public string PartOfSpeech { get; init; }
     required public string Translations { get; init; }
     required public string Examples { get; init; }
-
     required public string Tags { get; init; }
+
+    required public string ProficiencyLevel { get; set; }
 }

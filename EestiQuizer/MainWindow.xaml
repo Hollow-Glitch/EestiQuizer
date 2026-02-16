@@ -115,6 +115,11 @@
             ItemsSource="{Binding EkilexCardDataCollection}" >
             <DataGrid.Columns>
                 <DataGridTextColumn
+                    Header="level"
+                    Binding="{Binding ProficiencyLevel}"
+                    Width="Auto"
+                />
+                <DataGridTextColumn
                     Header="Form1"
                     Binding="{Binding Form1}"
                     Width="100"
