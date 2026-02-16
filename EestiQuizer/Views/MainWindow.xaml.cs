@@ -12,7 +12,7 @@ using EestiQuizer.Sonapi;
 using EestiQuizer.Common;
 
 
-namespace EestiQuizer;
+namespace EestiQuizer.Views;
 
 
 /// <summary>
