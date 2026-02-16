@@ -62,111 +62,93 @@ internal class Processor {
     }
 
 
-
-
     internal CardData LoadWord(WordToLoad wordToLoad, int wordId) {
         var potWordDetail = client.WordDetails(wordId);
         if (potWordDetail is null) {
             throw new ArgumentNullException();
         }
         var wordDetail = potWordDetail!;
-
-        // 6) Find translations
-        // 	/api/meaning/search/{word}
-        // 		$.results[*].meaningWords[*].wordValue
-        // 		$.results[*].meaningWords[*].lang
-        /*
-        var translations = client.MeaningSearch(wordToLoad.Word)
-            !.results.SelectMany(result => result.meaningWords)
-            .Where(meaningWord => meaningWord.lang.Equals("eng") )
-            .Select(meaningWord => meaningWord.wordValue)
-            .Distinct();
-        *///<< bullshit, can use the details info directly tied to the word's wordId
-        //  /api/word/details/{wordId}
-        //      $.lexemes[*].synonymLangGroups[*].synonyms[*].words[*].wordValue
-        //
-        /*
-        var translations = wordDetail.lexemes
-            .SelectMany(lexeme => lexeme.synonymLangGroups)
-            .SelectMany(langGroup => langGroup.synonyms)
-            .Where(synonym => synonym.type.Equals("MEANING_WORD", InvariantCultureIgnoreCase) )
-            .OrderBy(synonym => synonym.weight)
-            .SelectMany(synonym => synonym.words)
-            .Where(word => word.lang.Equals("eng", InvariantCultureIgnoreCase) )
-            .Select(word => word.wordValue)
-            .Distinct();
-        */
-
-        // I must choose a lexeme and work with only one otherwise I could mix examples of one with the translation of another incompatible one...
-        //>> big assumption, the first lexeme is what soneveeb chooses which shall be good enough for me
         var lexeme = wordDetail.lexemes[0];
-        var weightLimit = 0.8;
+        //<< I must choose a lexeme and work with only one otherwise I could mix examples of one with the translation of another incompatible one...
+        //   Big assumption, the first lexeme is what soneveeb chooses which shall be good enough for me
 
-        //>> works but MEANING_REL gives me a headache but sometimes they are needed...
-        /* 
-        var translations = lexeme.synonymLangGroups
-            //== group
-                .Where(group => group.lang.Equals("eng", InvariantCultureIgnoreCase) )
-                .SelectMany(langGroup => langGroup.synonyms)
-            //== synonym
-                //>> simplifying, I don't want to deal with relations... since they are not really explained anywhere.
-                //.Where(synonym => synonym.type.Equals("MEANING_WORD", InvariantCultureIgnoreCase) )
-                .Where(synonym => synonym.weight > weightLimit) //<< let's not take shitty words.
-                .OrderBy(synonym => synonym.weight)
-                .SelectMany(synonym => synonym.words)
-            //== word
-                //>> doesn't hurt but I think this is redundant since above we are already filtering "eng".
-                .Where(word => word.lang.Equals("eng", InvariantCultureIgnoreCase) )
-                .Select(word => word.wordValue)
-            .Distinct();
-        */
-        const string MEANING_WORD = nameof(MEANING_WORD);
+        IEnumerable<string> translations; {
+            const double weightLimit = 0.8;
+            const string MEANING_WORD = nameof(MEANING_WORD);
+            List<WordDetailsEndpoint.Synonym> synonyms; {
+                List<WordDetailsEndpoint.Synonym> _synonyms = lexeme.synonymLangGroups
+                    //== group
+                        .Where(group => group.lang.Equals("eng", InvariantCultureIgnoreCase) )
+                        .SelectMany(langGroup => langGroup.synonyms)
+                        .ToList();
+                synonyms = _synonyms.Where(synonym => synonym.type.Equals(MEANING_WORD, InvariantCultureIgnoreCase) ).ToList();
+                if (synonyms.Count == 0) {
+                    synonyms = _synonyms; //<< we reset back in case we now have nothing because then all we had were MEANING_RELs
+                }
+            }
+            translations = synonyms
+                //== synonym
+                    .Where(synonym => synonym.weight > weightLimit) //<< let's not take shitty words.
+                    .OrderBy(synonym => synonym.weight)
+                    .SelectMany(synonym => synonym.words)
+                //== word
+                    //>> doesn't hurt but I think this is redundant since above we are already filtering "eng".
+                    .Where(word => word.lang.Equals("eng", InvariantCultureIgnoreCase) )
+                    .Select(word => word.wordValue)
+                .Distinct();
+        }
 
-        List<WordDetailsEndpoint.Synonym> synonyms; {
-            List<WordDetailsEndpoint.Synonym> _synonyms = lexeme.synonymLangGroups
-                //== group
-                    .Where(group => group.lang.Equals("eng", InvariantCultureIgnoreCase) )
-                    .SelectMany(langGroup => langGroup.synonyms)
-                    .ToList();
-            synonyms = _synonyms.Where(synonym => synonym.type.Equals(MEANING_WORD, InvariantCultureIgnoreCase) ).ToList();
-            if (synonyms.Count == 0) {
-                synonyms = _synonyms; //<< we reset back in case we now have nothing because then all we had were MEANING_RELs
+        string form1 = ""; string form2 = ""; string form3 = ""; string wordClass; {
+            var paradigms = lexeme.lexemeWord.paradigms
+                .Where(paradigm => paradigm.wordClass is not null).ToList();
+            if (paradigms.Count is not 1) throw new NotImplementedException();
+            var paradigm = paradigms[0];
+            wordClass = paradigm.wordClass; // one of: muutumatu, noomen, verb
+            if (wordClass.Equals("noomen", InvariantCultureIgnoreCase) ) {
+                const string SgN = nameof(SgN);
+                const string SgG = nameof(SgG);
+                const string SgP = nameof(SgP);
+                form1 = paradigm.forms.Where(form => form.morphCode.Equals(SgN) ).Select(form => form.value).Distinct().StringJoin(", ");
+                form2 = paradigm.forms.Where(form => form.morphCode.Equals(SgG) ).Select(form => form.value).Distinct().StringJoin(", ");
+                form3 = paradigm.forms.Where(form => form.morphCode.Equals(SgP) ).Select(form => form.value).Distinct().StringJoin(", ");
+            } else 
+            if (wordClass.Equals("verb", InvariantCultureIgnoreCase) ) {
+                const string IndPrSg1 = nameof(IndPrSg1);
+                const string Sup = nameof(Sup);
+                const string Inf = nameof(Inf);
+                form1 = paradigm.forms.Where(form => form.morphCode.Equals(Sup)      ).Select(form => form.value).Distinct().StringJoin(", ");
+                form2 = paradigm.forms.Where(form => form.morphCode.Equals(Inf)      ).Select(form => form.value).Distinct().StringJoin(", ");
+                form3 = paradigm.forms.Where(form => form.morphCode.Equals(IndPrSg1) ).Select(form => form.value).Distinct().StringJoin(", ");
+            } else
+            if (wordClass.Equals("muutumatu", InvariantCultureIgnoreCase) ) {
+                const string ID = nameof(ID);
+                form1 = paradigm.forms.Where(form => form.morphCode.Equals(ID) ).Select(form => form.value).Distinct().StringJoin(", ");
+            } else {
+                throw new NotImplementedException();
             }
         }
-        var translations = synonyms
-            //== synonym
-                //>> simplifying, I don't want to deal with relations... since they are not really explained anywhere.
-                //.Where(synonym => synonym.type.Equals("MEANING_WORD", InvariantCultureIgnoreCase) )
-                .Where(synonym => synonym.weight > weightLimit) //<< let's not take shitty words.
-                .OrderBy(synonym => synonym.weight)
-                .SelectMany(synonym => synonym.words)
-            //== word
-                //>> doesn't hurt but I think this is redundant since above we are already filtering "eng".
-                .Where(word => word.lang.Equals("eng", InvariantCultureIgnoreCase) )
-                .Select(word => word.wordValue)
-            .Distinct();
-
-        // 3) Example
-        //     /api/word/details/{wordId}
-        //         $lexemes[*].usages[*].value
-
-        // 5) Find paradigms ... Paradigm = inflectional form.
-        // 	/api/word/details/{wordId}
-        // 		$word.paradigms[*].forms[*].value
 
         // 9) Level of proficiency
         // 	api/word/details/{wordId}
         // 		$.lexemes[*].lexemeProficiencyLevelCode
+        var usages = lexeme.usages.Select(usage => usage.value);
+        string pos = lexeme.pos.FirstOrDefault()?.code ?? throw new NotImplementedException();
+        const string generatedTag = "generated";
+        var tags = generatedTag + " " + wordToLoad.Tags.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
 
-        // word classes
-        // 	/api/word/details/{wordId}
-        // 		$.word.paradigms[*].wordClass
-
-        // find part of speech  ... pos
-        //  /api/word/details/{wordId}
-        //      $.lexemes[*].pos[*].value
         return new CardData() {
-            Translations = translations.StringJoin("| "),
+            RequestedWord = wordToLoad.Word,
+
+            Id = form1,
+            Form1 = form1,
+            Form2 = form2,
+            Form3 = form3,
+            WordClass = wordClass,
+            PartOfSpeech = pos,
+            Translations = translations.StringJoin(", "),
+            Examples = usages.StringJoin("<br>"),
+
+            Tags = tags,
         };
     }
 }

@@ -9,14 +9,16 @@ namespace EestiQuizer.Ekilex;
 
 
 public class CardData {
-    //required public WordClass? myWordClass { get; init; }
-    //required public ICardDataFragment? VariableCardData { get; init; }
+    required public string RequestedWord { get; init; } //<< For debug and bug hunting.
 
-    //required public string TextWeAskedFor { get; init; }
-    //required public string? RequestedWord { get; init; }
+    required public string Id { get; init; }
+    required public string Form1 { get; init; }
+    required public string Form2 { get; init; }
+    required public string Form3 { get; init; }
+    required public string WordClass { get; init; }
+    required public string PartOfSpeech { get; init; }
+    required public string Translations { get; init; }
+    required public string Examples { get; init; }
 
-    //required public string? PartOfSpeech { get; init; }
-    required public string Translations { get; set; }
-    //required public string Examples { get; init; }
-    //required public string Tags { get; init; }
+    required public string Tags { get; init; }
 }

@@ -114,21 +114,45 @@
             AutoGenerateColumns="False"
             ItemsSource="{Binding EkilexCardDataCollection}" >
             <DataGrid.Columns>
-                <!-- Hide these for now-->
-                <!--<DataGridTextColumn
-                    Header="asked"
-                    Binding="{Binding TextWeAskedFor}"
-                    Width="*"
-                />-->
-                <!--<DataGridTextColumn
-                    Header="api-req."
-                    Binding="{Binding RequestedWord}"
-                    Width="*"
-                />-->
+                <DataGridTextColumn
+                    Header="Form1"
+                    Binding="{Binding Form1}"
+                    Width="100"
+                />
+                <DataGridTextColumn
+                    Header="Form2"
+                    Binding="{Binding Form2}"
+                    Width="100"
+                />
+                <DataGridTextColumn
+                    Header="Form3"
+                    Binding="{Binding Form3}"
+                    Width="100"
+                />
+                <DataGridTextColumn
+                    Header="WordClass"
+                    Binding="{Binding WordClass}"
+                    Width="100"
+                />
+                <DataGridTextColumn
+                    Header="PartOfSpeech"
+                    Binding="{Binding PartOfSpeech}"
+                    Width="100"
+                />
                 <DataGridTextColumn
                     Header="Translations"
                     Binding="{Binding Translations}"
                     Width="300"
+                />
+                <DataGridTextColumn
+                    Header="Tags"
+                    Binding="{Binding Tags}"
+                    Width="300"
+                />
+                <DataGridTextColumn
+                    Header="Examples"
+                    Binding="{Binding Examples}"
+                    Width="1000"
                 />
             </DataGrid.Columns>
         </DataGrid>
