@@ -1,6 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using EestiQuizer;
+using System.Text.Json.Serialization;
 
-namespace EestiQuizer; 
+namespace EestiQuizer.Sonapi; 
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum WordClass {

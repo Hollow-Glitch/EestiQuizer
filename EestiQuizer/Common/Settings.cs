@@ -1,8 +1,10 @@
 ﻿using System.IO;
 using System.Text.Json;
-using static System.Environment;
 
-namespace EestiQuizer; 
+using static System.Environment;
+using static EestiQuizer.Common.Utilities;
+
+namespace EestiQuizer.Common; 
 
 
 internal static class SettingValues {
@@ -45,7 +47,7 @@ public sealed class Settings {
     private static Settings CreateAndSaveNewFile() {
         var settings = new Settings();
         var contentToWrite = JsonSerializer.Serialize(settings);
-        Common.EnsureFileAndWriteAllText(SettingValues.configFilePath, contentToWrite);
+        EnsureFileAndWriteAllText(SettingValues.configFilePath, contentToWrite);
         return settings;
     }
 }

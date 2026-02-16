@@ -1,15 +1,15 @@
-﻿using System.Net.Http;
-using System.Windows;
-using System.Text;
-using System.Windows.Controls;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Win32;
-using System.IO;
-using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
+﻿using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Net.Http;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+
 using EestiQuizer.Ekilex;
+using EestiQuizer.Sonapi;
+using EestiQuizer.Common;
 
 
 namespace EestiQuizer;
@@ -20,7 +20,7 @@ namespace EestiQuizer;
 /// </summary>
 public partial class MainWindow : Window
 {
-    public ObservableCollection<CardData> CardDataCollection { get; set; } = new();
+    public ObservableCollection<Sonapi.CardData> CardDataCollection { get; set; } = new();
     public ObservableCollection<Ekilex.CardData> EkilexCardDataCollection { get; set; } = new();
     Settings settings;
 
@@ -242,7 +242,7 @@ public partial class MainWindow : Window
         const int translationCount = 3;
         var cardData = responseWordPair
             .SelectMany(response =>
-                CardData.Load(
+                Sonapi.CardData.Load(
                     response.wordToLoad.Word,
                     response.wordToLoad.Tags,
                     response.sonapiResponse,
@@ -277,7 +277,7 @@ public partial class MainWindow : Window
                 var timePrefix = DateTime.Now.ToString($"yyyy-MM-dd_HH-mm-ss");
                 var fileName = $"{timePrefix}_{group.Key}.txt";
                 var filePath = Path.Combine(settings.OutputFolderPath, fileName);
-                Common.EnsureFileAndWriteAllText(filePath, rows.StringJoin("\n") );
+                Utilities.EnsureFileAndWriteAllText(filePath, rows.StringJoin("\n") );
             }
         }
         WriteLine($"{nameof(sw_save)} = {sw_save}");
