@@ -8,6 +8,8 @@ using Microsoft.Win32;
 using System.IO;
 using System.Diagnostics;
 using System.DirectoryServices.ActiveDirectory;
+using System.Collections.ObjectModel;
+using EestiQuizer.Ekilex;
 
 
 namespace EestiQuizer;
@@ -18,6 +20,8 @@ namespace EestiQuizer;
 /// </summary>
 public partial class MainWindow : Window
 {
+    public ObservableCollection<CardData> CardDataCollection { get; set; } = new();
+    public ObservableCollection<Ekilex.CardData> EkilexCardDataCollection { get; set; } = new();
     Settings settings;
 
     public MainWindow()
@@ -30,29 +34,6 @@ public partial class MainWindow : Window
 
     protected override void OnContentRendered(EventArgs e) {
         base.OnContentRendered(e);
-
-        // Commented out most so that have still 1 from each main group but doesn't take too long to load.
-        string[] words = [
-            // verb
-            "mõtlema",  // special verb with alternative da
-            "tulema",   // basic verb
-
-            // noomen
-            "õpik",     // basic noun
-            "kõik",     // asesõna
-            "roheline", // adjective
-            "arv",      // number
-
-            //muutumatu
-            "muidugi",  // 
-            "muidugi",  // sidesõna
-            "koos",     // eessõna
-            "koos",     // määrsõna
-        ];
-
-        //foreach(var word in words) GetFromSonapi(word);
-        //foreach(var word in words) ConvertToAnkiFormat(word);
-        LoadWords(words.Select(word => new WordToLoad(word, []) ) );
     }
 
 
@@ -160,23 +141,23 @@ public partial class MainWindow : Window
                 WriteLine("ERROR  --  word class is null.");
                 break;
             case WordClass.verb: {
-                var ma   = result?.WordFormValues(WordFormCode.verb_Ma  )?.StringJoin(", ");
-                var da   = result?.WordFormValues(WordFormCode.verb_Da  )?.StringJoin(", ");
-                var sg1p = result?.WordFormValues(WordFormCode.verb_Sg1P)?.StringJoin(", ");
+                var ma   = result?.SearchResults?.FirstOrDefault()?.WordFormValues(WordFormCode.verb_Ma  )?.StringJoin(", ");
+                var da   = result?.SearchResults?.FirstOrDefault()?.WordFormValues(WordFormCode.verb_Da  )?.StringJoin(", ");
+                var sg1p = result?.SearchResults?.FirstOrDefault()?.WordFormValues(WordFormCode.verb_Sg1P)?.StringJoin(", ");
                 WriteLine("ma   = "  + ma   ?? errorMissingData);
                 WriteLine("da   = "  + da   ?? errorMissingData);
                 WriteLine("sg1p = "  + sg1p ?? errorMissingData);
             } break;
             case WordClass.noomen: {
-                var sgN = result?.WordFormValues(WordFormCode.noomen_SgN)?.StringJoin(", ");
-                var sgG = result?.WordFormValues(WordFormCode.noomen_SgG)?.StringJoin(", ");
-                var sgP = result?.WordFormValues(WordFormCode.noomen_SgP)?.StringJoin(", ");
+                var sgN = result?.SearchResults?.FirstOrDefault()?.WordFormValues(WordFormCode.noomen_SgN)?.StringJoin(", ");
+                var sgG = result?.SearchResults?.FirstOrDefault()?.WordFormValues(WordFormCode.noomen_SgG)?.StringJoin(", ");
+                var sgP = result?.SearchResults?.FirstOrDefault()?.WordFormValues(WordFormCode.noomen_SgP)?.StringJoin(", ");
                 WriteLine("sgN = "  + sgN ?? errorMissingData);
                 WriteLine("sgG = "  + sgG ?? errorMissingData);
                 WriteLine("sgP = "  + sgP ?? errorMissingData);
             } break;
             case WordClass.muutumatu: {
-                var theOnlyForm = result?.WordFormValues(WordFormCode.muutumatu_ID)?.StringJoin(", ");
+                var theOnlyForm = result?.SearchResults?.FirstOrDefault()?.WordFormValues(WordFormCode.muutumatu_ID)?.StringJoin(", ");
                 WriteLine("Id  = " + theOnlyForm ?? errorMissingData);
             } break;
             default:
@@ -259,9 +240,9 @@ public partial class MainWindow : Window
         const int meaningsToConsider = 3;
         const int maxExampleCount = 4;
         const int translationCount = 3;
-        var groupedCardData = responseWordPair
-            .Select(response =>
-                new CardData(
+        var cardData = responseWordPair
+            .SelectMany(response =>
+                CardData.Load(
                     response.wordToLoad.Word,
                     response.wordToLoad.Tags,
                     response.sonapiResponse,
@@ -270,8 +251,15 @@ public partial class MainWindow : Window
                     meaningsToConsider,
                     maxExampleCount
                 )
-            )
-            .GroupBy(cardData => cardData.myWordClass);
+            ).ToList();
+        foreach(var cardDatum in cardData) {
+            CardDataCollection.Add(cardDatum);
+        }
+        var groupedCardData = cardData
+            //.GroupBy(cardData => cardData.myWordClass)
+            //<< let's not do that since now we are handling homonyms, thus I want to see cards generated from additional searchResults
+            .GroupBy(cardData => cardData?.VariableCardData?.Form1)
+            ;
         WriteLine($"{nameof(sw_transform)} = {sw_transform}");
 
         var sw_save = Stopwatch.StartNew();
@@ -310,4 +298,47 @@ public partial class MainWindow : Window
         OutputBox.Text += text;
     }
 
+    private void ClearOutput_Click(object sender, RoutedEventArgs e) {
+        OutputBox.Text = "";
+        CardDataCollection.Clear();
+    }
+
+    private void MiniTest_Click(object sender, RoutedEventArgs e) {
+        // Commented out most so that have still 1 from each main group but doesn't take too long to load.
+        string[] words = [
+            // verb
+            "mõtlema",  // special verb with alternative da
+            "tulema",   // basic verb
+
+            // noomen
+            "õpik",     // basic noun
+            "kõik",     // asesõna
+            "roheline", // adjective
+            "arv",      // number
+
+            //muutumatu
+            "muidugi",  // 
+            "muidugi",  // sidesõna
+            "koos",     // eessõna
+            "koos",     // määrsõna
+        ];
+
+        //foreach(var word in words) GetFromSonapi(word);
+        //foreach(var word in words) ConvertToAnkiFormat(word);
+        LoadWords(words.Select(word => new WordToLoad(word, []) ) );
+    }
+
+
+    private void TextBoxToEkilex_Click(object sender, RoutedEventArgs e) {
+        var word = InputBox.Text;
+
+        var wordToLoad = new WordToLoad(word, []);
+        var processor = new Processor(settings);
+        var wordIds = processor.DetermineWordIds(wordToLoad.Word);
+        foreach(var wordId in wordIds) {
+            WriteLine($"{wordId}");
+            var cardData = processor.LoadWord(wordToLoad, wordId);
+            EkilexCardDataCollection.Add(cardData);
+        }
+    }
 }

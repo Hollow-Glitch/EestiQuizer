@@ -1,0 +1,21 @@
+meta {
+  name: /api/meaning/search/{word}/{datasets}
+  type: http
+  seq: 7
+}
+
+get {
+  url: https://ekilex.ee/api/meaning/search/{{word}}/{{datasets}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  word: 
+  datasets: TODO
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

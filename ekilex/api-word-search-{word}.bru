@@ -1,0 +1,22 @@
+meta {
+  name: /api/word/search/{word}
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://ekilex.ee/api/word/search/{{word}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  word: tulema
+  ~word: mõtlema
+  ~word: roheline
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

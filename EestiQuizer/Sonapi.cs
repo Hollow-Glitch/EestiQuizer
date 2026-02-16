@@ -59,20 +59,6 @@ public class SonapiResponse {
         return formSgN;
     }
 
-    public IEnumerable<string>? WordFormValues(WordFormCode code) {
-        IEnumerable<string>? formSgN = SearchResults
-            ?.FirstOrDefault()
-            ?.WordForms
-            ?.Where(form => string.Equals(form.Code, code.Value, StringComparison.Ordinal))
-            .Select(form => form.Value)
-            //>> next instructions are just so that compiler can reason about type safety.
-            .Where(value => ! string.IsNullOrWhiteSpace(value) ) //<< we filter out only those which are not null (or empty)
-            .Select(value => value!); //<< since we have filtered out null values (empty is not important here)
-                                      //   with `!` we are explaining that thus no null value is ensured.
-        return formSgN;
-    }
-
-
     /// <summary>
     /// <para>
     /// Instead of digging the translations withing the meanings(aka "definitions" - but that is a field actually)
@@ -114,6 +100,19 @@ public class SearchResult {
 
     [JsonPropertyName("similarWords")]
     public string[]? SimilarWords { get; set; }
+
+
+    public IEnumerable<string>? WordFormValues(WordFormCode code) {
+        IEnumerable<string>? formSgN =
+            WordForms
+            ?.Where(form => string.Equals(form.Code, code.Value, StringComparison.Ordinal))
+            .Select(form => form.Value)
+            //>> next instructions are just so that compiler can reason about type safety.
+            .Where(value => ! string.IsNullOrWhiteSpace(value) ) //<< we filter out only those which are not null (or empty)
+            .Select(value => value!); //<< since we have filtered out null values (empty is not important here)
+                                      //   with `!` we are explaining that thus no null value is ensured.
+        return formSgN;
+    }
 
 
     /// <summary>

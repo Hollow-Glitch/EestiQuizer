@@ -13,6 +13,7 @@ internal static class SettingValues {
 
 public sealed class Settings {
     public string OutputFolderPath { get; set; } = SettingValues.defaultOutputFolderPath;
+    public string EkilexApiKey { get; set; } = String.Empty;
 
     /// <summary>
     /// Use <see cref="Settings.Load"/> to load from file, this only creates a default instance.

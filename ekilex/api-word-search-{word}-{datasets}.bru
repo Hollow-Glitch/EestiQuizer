@@ -1,0 +1,23 @@
+meta {
+  name: /api/word/search/{word}/{datasets}
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://ekilex.ee/api/word/search/{{word}}/{{dataset}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  word: tulema
+  dataset: TODO
+  ~word: tulen
+  ~word: mõtlema
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

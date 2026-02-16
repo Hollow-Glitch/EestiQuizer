@@ -1,0 +1,27 @@
+meta {
+  name: /api/form/search/{word}
+  type: http
+  seq: 9
+}
+
+get {
+  url: https://ekilex.ee/api/form/search/{{word}}?word=tulen
+  body: none
+  auth: inherit
+}
+
+params:query {
+  word: tulen
+}
+
+vars:pre-request {
+  word: tulen
+  ~word: tulema
+  ~word: mõtlema
+  ~word: roheline
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
