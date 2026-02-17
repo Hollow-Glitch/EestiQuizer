@@ -53,14 +53,16 @@ internal class Processor {
                 .ToList();
         } else {
             wordIds = wordSearch.words
-                !.Select(res => res.wordId).ToList();
+                ?.Where(res => res.lang.Equals("est", InvariantCultureIgnoreCase) )
+                ?.Select(res => res.wordId).ToList()
+                ?? []; // in case we feed in a phrase and not a word then it can happen that we don't find an id. Thus empty here.
         }
 
         return wordIds;
     }
 
 
-    internal CardData LoadWord(WordToLoad wordToLoad, int wordId) {
+    internal CardData? LoadWord(WordToLoad wordToLoad, int wordId) {
         var potWordDetail = client.WordDetails(wordId);
         if (potWordDetail is null) {
             throw new ArgumentNullException();
@@ -70,8 +72,11 @@ internal class Processor {
         //<< I must choose a lexeme and work with only one otherwise I could mix examples of one with the translation of another incompatible one...
         //   Big assumption, the first lexeme is what soneveeb chooses which shall be good enough for me
 
+        //>> TODO: determine whether I really want to exclude them.
+        if (lexeme.lexemeWord.prefixoid ?? false) return null;
+        if (lexeme.lexemeWord.suffixoid ?? false) return null;
+
         IEnumerable<string> translations; {
-            const double weightLimit = 0.8;
             const string MEANING_WORD = nameof(MEANING_WORD);
             List<WordDetailsEndpoint.Synonym> synonyms; {
                 List<WordDetailsEndpoint.Synonym> _synonyms = lexeme.synonymLangGroups
@@ -79,15 +84,19 @@ internal class Processor {
                         .Where(group => group.lang.Equals("eng", InvariantCultureIgnoreCase) )
                         .SelectMany(langGroup => langGroup.synonyms)
                         .ToList();
+                if (_synonyms.Count == 0) return null; //<< in case we have zero then we can't translate, then it is meaningless to continue.
                 synonyms = _synonyms.Where(synonym => synonym.type.Equals(MEANING_WORD, InvariantCultureIgnoreCase) ).ToList();
                 if (synonyms.Count == 0) {
                     synonyms = _synonyms; //<< we reset back in case we now have nothing because then all we had were MEANING_RELs
                 }
             }
+            const double weightLimit = 0.8;
             translations = synonyms
                 //== synonym
-                    .Where(synonym => synonym.weight > weightLimit) //<< let's not take shitty words.
+                    //.Where(synonym => synonym.weight > weightLimit) //<< let's not take shitty words.
+                    //<< problem, because removes sometimes the only viable options...
                     .OrderBy(synonym => synonym.weight)
+                    .Take(5)
                     .SelectMany(synonym => synonym.words)
                 //== word
                     //>> doesn't hurt but I think this is redundant since above we are already filtering "eng".
@@ -98,8 +107,9 @@ internal class Processor {
 
         string form1 = ""; string form2 = ""; string form3 = ""; string wordClass; {
             var paradigms = lexeme.lexemeWord.paradigms
-                .Where(paradigm => paradigm.wordClass is not null).ToList();
-            if (paradigms.Count is not 1) throw new NotImplementedException();
+                ?.Where(paradigm => paradigm.wordClass is not null).ToList() ?? [];
+            if (paradigms.Count == 0) return null;
+            //if (paradigms.Count is not 1) throw new NotImplementedException(); //TODO: deal with this
             var paradigm = paradigms[0];
             wordClass = paradigm.wordClass; // one of: muutumatu, noomen, verb
             if (wordClass.Equals("noomen", InvariantCultureIgnoreCase) ) {
@@ -128,7 +138,8 @@ internal class Processor {
 
         var proficiencyLevel = lexeme.lexemeProficiencyLevelCode ?? "";
         var usages = lexeme.usages.Select(usage => usage.value);
-        string pos = lexeme.pos.FirstOrDefault()?.code ?? throw new NotImplementedException();
+        //string pos = lexeme.pos?.FirstOrDefault()?.code ?? throw new NotImplementedException();
+        string pos = lexeme.pos?.FirstOrDefault()?.code ?? ""; //TODO check this
         const string generatedTag = "generated";
         var tags = generatedTag + " " + wordToLoad.Tags.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
 

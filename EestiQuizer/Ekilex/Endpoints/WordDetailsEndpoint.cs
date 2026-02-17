@@ -156,7 +156,7 @@ public static class WordDetailsEndpoint {
         public double? weight { get; set; }
         public int? orderBy { get; set; }
         public List<string> tags { get; set; }
-        public List<Po> pos { get; set; }
+        public List<Po>? pos { get; set; }
         public object derivs { get; set; }
         public object registers { get; set; }
         public object regions { get; set; }
@@ -207,7 +207,7 @@ public static class WordDetailsEndpoint {
         public List<string> lexemesTagNames { get; set; }
         public List<string> datasetCodes { get; set; }
         public List<Etymology> etymology { get; set; }
-        public List<Paradigm> paradigms { get; set; }
+        public List<Paradigm>? paradigms { get; set; }
         public WordOsMorph wordOsMorph { get; set; }
         public DateTime? lastActivityEventOn { get; set; }
         public DateTime? manualEventOn { get; set; }

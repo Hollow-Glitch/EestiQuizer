@@ -25,8 +25,12 @@
                 Click="ClearOutput_Click"
             />
             <MenuItem
-                Header="TextBoxEkilex"
+                Header="Load word"
                 Click="TextBoxToEkilex_Click"
+            />
+            <MenuItem
+                Header="Load files"
+                Click="LoadFilesFromFolder_Click"
             />
         </Menu>
 

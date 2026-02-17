@@ -1,0 +1,2354 @@
+﻿{
+  "meaningCount": 26,
+  "wordCount": 71,
+  "resultCount": 26,
+  "results": [
+    {
+      "meaningId": 78237,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 216079,
+          "wordValue": "pidama",
+          "wordValuePrese": "pidama",
+          "homonymNr": 2,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 247803,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 2,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2106717,
+          "wordValue": "need",
+          "wordValuePrese": "need",
+          "homonymNr": 2,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2147485,
+          "wordValue": "should",
+          "wordValuePrese": "should",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2147486,
+          "wordValue": "must",
+          "wordValuePrese": "must",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1247180,
+          "wordValue": "devoir",
+          "wordValuePrese": "devoir",
+          "homonymNr": 2,
+          "lang": "fra",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1253125,
+          "wordValue": "falloir",
+          "wordValuePrese": "falloir",
+          "homonymNr": 1,
+          "lang": "fra",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 437006,
+          "wordValue": "должен",
+          "wordValuePrese": "д<eki-stress>о</eki-stress>лжен",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1158963,
+          "wordValue": "должна",
+          "wordValuePrese": "должн<eki-stress>а</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 437010,
+          "wordValue": "нужно",
+          "wordValuePrese": "н<eki-stress>у</eki-stress>жно",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 434611,
+          "wordValue": "надо",
+          "wordValuePrese": "н<eki-stress>а</eki-stress>до",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1158964,
+          "wordValue": "должно",
+          "wordValuePrese": "должн<eki-stress>о</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1158965,
+          "wordValue": "должны",
+          "wordValuePrese": "должн<eki-stress>ы</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 487581,
+          "wordValue": "приходиться",
+          "wordValuePrese": "приход<eki-stress>и</eki-stress>ться",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1288570,
+          "wordValue": "прийтись",
+          "wordValuePrese": "прийт<eki-stress>и</eki-stress>сь",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 359615,
+          "wordValue": "следовать",
+          "wordValuePrese": "сл<eki-stress>е</eki-stress>довать",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1345898,
+          "wordValue": "повинен",
+          "wordValuePrese": "пов<eki-stress>и</eki-stress>нен",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1345903,
+          "wordValue": "повинна",
+          "wordValuePrese": "пов<eki-stress>и</eki-stress>нна",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1345905,
+          "wordValue": "повинні",
+          "wordValuePrese": "пов<eki-stress>и</eki-stress>нні",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1339664,
+          "wordValue": "мати",
+          "wordValuePrese": "м<eki-stress>а</eki-stress>ти",
+          "homonymNr": 2,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1345899,
+          "wordValue": "мусити",
+          "wordValuePrese": "м<eki-stress>у</eki-stress>сити",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1345684,
+          "wordValue": "треба",
+          "wordValuePrese": "тр<eki-stress>е</eki-stress>ба",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1345685,
+          "wordValue": "потрібно",
+          "wordValuePrese": "потр<eki-stress>і</eki-stress>бно",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1345900,
+          "wordValue": "слід",
+          "wordValuePrese": "слід",
+          "homonymNr": 2,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111371,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1240415,
+          "wordValue": "venir",
+          "wordValuePrese": "venir",
+          "homonymNr": 1,
+          "lang": "fra",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2107549,
+          "wordValue": "kommen",
+          "wordValuePrese": "kommen",
+          "homonymNr": 1,
+          "lang": "deu",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 332866,
+          "wordValue": "идти",
+          "wordValuePrese": "идт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 318198,
+          "wordValue": "приходить",
+          "wordValuePrese": "приход<eki-stress>и</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 301812,
+          "wordValue": "прийти",
+          "wordValuePrese": "прийт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1288156,
+          "wordValue": "іти",
+          "wordValuePrese": "іт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1288414,
+          "wordValue": "приходити",
+          "wordValuePrese": "прих<eki-stress>о</eki-stress>дити",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1340989,
+          "wordValue": "прийти",
+          "wordValuePrese": "прийт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111372,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111373,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2114867,
+          "wordValue": "lead",
+          "wordValuePrese": "lead",
+          "homonymNr": 2,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111374,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 318198,
+          "wordValue": "приходить",
+          "wordValuePrese": "приход<eki-stress>и</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 301812,
+          "wordValue": "прийти",
+          "wordValuePrese": "прийт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 297077,
+          "wordValue": "прибывать",
+          "wordValuePrese": "прибыв<eki-stress>а</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 355252,
+          "wordValue": "прибыть",
+          "wordValuePrese": "приб<eki-stress>ы</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111375,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111376,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111377,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2157872,
+          "wordValue": "will be",
+          "wordValuePrese": "will be",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111378,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111379,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1479774,
+          "wordValue": "arrive",
+          "wordValuePrese": "arrive",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1234271,
+          "wordValue": "arriver",
+          "wordValuePrese": "arriver",
+          "homonymNr": 1,
+          "lang": "fra",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 294903,
+          "wordValue": "быть",
+          "wordValuePrese": "быть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 318198,
+          "wordValue": "приходить",
+          "wordValuePrese": "приход<eki-stress>и</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 301812,
+          "wordValue": "прийти",
+          "wordValuePrese": "прийт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1112151,
+          "wordValue": "наступать",
+          "wordValuePrese": "наступ<eki-stress>а</eki-stress>ть",
+          "homonymNr": 2,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1112153,
+          "wordValue": "наступить",
+          "wordValuePrese": "наступ<eki-stress>и</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 362604,
+          "wordValue": "наставать",
+          "wordValuePrese": "настав<eki-stress>а</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 362605,
+          "wordValue": "настать",
+          "wordValuePrese": "наст<eki-stress>а</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1288414,
+          "wordValue": "приходити",
+          "wordValuePrese": "прих<eki-stress>о</eki-stress>дити",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1340989,
+          "wordValue": "прийти",
+          "wordValuePrese": "прийт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1288626,
+          "wordValue": "наставати",
+          "wordValuePrese": "настав<eki-stress>а</eki-stress>ти",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1340886,
+          "wordValue": "настати",
+          "wordValuePrese": "наст<eki-stress>а</eki-stress>ти",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1288416,
+          "wordValue": "надходити",
+          "wordValuePrese": "надх<eki-stress>о</eki-stress>дити",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1326763,
+          "wordValue": "надійти",
+          "wordValuePrese": "надійт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111380,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2112453,
+          "wordValue": "arise",
+          "wordValuePrese": "arise",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 297074,
+          "wordValue": "появляться",
+          "wordValuePrese": "появл<eki-stress>я</eki-stress>ться",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 318199,
+          "wordValue": "появиться",
+          "wordValuePrese": "появ<eki-stress>и</eki-stress>ться",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111381,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1240415,
+          "wordValue": "venir",
+          "wordValuePrese": "venir",
+          "homonymNr": 1,
+          "lang": "fra",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1282674,
+          "wordValue": "provenir",
+          "wordValuePrese": "provenir",
+          "homonymNr": 1,
+          "lang": "fra",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 332866,
+          "wordValue": "идти",
+          "wordValuePrese": "идт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 318198,
+          "wordValue": "приходить",
+          "wordValuePrese": "приход<eki-stress>и</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 301812,
+          "wordValue": "прийти",
+          "wordValuePrese": "прийт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1288156,
+          "wordValue": "іти",
+          "wordValuePrese": "іт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111382,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111383,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111384,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2114275,
+          "wordValue": "become",
+          "wordValuePrese": "become",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 295399,
+          "wordValue": "становиться",
+          "wordValuePrese": "станов<eki-stress>и</eki-stress>ться",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 347478,
+          "wordValue": "стать",
+          "wordValuePrese": "стать",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1288420,
+          "wordValue": "ставати",
+          "wordValuePrese": "став<eki-stress>а</eki-stress>ти",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1336679,
+          "wordValue": "стати",
+          "wordValuePrese": "ст<eki-stress>а</eki-stress>ти",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111385,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 318198,
+          "wordValue": "приходить",
+          "wordValuePrese": "приход<eki-stress>и</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 301812,
+          "wordValue": "прийти",
+          "wordValuePrese": "прийт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1288414,
+          "wordValue": "приходити",
+          "wordValuePrese": "прих<eki-stress>о</eki-stress>дити",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 1340989,
+          "wordValue": "прийти",
+          "wordValuePrese": "прийт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "ukr",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111386,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111387,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 302029,
+          "wordValue": "получаться",
+          "wordValuePrese": "получ<eki-stress>а</eki-stress>ться",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 318200,
+          "wordValue": "получиться",
+          "wordValuePrese": "получ<eki-stress>и</eki-stress>ться",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 307014,
+          "wordValue": "выходить",
+          "wordValuePrese": "выход<eki-stress>и</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 312444,
+          "wordValue": "выйти",
+          "wordValuePrese": "в<eki-stress>ы</eki-stress>йти",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111388,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 2098858,
+          "wordValue": "come",
+          "wordValuePrese": "come",
+          "homonymNr": 1,
+          "lang": "eng",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 111389,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247804,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 3,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 303377,
+          "wordValue": "уходить",
+          "wordValuePrese": "уход<eki-stress>и</eki-stress>ть",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 307573,
+          "wordValue": "уйти",
+          "wordValuePrese": "уйт<eki-stress>и</eki-stress>",
+          "homonymNr": 1,
+          "lang": "rus",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "eki"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 357340,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "ety"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 238602,
+          "wordValue": "sõitma",
+          "wordValuePrese": "sõitma",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "ety"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 190948,
+          "wordValue": "külastama",
+          "wordValuePrese": "külastama",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "ety"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 559443,
+          "wordValue": "tolaš",
+          "wordValuePrese": "tolaš",
+          "homonymNr": 1,
+          "lang": "chm",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "ety"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 388750,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "les"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 395398,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "les"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 183190,
+          "wordValue": "kohale jõudma",
+          "wordValuePrese": "kohale jõudma",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": [
+            "yv"
+          ],
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "les"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 403778,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "les"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 431303,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "les"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    },
+    {
+      "meaningId": 560917,
+      "meaningDomains": null,
+      "meaningWords": [
+        {
+          "wordId": 247802,
+          "wordValue": "tulema",
+          "wordValuePrese": "tulema",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": true,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "gal"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 229997,
+          "wordValue": "saabuma",
+          "wordValuePrese": "saabuma",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "gal"
+          ],
+          "public": true
+        },
+        {
+          "wordId": 171790,
+          "wordValue": "ilmuma",
+          "wordValuePrese": "ilmuma",
+          "homonymNr": 1,
+          "lang": "est",
+          "wordTypeCodes": null,
+          "prefixoid": false,
+          "suffixoid": false,
+          "foreign": false,
+          "matchingWord": false,
+          "mostPreferred": false,
+          "leastPreferred": false,
+          "datasetCodes": [
+            "gal"
+          ],
+          "public": true
+        }
+      ],
+      "meaningWordsExist": true
+    }
+  ],
+  "resultExist": true,
+  "resultDownloadNow": false,
+  "resultDownloadLater": true
+}
