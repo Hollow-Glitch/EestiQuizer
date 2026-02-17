@@ -68,15 +68,18 @@ internal class Processor {
             throw new ArgumentNullException();
         }
         var wordDetail = potWordDetail!;
-        var lexeme = wordDetail.lexemes[0];
-        //<< I must choose a lexeme and work with only one otherwise I could mix examples of one with the translation of another incompatible one...
+        //>> Let's ignore prefixes and sufixes
+        if (wordDetail.word.prefixoid ?? false) return null;
+        if (wordDetail.word.suffixoid ?? false) return null;
+
+        //>> I must choose a lexeme and work with only one otherwise I could mix examples of one with the translation of another incompatible one...
         //   Big assumption, the first lexeme is what soneveeb chooses which shall be good enough for me
+        var lexeme = wordDetail.lexemes
+            .Where(l => l.@public ?? false)
+            .OrderBy(l => l.datasetCode == "eki" ? 0 : 1) //<< prioritize eki as it is the most authoritative.
+            .FirstOrDefault();
 
-        //>> TODO: determine whether I really want to exclude them.
-        if (lexeme.lexemeWord.prefixoid ?? false) return null;
-        if (lexeme.lexemeWord.suffixoid ?? false) return null;
-
-        IEnumerable<string> translations; {
+        List<string> translations; {
             const string MEANING_WORD = nameof(MEANING_WORD);
             List<WordDetailsEndpoint.Synonym> synonyms; {
                 List<WordDetailsEndpoint.Synonym> _synonyms = lexeme.synonymLangGroups
@@ -90,23 +93,26 @@ internal class Processor {
                     synonyms = _synonyms; //<< we reset back in case we now have nothing because then all we had were MEANING_RELs
                 }
             }
-            const double weightLimit = 0.8;
             translations = synonyms
                 //== synonym
-                    //.Where(synonym => synonym.weight > weightLimit) //<< let's not take shitty words.
-                    //<< problem, because removes sometimes the only viable options...
+                    //.Where(synonym => synonym.weight > weightLimit)
+                        //<< let's not take shitty words.
+                        //<< problem, because removes sometimes the only viable options...
                     .OrderBy(synonym => synonym.weight)
-                    .Take(5)
                     .SelectMany(synonym => synonym.words)
                 //== word
                     //>> doesn't hurt but I think this is redundant since above we are already filtering "eng".
                     .Where(word => word.lang.Equals("eng", InvariantCultureIgnoreCase) )
+                    .Where(word => word.lexemePublic ?? false) //<< if it is not public we don't want it, sonaveeb doesn't show these it seems.
                     .Select(word => word.wordValue)
-                .Distinct();
+                    .Distinct()
+                    .Take(4)
+                    .ToList();
+            if (translations.Count == 0) return null; //<< if we don't have any translations then there is nothing to learn hence meaningless to continue.
         }
 
         string form1 = ""; string form2 = ""; string form3 = ""; string wordClass; {
-            var paradigms = lexeme.lexemeWord.paradigms
+            var paradigms = wordDetail.word.paradigms
                 ?.Where(paradigm => paradigm.wordClass is not null).ToList() ?? [];
             if (paradigms.Count == 0) return null;
             //if (paradigms.Count is not 1) throw new NotImplementedException(); //TODO: deal with this

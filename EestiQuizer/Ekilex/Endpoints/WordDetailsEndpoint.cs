@@ -371,7 +371,7 @@ public static class WordDetailsEndpoint {
         public string type { get; set; }
         public int? meaningId { get; set; }
         public int? relationId { get; set; }
-        public List<Word> words { get; set; }
+        public List<SynonymWord> words { get; set; }
         public string wordLang { get; set; }
         public double? weight { get; set; }
         public int? orderBy { get; set; }
@@ -429,7 +429,7 @@ public static class WordDetailsEndpoint {
         public bool? wwOs { get; set; }
     }
 
-    public class Word2
+    public class SynonymWord
     {
         public int? wordId { get; set; }
         public string wordValue { get; set; }
