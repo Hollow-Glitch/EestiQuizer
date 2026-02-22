@@ -5,9 +5,7 @@
     if I would go with a very automaticized way then the decision whether onedrive or not could be called `preferableOnderive`
     - benefit here would be that I don't have to deal with rogue generated files in my changelist
 
-----------------------------------------------------------------------------------------------------
-
-[?] translation problem with words like - outer vs inner translations
+[x] translation problem with words like - outer vs inner translations
     (outer = top level translations | inner = meaning translations)
     examples:
     - nimisõna: outer - some | inner - some
@@ -17,9 +15,14 @@
     [x] then there are words where the opposite is true - ,
     [x] then there are those which have both.
     [?] then which have none..., all of these cases need handling.
+    - started using ekilex
 
-[ ] mauybe deprecate the current `SonapiResponse.WordFormValues` function and make it take a `SearchResult` since that is the only thing it is currently
+[x] mauybe deprecate the current `SonapiResponse.WordFormValues` function and make it take a `SearchResult` since that is the only thing it is currently
     operating upon.
+    - started using ekilex
+
+----------------------------------------------------------------------------------------------------
+[ ] parallelize ekilex loading
 
 [ ] maybe create a cache (maybe of only words with wordclass) and if a word has data there 
     (like wordclass) then load it from there otherwise go to sonapi.
@@ -28,7 +31,8 @@
 
 [ ] figure out whether I want the extra data: page, Tere translation, etc.
     transfered as well
-    [ ] create new translation loading algo which would read the meaning translations rather than the top list
+    [x] create new translation loading algo which would read the meaning translations rather than the top list
+        - irrelevant since I switched to ekilex
     [ ] if done => compare the Tere translations with the collected meaning translations
     - probably the chapter number from the file name should become a tag
     - maybe if the file is found in multiple file (thus multiple chapters - bluebox, or other), then all where it was present shall be added.
