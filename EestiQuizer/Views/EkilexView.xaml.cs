@@ -109,21 +109,8 @@ public partial class EkilexView : UserControl {
             isInited = true;
         }
 
-        //foreach(var imageName in selection.ImageNamesInCache) {
-        //    var imageFilePath = Path.Combine(settings.ImageCachePath, imageName);
-        //    var uri = new Uri(imageFilePath);
-        //    ImageWebView.Source = uri;
-        //    return; //TODO: dirty hack, don't know how to display multiple yet
-        //}
         var uris = selection.ImageNamesInCache
-            .Select(
-                imageName => {
-                    //var imageFilePath = Path.Combine(settings.ImageCachePath, imageName);
-                    //var uri = new Uri(imageFilePath);
-                    //return new Uri(uri.AbsoluteUri);
-                    return AppLocalBasedFileUri(imageName);
-                }
-            )
+            .Select( AppLocalBasedFileUri )
             .ToList();
         if(uris.Count == 0) ImageWebView.Source = new Uri("about:blank");
         var html = HtmlImageListGenerator.Generate(uris);

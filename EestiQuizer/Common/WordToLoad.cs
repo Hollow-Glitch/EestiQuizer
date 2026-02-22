@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EestiQuizer.Common; 
+﻿namespace EestiQuizer.Common; 
 
 
 // Since I am collecting the words from each chapter, I am already saving them into files with the chapter name in it.
