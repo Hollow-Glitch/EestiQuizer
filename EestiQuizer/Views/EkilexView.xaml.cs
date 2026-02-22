@@ -1,5 +1,7 @@
 ﻿using EestiQuizer.Common;
 using EestiQuizer.Ekilex;
+using EestiQuizer.Ekilex.Endpoints;
+using Microsoft.Web.WebView2.Core;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -14,11 +16,13 @@ public partial class EkilexView : UserControl {
     public ObservableCollection<CardData> EkilexCardDataCollection { get; set; } = new();
     Settings settings;
     Processor processor;
+    RequestClient client;
 
     public EkilexView() {
         InitializeComponent();
         settings = Settings.Load(); //TODO: just temp location, probably should be called sooner, since settings is not UI related.
-        processor = new Processor(settings);
+        client = new RequestClient(settings.EkilexApiKey, settings.ImageCachePath);
+        processor = new Processor(client);
     }
 
     void WriteNewLine() { OutputBox.Text += "\n"; }
@@ -80,5 +84,49 @@ public partial class EkilexView : UserControl {
             var cardData = processor.LoadWord(word, id);
             if (cardData is not null) EkilexCardDataCollection.Add(cardData);
         }
+    }
+
+
+    const string appLocalBase = "https://app.local/";
+    Uri AppLocalBasedFileUri(string name) => new Uri(appLocalBase + name);
+    bool isInited = false;
+    private void InitWebViewForFiles() {
+        ImageWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+            "app.local",
+            settings.ImageCachePath,
+            CoreWebView2HostResourceAccessKind.Allow
+        );
+    }
+
+
+    private void CardDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+        var grid = (DataGrid) sender;
+        var selection = grid.SelectedItem as CardData;
+        if (selection is null) return;
+
+        if ( ! isInited) {
+            InitWebViewForFiles();
+            isInited = true;
+        }
+
+        //foreach(var imageName in selection.ImageNamesInCache) {
+        //    var imageFilePath = Path.Combine(settings.ImageCachePath, imageName);
+        //    var uri = new Uri(imageFilePath);
+        //    ImageWebView.Source = uri;
+        //    return; //TODO: dirty hack, don't know how to display multiple yet
+        //}
+        var uris = selection.ImageNamesInCache
+            .Select(
+                imageName => {
+                    //var imageFilePath = Path.Combine(settings.ImageCachePath, imageName);
+                    //var uri = new Uri(imageFilePath);
+                    //return new Uri(uri.AbsoluteUri);
+                    return AppLocalBasedFileUri(imageName);
+                }
+            )
+            .ToList();
+        if(uris.Count == 0) ImageWebView.Source = new Uri("about:blank");
+        var html = HtmlImageListGenerator.Generate(uris);
+        ImageWebView.NavigateToString(html);
     }
 }

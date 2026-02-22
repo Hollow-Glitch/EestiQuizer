@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-namespace EestiQuizer.Ekilex;
+﻿namespace EestiQuizer.Ekilex;
 
 
 public class CardData {
@@ -22,4 +15,5 @@ public class CardData {
     required public string Tags { get; init; }
 
     required public string ProficiencyLevel { get; set; }
+    required public List<string> ImageNamesInCache { get; set; }
 }

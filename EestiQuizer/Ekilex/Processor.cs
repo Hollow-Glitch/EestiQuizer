@@ -3,6 +3,7 @@ using EestiQuizer.Ekilex.Endpoints;
 
 using static System.StringComparison;
 using EestiQuizer.Common;
+using System.CodeDom;
 
 
 namespace EestiQuizer.Ekilex; 
@@ -22,12 +23,10 @@ namespace EestiQuizer.Ekilex;
  */
 
 internal class Processor {
-    string apiKey;
     RequestClient client;
 
-    internal Processor(Settings settings) {
-        apiKey = settings.EkilexApiKey;
-        client = new RequestClient(apiKey);
+    internal Processor(RequestClient client) {
+        this.client = client;
     }
 
     List<CardData> LoadWords(IEnumerable<WordToLoad> wordsToLoad, DirectoryInfo? saveFolder = null) {
@@ -53,7 +52,7 @@ internal class Processor {
                 .ToList();
         } else {
             wordIds = wordSearch.words
-                ?.Where(res => res.lang.Equals("est", InvariantCultureIgnoreCase) )
+                ?.Where(res => res.lang?.Equals("est", InvariantCultureIgnoreCase) ?? false)
                 ?.Select(res => res.wordId).ToList()
                 ?? []; // in case we feed in a phrase and not a word then it can happen that we don't find an id. Thus empty here.
         }
@@ -149,6 +148,20 @@ internal class Processor {
         const string generatedTag = "generated";
         var tags = generatedTag + " " + wordToLoad.Tags.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
 
+        //>> images
+        List<string> imageNames; { 
+            imageNames = lexeme.meaning.images
+                .Where(i => i.url is not null)
+                .Select(i => 
+                    i.url.Split("/").Last() //TODO: probably we need handling of words with spaces which in url have the funny characters.
+                )
+                .ToList();
+
+            foreach(var url in imageNames) {
+                client.DownloadImage(url); 
+            }
+        }
+
         return new CardData() {
             RequestedWord = wordToLoad.Word,
 
@@ -163,6 +176,7 @@ internal class Processor {
             Tags = tags,
 
             ProficiencyLevel = proficiencyLevel,
+            ImageNamesInCache = imageNames,
         };
     }
 }

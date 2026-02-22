@@ -17,6 +17,8 @@ public sealed class Settings {
     public string OutputFolderPath { get; set; } = SettingValues.defaultOutputFolderPath;
     public string EkilexApiKey { get; set; } = String.Empty;
 
+    internal string ImageCachePath => Path.Combine(OutputFolderPath, "images");
+
     /// <summary>
     /// Use <see cref="Settings.Load"/> to load from file, this only creates a default instance.
     /// It must be internal so that the JsonSerializer can work with it.
