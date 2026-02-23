@@ -45,6 +45,11 @@
   - no cache needed, sometimes it is annoying when using from the train, but last time I used the wifi of the train and it worked fine!
     definitely would lead to complexity that currently I don't think I need.
 
+[x] solve drawio file being annoying
+  - moved out the drawio file into the outer folder while the outer folder is now a wrapper for this project.
+  - a script copies every file from the wrapper folder to a predefined onedrive location
+  - in other words I am now backing up non-repo files to onedrive with a script and storing them outside of the repo entirely.
+
 ----------------------------------------------------------------------------------------------------
 
 [ ] add the level (A1,A2,B1,...) to the tags.
