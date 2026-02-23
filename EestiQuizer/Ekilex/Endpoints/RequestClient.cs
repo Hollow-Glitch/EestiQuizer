@@ -15,6 +15,7 @@ public class RequestClient {
         apiKeyValue = apiKey;
         this.imageOutputFolder = imageOutputFolder;
         client.DefaultRequestHeaders.Add(apiKeyHeader, apiKeyValue);
+        client.Timeout = TimeSpan.FromMilliseconds(10_000);
     }
 
 
@@ -25,6 +26,7 @@ public class RequestClient {
         var json = JsonSerializer.Deserialize<T>(jsonText);
         return json;
     }
+
 
     HttpClient imageClient = new HttpClient();
     internal void DownloadImage(string url) {

@@ -51,7 +51,7 @@ class HtmlImageListGenerator
                 }
             </style>
         </head>
-        <body>
+        <body style="background-color:White;">
             <div class="gallery">
         """;
 

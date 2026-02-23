@@ -4,6 +4,7 @@ using EestiQuizer.Ekilex.Endpoints;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,15 +24,17 @@ public partial class EkilexView : UserControl {
         settings = Settings.Load(); //TODO: just temp location, probably should be called sooner, since settings is not UI related.
         client = new RequestClient(settings.EkilexApiKey, settings.ImageCachePath);
         processor = new Processor(client);
+        OutputBox.TextChanged += (o,args) => OutputBox.ScrollToEnd();
     }
 
     void WriteNewLine() { OutputBox.Text += "\n"; }
-
-
     void WriteLine(string text) { OutputBox.Text += text + "\n"; }
-
-
     void Write(string text) { OutputBox.Text += text; }
+
+
+    void DispatchWriteNewLine() => Dispatch( WriteNewLine );
+    void DispatchWriteLine(string text) => Dispatch( () => WriteLine(text) );
+    void DispatchWrite(string text) => Dispatch( () => Write(text) );
 
 
     private void ClearOutput_Click(object sender, RoutedEventArgs e) {
@@ -40,6 +43,7 @@ public partial class EkilexView : UserControl {
     }
 
     // ================================================================================
+
 
     private void TextBoxToEkilex_Click(object sender, RoutedEventArgs e) {
         var word = InputBox.Text;
@@ -54,7 +58,12 @@ public partial class EkilexView : UserControl {
     }
 
 
-    private void LoadFilesFromFolder_Click(object sender, RoutedEventArgs e) {
+    void Dispatch(Action action) {
+        Application.Current.Dispatcher.Invoke(action);
+    }
+
+
+    async private void LoadFilesFromFolder_Click(object sender, RoutedEventArgs e) {
         var fileDialog = new OpenFileDialog { Multiselect = true, };
         if (fileDialog.ShowDialog() != true) return;
 
@@ -74,16 +83,56 @@ public partial class EkilexView : UserControl {
             foreach (var wordToLoad in wordsToLoad) allWordsWithoutComments.Add(wordToLoad);
         }
 
-        if (false) WriteLine(allWordsWithoutComments.Select(wordToLoad => wordToLoad.Word).StringJoin("\n"));
+        if (false) DispatchWriteLine(allWordsWithoutComments.Select(wordToLoad => wordToLoad.Word).StringJoin("\n"));
 
-        var wordsWithIds = allWordsWithoutComments.AsParallel()
-            .SelectMany(word => processor.DetermineWordIds(word.Word).Select(id => (word, id)) )
-            .ToList();
+        Write("Loading id-s");
+        var sw_getWordIds = Stopwatch.StartNew();
+        List<(WordToLoad word, int id)> wordsWithIds = [];
+        await Task.Run(
+            () => {
+                wordsWithIds = allWordsWithoutComments //.AsParallel()
+                    .SelectMany(word => processor.DetermineWordIds(word.Word).Select(id => (word, id)) )
+                    .ToList();
+            }
+        );
+        sw_getWordIds.Stop();
+        WriteLine(" ... done");
 
-        foreach(var (word, id) in wordsWithIds) {
-            var cardData = processor.LoadWord(word, id);
-            if (cardData is not null) EkilexCardDataCollection.Add(cardData);
+        var sw_getDetails = Stopwatch.StartNew();
+        //foreach(var (word, id) in wordsWithIds) {
+        //    var cardData = processor.LoadWord(word, id);
+        //    if (cardData is not null) EkilexCardDataCollection.Add(cardData);
+        //}
+        //<< v0
+
+        //Parallel.ForEach(wordsWithIds, 
+        //    (wordWithId) => {
+        //        var cardData = processor.LoadWord(wordWithId.word, wordWithId.id);
+        //        if (cardData is not null) EkilexCardDataCollection.Add(cardData);
+        //    }
+        //);
+        //<< v1
+
+        //TODO: explore using the new `await foreach` syntax here that utilizes `IAsynchEnumerable` thingies.
+        foreach(var (wordWithId, idx) in wordsWithIds.Select((wordWithId, idx) => (wordWithId, idx+1) )) {
+            var sw_getWordDetail = Stopwatch.StartNew();
+            DispatchWrite($"{idx,3}/{wordsWithIds.Count,3}  {wordWithId.word.Word,20}  {wordWithId.id,20}");
+            await Task.Run(
+                () => {
+                    var cardData = processor.LoadWord(wordWithId.word, wordWithId.id);
+                    if (cardData is not null) {
+                        Dispatch( () => EkilexCardDataCollection.Add(cardData) );
+                    }
+                }
+            );
+            sw_getWordDetail.Stop();
+            Dispatch( () => CardDataGrid.ScrollIntoView(CardDataGrid.Items[CardDataGrid.Items.Count - 1]) );
+            DispatchWriteLine($" ... done  time=({sw_getWordDetail.ElapsedMilliseconds,5})");
         }
+        //<< v2
+        sw_getDetails.Stop();
+        DispatchWriteLine($"{nameof(sw_getWordIds)} = {sw_getWordIds}");
+        DispatchWriteLine($"{nameof(sw_getDetails)} = {sw_getDetails}");
     }
 
 

@@ -21,8 +21,11 @@
     operating upon.
     - started using ekilex
 
+[x] parallelize ekilex loading
+  - parallelization was not really possible just like with Sõnaveeb, but implemented async/threading solution so that the UI is not frozen.
+  - implemented also a live communication where it writes into the OutputTextBox what the currently loaded word is.
+
 ----------------------------------------------------------------------------------------------------
-[ ] parallelize ekilex loading
 
 [ ] maybe create a cache (maybe of only words with wordclass) and if a word has data there 
     (like wordclass) then load it from there otherwise go to sonapi.
