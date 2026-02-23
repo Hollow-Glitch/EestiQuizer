@@ -17,6 +17,9 @@
     [?] then which have none..., all of these cases need handling.
     - started using ekilex
 
+[x] (sonapi) create new translation loading algo which would read the meaning translations rather than the top list
+    - irrelevant since I switched to ekilex
+
 [x] mauybe deprecate the current `SonapiResponse.WordFormValues` function and make it take a `SearchResult` since that is the only thing it is currently
     operating upon.
     - started using ekilex
@@ -25,17 +28,26 @@
   - parallelization was not really possible just like with Sõnaveeb, but implemented async/threading solution so that the UI is not frozen.
   - implemented also a live communication where it writes into the OutputTextBox what the currently loaded word is.
 
-----------------------------------------------------------------------------------------------------
+[-] figure out whether I want the extra data: page, Tere translation, etc.
+    transfered as well
+    [-] if done => compare the Tere translations with the collected meaning translations
+      - this is not a task to be done here but one that needs to be done everytime when I generated cards with this program.
+    - probably the chapter number from the file name should become a tag
+      - done
+    - maybe if the file is found in multiple file (thus multiple chapters - bluebox, or other), then all where it was present shall be added.
+      - yeah but maybe I will write a file, generate it, and a month later would maybe write the same word into another file, right?
+        being able to just collect from multiple files at that point would be pointless, it would already be in anki.
 
-[ ] maybe create a cache (maybe of only words with wordclass) and if a word has data there 
+[-] maybe create a cache (maybe of only words with wordclass) and if a word has data there 
     (like wordclass) then load it from there otherwise go to sonapi.
     - this just gained priority because even with the added sleep-s sometimes I still get garbage 
     - garbage seems to be differentiable from those which just lack info by the absence of the requestedWord field - which thus for me manifests as null.
+  - no cache needed, sometimes it is annoying when using from the train, but last time I used the wifi of the train and it worked fine!
+    definitely would lead to complexity that currently I don't think I need.
 
-[ ] figure out whether I want the extra data: page, Tere translation, etc.
-    transfered as well
-    [x] create new translation loading algo which would read the meaning translations rather than the top list
-        - irrelevant since I switched to ekilex
-    [ ] if done => compare the Tere translations with the collected meaning translations
-    - probably the chapter number from the file name should become a tag
-    - maybe if the file is found in multiple file (thus multiple chapters - bluebox, or other), then all where it was present shall be added.
+----------------------------------------------------------------------------------------------------
+
+[ ] add the level (A1,A2,B1,...) to the tags.
+[ ] if a word or phrase was not found a warning is made so that the user can determine what went wrong.
+[ ] introduce ability to ekilex based solution to generate files as the sonapi based variant was able to.
+[ ] connect to the anki database so that we can detect if a word is already there

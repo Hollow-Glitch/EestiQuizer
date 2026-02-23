@@ -83,8 +83,6 @@ public partial class EkilexView : UserControl {
             foreach (var wordToLoad in wordsToLoad) allWordsWithoutComments.Add(wordToLoad);
         }
 
-        if (false) DispatchWriteLine(allWordsWithoutComments.Select(wordToLoad => wordToLoad.Word).StringJoin("\n"));
-
         Write("Loading id-s");
         var sw_getWordIds = Stopwatch.StartNew();
         List<(WordToLoad word, int id)> wordsWithIds = [];

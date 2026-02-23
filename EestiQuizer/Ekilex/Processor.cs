@@ -24,19 +24,9 @@ namespace EestiQuizer.Ekilex;
 internal class Processor {
     RequestClient client;
 
+
     internal Processor(RequestClient client) {
         this.client = client;
-    }
-
-    List<CardData> LoadWords(IEnumerable<WordToLoad> wordsToLoad, DirectoryInfo? saveFolder = null) {
-
-        try {
-            foreach (var wordToLoad in wordsToLoad) {
-            }
-        } catch (Exception e) {
-        }
-
-        throw new NotImplementedException();
     }
 
 
@@ -67,26 +57,32 @@ internal class Processor {
         }
         var wordDetail = potWordDetail!;
         //>> Let's ignore prefixes and sufixes
-        if (wordDetail.word.prefixoid ?? false) return null;
-        if (wordDetail.word.suffixoid ?? false) return null;
+        if (wordDetail.word?.prefixoid ?? false) return null;
+        if (wordDetail.word?.suffixoid ?? false) return null;
 
         //>> I must choose a lexeme and work with only one otherwise I could mix examples of one with the translation of another incompatible one...
         //   Big assumption, the first lexeme is what soneveeb chooses which shall be good enough for me
-        var lexeme = wordDetail.lexemes
-            .Where(l => l.@public ?? false)
-            .OrderBy(l => l.datasetCode == "eki" ? 0 : 1) //<< prioritize eki as it is the most authoritative.
-            .FirstOrDefault();
+        WordDetailsEndpoint.Lexeme lexeme; {
+            WordDetailsEndpoint.Lexeme? _lexeme = wordDetail
+                ?.lexemes
+                ?.Where(l => l.@public ?? false)
+                .OrderBy(l => l.datasetCode == "eki" ? 0 : 1) //<< prioritize eki as it is the most authoritative.
+                .FirstOrDefault();
+            if (_lexeme is null) return null;
+            lexeme = _lexeme!;
+        }
 
         List<string> translations; {
             const string MEANING_WORD = nameof(MEANING_WORD);
             List<WordDetailsEndpoint.Synonym> synonyms; {
                 List<WordDetailsEndpoint.Synonym> _synonyms = lexeme.synonymLangGroups
                     //== group
-                        .Where(group => group.lang.Equals("eng", InvariantCultureIgnoreCase) )
+                        ?.Where(group => group.lang.Equals("eng", InvariantCultureIgnoreCase) )
                         .SelectMany(langGroup => langGroup.synonyms)
-                        .ToList();
+                        .ToList()
+                        ?? [];
                 if (_synonyms.Count == 0) return null; //<< in case we have zero then we can't translate, then it is meaningless to continue.
-                synonyms = _synonyms.Where(synonym => synonym.type.Equals(MEANING_WORD, InvariantCultureIgnoreCase) ).ToList();
+                synonyms = _synonyms.Where(synonym => synonym.type?.Equals(MEANING_WORD, InvariantCultureIgnoreCase) ?? false ).ToList();
                 if (synonyms.Count == 0) {
                     synonyms = _synonyms; //<< we reset back in case we now have nothing because then all we had were MEANING_RELs
                 }
@@ -110,8 +106,9 @@ internal class Processor {
         }
 
         string form1 = ""; string form2 = ""; string form3 = ""; string wordClass; {
-            var paradigms = wordDetail.word.paradigms
-                ?.Where(paradigm => paradigm.wordClass is not null).ToList() ?? [];
+            var paradigms = wordDetail?.word?.paradigms
+                ?.Where(paradigm => paradigm.wordClass is not null).ToList()
+                ?? [];
             if (paradigms.Count == 0) return null;
             //if (paradigms.Count is not 1) throw new NotImplementedException(); //TODO: deal with this
             var paradigm = paradigms[0];
@@ -141,7 +138,7 @@ internal class Processor {
         }
 
         var proficiencyLevel = lexeme.lexemeProficiencyLevelCode ?? "";
-        var usages = lexeme.usages.Select(usage => usage.value);
+        var usages = lexeme.usages?.Select(usage => usage.value) ?? [];
         //string pos = lexeme.pos?.FirstOrDefault()?.code ?? throw new NotImplementedException();
         string pos = lexeme.pos?.FirstOrDefault()?.code ?? ""; //TODO check this
         const string generatedTag = "generated";
@@ -149,12 +146,13 @@ internal class Processor {
 
         //>> images
         List<string> imageNames; { 
-            imageNames = lexeme.meaning.images
-                .Where(i => i.url is not null)
+            imageNames = lexeme.meaning?.images
+                ?.Where(i => i.url is not null)
                 .Select(i => 
                     i.url.Split("/").Last() //TODO: probably we need handling of words with spaces which in url have the funny characters.
                 )
-                .ToList();
+                .ToList()
+                ?? [];
 
             foreach(var url in imageNames) {
                 client.DownloadImage(url); 

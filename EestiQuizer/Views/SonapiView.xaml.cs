@@ -94,7 +94,7 @@ public partial class SonapiView : UserControl {
                 foreach(var wordToLoad in wordsToLoad) allWordsWithoutComments.Add(wordToLoad);
             }
 
-            if (false) WriteLine(allWordsWithoutComments.Select(wordToLoad => wordToLoad.Word).StringJoin("\n") );
+            //if (false) WriteLine(allWordsWithoutComments.Select(wordToLoad => wordToLoad.Word).StringJoin("\n") );
 
             LoadWords(allWordsWithoutComments, saveFolder);
         }
