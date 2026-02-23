@@ -142,7 +142,12 @@ internal class Processor {
         //string pos = lexeme.pos?.FirstOrDefault()?.code ?? throw new NotImplementedException();
         string pos = lexeme.pos?.FirstOrDefault()?.code ?? ""; //TODO check this
         const string generatedTag = "generated";
-        var tags = generatedTag + " " + wordToLoad.Tags.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
+        var tags
+            = generatedTag
+            //+ " " + wordToLoad.Tags.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
+            + " " + wordToLoad.Tags.StringJoin(" ")
+            + " " + proficiencyLevel
+            ;
 
         //>> images
         List<string> imageNames; { 
