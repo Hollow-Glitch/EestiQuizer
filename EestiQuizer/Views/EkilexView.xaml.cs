@@ -74,63 +74,57 @@ public partial class EkilexView : UserControl {
 
         var saveFolder = Directory.GetParent(fileDialog.FileNames[0]);
 
-        var allWordsWithoutComments = new List<WordToLoad>();
-        foreach (var fileName in fileDialog.FileNames) {
-            var wordsOfFile = File.ReadAllLines(fileName)
-                .Where(line => !line.Contains("#") && !string.IsNullOrWhiteSpace(line));
-            string[] tags = Path.GetFileNameWithoutExtension(fileName).Split("__") ?? [];
-            var wordsToLoad = wordsOfFile.Select(word => new WordToLoad(word, tags));
-            foreach (var wordToLoad in wordsToLoad) allWordsWithoutComments.Add(wordToLoad);
-        }
-
-        Write("Loading id-s");
-        var sw_getWordIds = Stopwatch.StartNew();
-        List<(WordToLoad word, int id)> wordsWithIds = [];
-        await Task.Run(
-            () => {
-                wordsWithIds = allWordsWithoutComments //.AsParallel()
-                    .SelectMany(word => processor.DetermineWordIds(word.Word).Select(id => (word, id)) )
-                    .ToList();
-            }
-        );
-        sw_getWordIds.Stop();
-        WriteLine(" ... done");
-
         var sw_getDetails = Stopwatch.StartNew();
-        //foreach(var (word, id) in wordsWithIds) {
-        //    var cardData = processor.LoadWord(word, id);
-        //    if (cardData is not null) EkilexCardDataCollection.Add(cardData);
-        //}
-        //<< v0
-
-        //Parallel.ForEach(wordsWithIds, 
-        //    (wordWithId) => {
-        //        var cardData = processor.LoadWord(wordWithId.word, wordWithId.id);
-        //        if (cardData is not null) EkilexCardDataCollection.Add(cardData);
-        //    }
-        //);
-        //<< v1
-
         //TODO: explore using the new `await foreach` syntax here that utilizes `IAsynchEnumerable` thingies.
-        foreach(var (wordWithId, idx) in wordsWithIds.Select((wordWithId, idx) => (wordWithId, idx+1) )) {
-            var sw_getWordDetail = Stopwatch.StartNew();
-            DispatchWrite($"{idx,3}/{wordsWithIds.Count,3}  {wordWithId.word.Word,20}  {wordWithId.id,20}");
-            await Task.Run(
-                () => {
-                    var cardData = processor.LoadWord(wordWithId.word, wordWithId.id);
+        List<WordToLoad> problematicWords = [];
+        await Task.Run( () => {
+            var allWordsWithoutComments = new List<WordToLoad>();
+            foreach (var fileName in fileDialog.FileNames) {
+                var wordsOfFile = File.ReadAllLines(fileName)
+                    .Where(line => !line.Contains("#") && !string.IsNullOrWhiteSpace(line));
+                string[] tags = Path.GetFileNameWithoutExtension(fileName).Split("__") ?? [];
+                var wordsToLoad = wordsOfFile.Select(word => new WordToLoad(word, tags));
+                foreach (var wordToLoad in wordsToLoad) allWordsWithoutComments.Add(wordToLoad);
+            }
+
+            foreach(var (wordToLoad, idx) in allWordsWithoutComments.Select((w, i) => (w,i+1) ) ) {
+                var wordIds = processor.DetermineWordIds(wordToLoad.Word);
+                DispatchWriteLine($"{idx,3}/{allWordsWithoutComments.Count,3}  {wordToLoad.Word,20}  wordId-s: {wordIds.Count}");
+                bool hasLoadedAtLeastOne = false;
+                foreach(var (wordId, wordIdIdx) in wordIds.Select((w,i) => (w,i+1)) ) {
+                    DispatchWrite($"    {wordIdIdx,2}/{wordIds.Count} {wordId,30}");
+                    var sw_getWordDetail = Stopwatch.StartNew();
+                    var cardData = processor.LoadWord(wordToLoad, wordId);
+                    sw_getWordDetail.Stop();
+                    const string success = nameof(success);
+                    const string failure = nameof(failure);
+                    string report;
                     if (cardData is not null) {
                         Dispatch( () => EkilexCardDataCollection.Add(cardData) );
+                        hasLoadedAtLeastOne = true;
+                        report = success;
+                    } else {
+                        report = failure;
                     }
+                    DispatchWriteLine($" ... {report}  time=({sw_getWordDetail.ElapsedMilliseconds,5})");
+                    Dispatch( () => CardDataGrid.ScrollIntoView(CardDataGrid.Items[CardDataGrid.Items.Count - 1]) );
                 }
-            );
-            sw_getWordDetail.Stop();
-            Dispatch( () => CardDataGrid.ScrollIntoView(CardDataGrid.Items[CardDataGrid.Items.Count - 1]) );
-            DispatchWriteLine($" ... done  time=({sw_getWordDetail.ElapsedMilliseconds,5})");
-        }
-        //<< v2
+                if ( ! hasLoadedAtLeastOne) {
+                    problematicWords.Add(wordToLoad);
+                    DispatchWriteLine("    FAILED.");
+                }
+            }
+        } );
         sw_getDetails.Stop();
-        DispatchWriteLine($"{nameof(sw_getWordIds)} = {sw_getWordIds}");
-        DispatchWriteLine($"{nameof(sw_getDetails)} = {sw_getDetails}");
+        WriteLine($"{nameof(sw_getDetails)} = {sw_getDetails}");
+
+        if (problematicWords.Count is not 0) {
+            WriteNewLine();
+            WriteLine("The following did not load correctly");
+            foreach(var problematic in problematicWords) {
+                WriteLine($"    {problematic.Word}");
+            }
+        }
     }
 
 
