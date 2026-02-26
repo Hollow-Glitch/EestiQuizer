@@ -52,13 +52,15 @@
 
 [x] add the level (A1,A2,B1,...) to the tags.
 
-----------------------------------------------------------------------------------------------------
-
 [x] if a word or phrase was not found a warning is made so that the user can determine what went wrong.
   - Restructure logic in EkilexView to ask for the wordId-s of a word and then for details of each wordId.
     If no wordId-s found, report the word (and wordId?).
     If found wordId-s but none resulted in a CardData, report the word (and wordId?).
   - Till now we were first loading all the wordId-s of all the words, but here we are first fully processing a word before continueing to the next word.
 
-[ ] introduce ability to ekilex based solution to generate files as the sonapi based variant was able to.
-[ ] connect to the anki database so that we can detect if a word is already there
+[x] introduce ability to ekilex based solution to generate files as the sonapi based variant was able to.
+
+----------------------------------------------------------------------------------------------------
+
+[ ] connect to the anki database so that we can detect if a word is already there 
+[ ] limit the example count?

@@ -6,6 +6,7 @@ using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,6 +19,8 @@ public partial class EkilexView : UserControl {
     Settings settings;
     Processor processor;
     RequestClient client;
+
+    const string interFieldSeparator = "|";
 
     public EkilexView() {
         InitializeComponent();
@@ -124,6 +127,23 @@ public partial class EkilexView : UserControl {
             foreach(var problematic in problematicWords) {
                 WriteLine($"    {problematic.Word}");
             }
+        }
+
+        {   // write file with all rows
+            var sb = new StringBuilder();
+            var adsf = EkilexCardDataCollection.Select(cd => cd.ToAnkiRow(interFieldSeparator) );
+            sb.AppendLine(CardData.Header() );
+            sb.AppendJoin("\n", adsf);
+            //var rows =
+            //    EkilexCardDataCollection.Select(cd => cd.ToAnkiRow(interFieldSeparator) )
+            //    .StringJoin("\n");
+            WriteLine($"Writing `{EkilexCardDataCollection.Count}` cards to `{settings.OutputFolderPath}`.");
+            
+            var timePrefix = DateTime.Now.ToString($"yyyy-MM-dd_HH-mm-ss");
+            var fileName = $"{timePrefix}.txt";
+            var filePath = Path.Combine(settings.OutputFolderPath, fileName);
+            //Utilities.EnsureFileAndWriteAllText(filePath, rows);
+            Utilities.EnsureFileAndWriteAllText(filePath, sb.ToString() );
         }
     }
 

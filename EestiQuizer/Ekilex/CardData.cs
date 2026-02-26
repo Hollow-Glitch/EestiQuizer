@@ -1,4 +1,6 @@
-﻿namespace EestiQuizer.Ekilex;
+﻿using EestiQuizer.Common;
+
+namespace EestiQuizer.Ekilex;
 
 
 public class CardData {
@@ -16,4 +18,39 @@ public class CardData {
 
     required public string ProficiencyLevel { get; set; }
     required public List<string> ImageNamesInCache { get; set; }
+
+
+    internal static string Header() =>
+        """
+        #separator:Pipe
+        #columns:Id|Form1|Form2|Form3|PoS|Translations|Examples|Images|Audio|FrontHint|BackHint|Tags
+        """;
+
+
+    internal string ToAnkiRow(string interFieldSeparator) {
+        //>> these are intentionally left blank for now
+        var images    = ImageNamesInCache.StringJoin(" ");
+        var audio     = "";
+        var frontHint = "";
+        var backHint  = "";
+
+        // !!! Keep this in synch with the above `Header` method.
+        var asdf = new string?[] {
+            Id,
+            Form1,
+            Form2,
+            Form3,
+            // WordClass //<< Let's try not including this, can be derived from `PartOfSpeach` I guess.
+            PartOfSpeech,
+            Translations,
+            Examples,
+            images,
+            audio,
+            frontHint,
+            backHint,
+            Tags,
+        }.StringJoin(interFieldSeparator);
+
+        return asdf;
+    }
 }

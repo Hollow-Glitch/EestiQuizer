@@ -141,15 +141,18 @@ internal class Processor {
         var usages = lexeme.usages?.Select(usage => usage.value) ?? [];
         //string pos = lexeme.pos?.FirstOrDefault()?.code ?? throw new NotImplementedException();
         string pos = lexeme.pos?.FirstOrDefault()?.code ?? ""; //TODO check this
-        const string generatedTag = "generated";
-        var tags
-            = generatedTag
-            //+ " " + wordToLoad.Tags.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
-            + " " + wordToLoad.Tags.StringJoin(" ")
-            + " " + proficiencyLevel
-            ;
 
-        //>> images
+        string tags; {
+            // We are prepending everything here so that in Anki all these tags are cleanly subtags of the generated tag.
+            // So even if I make a mistake while creating a file, or adding a tag which could complicate operations in Anki,
+            // it won't be a problem.
+            const string generatedTag = "generated";
+            IEnumerable<string> tempTagList =
+                wordToLoad.Tags
+                .Append(proficiencyLevel);
+            tags = generatedTag + " " + tempTagList.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
+        }
+
         List<string> imageNames; { 
             imageNames = lexeme.meaning?.images
                 ?.Where(i => i.url is not null)
