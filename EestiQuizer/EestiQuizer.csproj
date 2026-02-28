@@ -11,6 +11,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <!--<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.3" />-->
+        <!-- If you use the above, then you won't get the full package, but just the C# code, without some SQLite C library or something like that. -->
+
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.3" />
         <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3800.47" />
     </ItemGroup>
 

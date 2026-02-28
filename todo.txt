@@ -60,7 +60,14 @@
 
 [x] introduce ability to ekilex based solution to generate files as the sonapi based variant was able to.
 
+[x] connect to the anki database so that we can detect if a word is already there 
+
 ----------------------------------------------------------------------------------------------------
 
-[ ] connect to the anki database so that we can detect if a word is already there 
 [ ] limit the example count?
+[ ] homonym id-s currently are the same which causes them to be flaged as duplicates
+    I could dissambiguate by adding the first english meaning to the id - which is only displayed in the browser.
+[ ] failure reason for processing a wordId is currently not present in UI, nor is it transfered in code.
+    Somehow should be able to tell the user why the given wordId failed.
+[ ] currently profileName and tag/-s to check for are hard coded values, make these configurable either via settings or with UI - or both
+    (i.e. changing UI will change settings and when opened will load and add value to UI).

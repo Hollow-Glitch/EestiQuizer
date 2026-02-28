@@ -1,4 +1,5 @@
-﻿using EestiQuizer.Common;
+﻿using EestiQuizer.anki;
+using EestiQuizer.Common;
 using EestiQuizer.Ekilex;
 using EestiQuizer.Ekilex.Endpoints;
 using Microsoft.Web.WebView2.Core;
@@ -90,12 +91,22 @@ public partial class EkilexView : UserControl {
                 foreach (var wordToLoad in wordsToLoad) allWordsWithoutComments.Add(wordToLoad);
             }
 
+            using var ankiDb = new AnkiDatabase("User 1");
+
             foreach(var (wordToLoad, idx) in allWordsWithoutComments.Select((w, i) => (w,i+1) ) ) {
+                DispatchWrite($"{idx:D3}/{allWordsWithoutComments.Count:D3}  {wordToLoad.Word,-20}");
+                if (ankiDb.IsWordInDatabase_v2(wordToLoad.Word, "generated") ) {
+                    DispatchWriteLine($" already in DB.");
+                    continue;
+                }
                 var wordIds = processor.DetermineWordIds(wordToLoad.Word);
-                DispatchWriteLine($"{idx,3}/{allWordsWithoutComments.Count,3}  {wordToLoad.Word,20}  wordId-s: {wordIds.Count}");
+                //DispatchWriteLine($" wordId-s: {wordIds.Count}");
+                DispatchWriteNewLine();
+                DispatchWriteLine($"    wordId-s: {wordIds.Count}");
+
                 bool hasLoadedAtLeastOne = false;
                 foreach(var (wordId, wordIdIdx) in wordIds.Select((w,i) => (w,i+1)) ) {
-                    DispatchWrite($"    {wordIdIdx,2}/{wordIds.Count} {wordId,30}");
+                    DispatchWrite($"    {wordIdIdx:D2}/{wordIds.Count:D2} {wordId,-10}"); //<< assumption for better output, count is less than 10 so no 
                     var sw_getWordDetail = Stopwatch.StartNew();
                     var cardData = processor.LoadWord(wordToLoad, wordId);
                     sw_getWordDetail.Stop();
