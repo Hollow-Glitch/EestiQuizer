@@ -67,10 +67,12 @@
     Also changed the example collection logic to ensure some non-short example are collected
     (depends on the value, if 0 then we just collect based on sentence word count).
 
+[x] homonym id-s currently are the same which causes them to be flaged as duplicates
+    I could dissambiguate by adding the first english meaning to the id - which is only displayed in the browser.
+    - I have added the wordId to the Id field of CardData after the word itself which is now used for checking whether the wordId is already in the DB and skip if it is.
+
 ----------------------------------------------------------------------------------------------------
 
-[ ] homonym id-s currently are the same which causes them to be flaged as duplicates
-    I could dissambiguate by adding the first english meaning to the id - which is only displayed in the browser.
 [ ] failure reason for processing a wordId is currently not present in UI, nor is it transfered in code.
     Somehow should be able to tell the user why the given wordId failed.
 [ ] currently profileName, tag/-s, example limit, etc., are hard coded values, make these configurable either via settings or with UI - or both
