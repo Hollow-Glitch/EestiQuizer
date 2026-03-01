@@ -62,12 +62,16 @@
 
 [x] connect to the anki database so that we can detect if a word is already there 
 
+[x] limit the example count?
+    decided to not limit too much the example count, currently taking 10, later will make it configurable.
+    Also changed the example collection logic to ensure some non-short example are collected
+    (depends on the value, if 0 then we just collect based on sentence word count).
+
 ----------------------------------------------------------------------------------------------------
 
-[ ] limit the example count?
 [ ] homonym id-s currently are the same which causes them to be flaged as duplicates
     I could dissambiguate by adding the first english meaning to the id - which is only displayed in the browser.
 [ ] failure reason for processing a wordId is currently not present in UI, nor is it transfered in code.
     Somehow should be able to tell the user why the given wordId failed.
-[ ] currently profileName and tag/-s to check for are hard coded values, make these configurable either via settings or with UI - or both
+[ ] currently profileName, tag/-s, example limit, etc., are hard coded values, make these configurable either via settings or with UI - or both
     (i.e. changing UI will change settings and when opened will load and add value to UI).

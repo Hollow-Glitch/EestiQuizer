@@ -2,6 +2,7 @@
 using EestiQuizer.Common;
 using EestiQuizer.Ekilex;
 using EestiQuizer.Ekilex.Endpoints;
+using Microsoft.Data.Sqlite;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
@@ -81,6 +82,7 @@ public partial class EkilexView : UserControl {
         var sw_getDetails = Stopwatch.StartNew();
         //TODO: explore using the new `await foreach` syntax here that utilizes `IAsynchEnumerable` thingies.
         List<WordToLoad> problematicWords = [];
+        var sqliteExceptionOccured = false;
         await Task.Run( () => {
             var allWordsWithoutComments = new List<WordToLoad>();
             foreach (var fileName in fileDialog.FileNames) {
@@ -95,9 +97,15 @@ public partial class EkilexView : UserControl {
 
             foreach(var (wordToLoad, idx) in allWordsWithoutComments.Select((w, i) => (w,i+1) ) ) {
                 DispatchWrite($"{idx:D3}/{allWordsWithoutComments.Count:D3}  {wordToLoad.Word,-20}");
-                if (ankiDb.IsWordInDatabase_v2(wordToLoad.Word, "generated") ) {
-                    DispatchWriteLine($" already in DB.");
-                    continue;
+                try {
+                    if (ankiDb.IsWordInDatabase_v2(wordToLoad.Word, "generated") ) {
+                        DispatchWriteLine($" already in DB.");
+                        continue;
+                    }
+                } catch (SqliteException e) {
+                    DispatchWriteLine(e.Message);
+                    sqliteExceptionOccured = true;
+                    return;
                 }
                 var wordIds = processor.DetermineWordIds(wordToLoad.Word);
                 //DispatchWriteLine($" wordId-s: {wordIds.Count}");
@@ -130,6 +138,7 @@ public partial class EkilexView : UserControl {
             }
         } );
         sw_getDetails.Stop();
+        if (sqliteExceptionOccured) return;
         WriteLine($"{nameof(sw_getDetails)} = {sw_getDetails}");
 
         if (problematicWords.Count is not 0) {

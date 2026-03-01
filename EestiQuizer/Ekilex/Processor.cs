@@ -24,6 +24,17 @@ namespace EestiQuizer.Ekilex;
 internal class Processor {
     RequestClient client;
 
+    /// <summary>
+    /// Represents the baseline example/usage sentence length we are looking for,
+    /// if not found, then we are looking for shorter and longer sentences
+    /// </summary>
+    const int sentenceLengthOrigin = 2;
+
+    /// <summary>
+    /// Number of usage/example sentences we will add to the CardData.
+    /// </summary>
+    const int usageSentencesToTake = 10;
+
 
     internal Processor(RequestClient client) {
         this.client = client;
@@ -47,6 +58,36 @@ internal class Processor {
         }
 
         return wordIds;
+    }
+
+
+    IEnumerable<string> CollectUsages(List<WordDetailsEndpoint.Usage>? usages) =>
+        CollectUsagesFancy(usages);
+
+
+    IEnumerable<string> CollectUsagesSimple(List<WordDetailsEndpoint.Usage>? usages) {
+        return usages
+            ?.Where(usage => usage.@public is true)
+            ?.Select(usage => usage.value)
+            ?? [];
+    }
+
+
+    /// <summary>
+    /// f(x) = ABS(x - o)
+    /// With this the ordering starts from `o` and sentences which are `y` shorter or longer are projected to be `y` bigger and thus taken later.
+    /// Of course the `abs` is doing the "merge" here.
+    /// </summary>
+    /// <param name="usages"></param>
+    /// <returns></returns>
+    IEnumerable<string> CollectUsagesFancy(List<WordDetailsEndpoint.Usage>? usages) {
+        //return (usages?.Select(usage => usage.value) ?? [])
+        return usages
+            ?.Where(usage => usage.@public is true)
+            .Select(usage => usage.value)
+            .OrderBy(usage => Math.Abs(usage.Split(" ").Length - sentenceLengthOrigin) )
+            .Select(usage => usage) // `select` trick so that I can use `?? []` otherwise the usage of `OrderBy` prevents it.
+            ?? [];
     }
 
 
@@ -138,7 +179,8 @@ internal class Processor {
         }
 
         var proficiencyLevel = lexeme.lexemeProficiencyLevelCode ?? "";
-        var usages = lexeme.usages?.Select(usage => usage.value) ?? [];
+        //var usages = lexeme.usages?.Select(usage => usage.value) ?? [];
+        var usages = CollectUsages(lexeme.usages);
         //string pos = lexeme.pos?.FirstOrDefault()?.code ?? throw new NotImplementedException();
         string pos = lexeme.pos?.FirstOrDefault()?.code ?? ""; //TODO check this
 
@@ -177,7 +219,7 @@ internal class Processor {
             WordClass = wordClass,
             PartOfSpeech = pos,
             Translations = translations.StringJoin(", "),
-            Examples = usages.StringJoin("<br>"),
+            Examples = usages.Take(usageSentencesToTake).StringJoin("<br>"),
             Tags = tags,
 
             ProficiencyLevel = proficiencyLevel,
