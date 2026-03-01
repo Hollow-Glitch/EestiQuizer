@@ -63,6 +63,11 @@
                     Width="Auto"
                 />
                 <DataGridTextColumn 
+                    Header="Id"
+                    Binding="{Binding Id}"
+                    Width="100"
+                />
+                <DataGridTextColumn 
                     Header="Form1"
                     Binding="{Binding Form1}"
                     Width="100"

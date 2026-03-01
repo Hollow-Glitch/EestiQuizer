@@ -23,7 +23,7 @@ internal class AnkiDatabase : IDisposable {
     }
 
 
-    public bool IsWordInDatabase_v2(string word, string tag)
+    public bool IsWordInDatabaseBasedOnSfld(string word, string tag)
     {
         var command = connection.CreateCommand();
         command.CommandText = """SELECT count(sfld) FROM notes WHERE tags like $tag AND sfld LIKE $word""";
@@ -39,12 +39,51 @@ internal class AnkiDatabase : IDisposable {
     }
 
 
+    public bool IsWordWithIdInDatabaseBasedOnFlds(string wordId, string tag)
+    {
+        var command = connection.CreateCommand();
+        command.CommandText = """SELECT count(flds) FROM notes WHERE tags like $tag AND flds LIKE $wordId""";
+        command.Parameters.AddWithValue("$wordId", $"%{wordId}%");
+        command.Parameters.AddWithValue("$tag", $"%{tag}%");
+
+        var sfld_o = command.ExecuteScalar();
+        if (sfld_o is null) throw new InvalidOperationException();
+
+        var sfld = (long)sfld_o;
+        var isPresent = sfld > 0;
+        return isPresent;
+    }
+
+
+    public IEnumerable<string> GetNoteFields(string wordId, string tag)
+    {
+        var command = connection.CreateCommand();
+        command.CommandText = """SELECT replace(cast(flds as text), char(31), " | ") as content FROM notes WHERE tags like $tag AND flds LIKE $wordId""";
+        command.Parameters.AddWithValue("$wordId", $"%{wordId}%");
+        command.Parameters.AddWithValue("$tag", $"%{tag}%");
+
+        var reader = command.ExecuteReader();
+        //foreach (var item in reader) {
+        //    if (item is null || item is not string) continue;
+        //    yield return (string)item;
+        //}
+        while(reader.Read() ) {
+            var fields = reader.GetString(0);
+            yield return fields;
+        }
+    }
+
+
     protected virtual void Dispose(bool disposing) {
         if (!disposedValue) {
             if (disposing) {
-                // TODO: dispose managed state (managed objects)
+                //== Dispose managed state (managed objects)
             }
+
+            //== Dispose unmanaged objects
+            connection.Close();
             connection.Dispose();
+
             disposedValue = true;
         }
     }

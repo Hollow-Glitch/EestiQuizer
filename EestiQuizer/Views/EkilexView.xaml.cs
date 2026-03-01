@@ -97,24 +97,27 @@ public partial class EkilexView : UserControl {
 
             foreach(var (wordToLoad, idx) in allWordsWithoutComments.Select((w, i) => (w,i+1) ) ) {
                 DispatchWrite($"{idx:D3}/{allWordsWithoutComments.Count:D3}  {wordToLoad.Word,-20}");
-                try {
-                    if (ankiDb.IsWordInDatabase_v2(wordToLoad.Word, "generated") ) {
-                        DispatchWriteLine($" already in DB.");
-                        continue;
-                    }
-                } catch (SqliteException e) {
-                    DispatchWriteLine(e.Message);
-                    sqliteExceptionOccured = true;
-                    return;
-                }
                 var wordIds = processor.DetermineWordIds(wordToLoad.Word);
-                //DispatchWriteLine($" wordId-s: {wordIds.Count}");
                 DispatchWriteNewLine();
-                DispatchWriteLine($"    wordId-s: {wordIds.Count}");
+                //DispatchWriteLine($"    wordId-s: {wordIds.Count}"); //<< think I don't need this since now I am writing x/y ... x out of y
 
                 bool hasLoadedAtLeastOne = false;
                 foreach(var (wordId, wordIdIdx) in wordIds.Select((w,i) => (w,i+1)) ) {
                     DispatchWrite($"    {wordIdIdx:D2}/{wordIds.Count:D2} {wordId,-10}"); //<< assumption for better output, count is less than 10 so no 
+                    try {
+                        var rows = ankiDb.GetNoteFields(wordId.ToString(), "generated").ToList();
+                        if (rows.Count != 0) {
+                            DispatchWriteLine($" ... already in DB.");
+                            foreach(var row in rows) DispatchWriteLine($"        {row}");
+                            hasLoadedAtLeastOne = true; //<< finding it in the DB is equivalent to loading it, because then it is not a problematic word.
+                            continue;
+                        }
+                    } catch (SqliteException e) {
+                        DispatchWriteNewLine();
+                        DispatchWriteLine(e.Message);
+                        sqliteExceptionOccured = true;
+                        return;
+                    }
                     var sw_getWordDetail = Stopwatch.StartNew();
                     var cardData = processor.LoadWord(wordToLoad, wordId);
                     sw_getWordDetail.Stop();

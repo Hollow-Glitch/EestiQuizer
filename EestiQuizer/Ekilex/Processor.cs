@@ -212,7 +212,7 @@ internal class Processor {
         return new CardData() {
             RequestedWord = wordToLoad.Word,
 
-            Id = form1,
+            Id = form1 + " " + wordId,
             Form1 = form1,
             Form2 = form2,
             Form3 = form3,
