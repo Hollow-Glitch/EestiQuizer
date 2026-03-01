@@ -23,7 +23,7 @@ public class CardData {
     internal static string Header() =>
         """
         #separator:Pipe
-        #columns:Id|Form1|Form2|Form3|PoS|Translations|Examples|Images|Audio|FrontHint|BackHint|Tags
+        #columns:id|form1|form2|form3|partOfSpeech|meaning|examples|image|audio|frontHint|backHint|tags
         """;
 
 
