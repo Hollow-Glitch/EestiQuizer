@@ -13,6 +13,9 @@
             <TabItem Header="Ekilex" IsSelected="True">
                 <views:EkilexView/>
             </TabItem>
+            <TabItem Header="Settings">
+                <views:SettingsView/>
+            </TabItem>
             <TabItem Header="Sonapi">
                 <views:SonapiView/>
             </TabItem>

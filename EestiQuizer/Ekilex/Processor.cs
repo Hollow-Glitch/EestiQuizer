@@ -23,21 +23,11 @@ namespace EestiQuizer.Ekilex;
 
 internal class Processor {
     RequestClient client;
+    Settings settings;
 
-    /// <summary>
-    /// Represents the baseline example/usage sentence length we are looking for,
-    /// if not found, then we are looking for shorter and longer sentences
-    /// </summary>
-    const int sentenceLengthOrigin = 2;
-
-    /// <summary>
-    /// Number of usage/example sentences we will add to the CardData.
-    /// </summary>
-    const int usageSentencesToTake = 10;
-
-
-    internal Processor(RequestClient client) {
+    internal Processor(RequestClient client, Settings settings) {
         this.client = client;
+        this.settings = settings;
     }
 
 
@@ -85,7 +75,7 @@ internal class Processor {
         return usages
             ?.Where(usage => usage.@public is true)
             .Select(usage => usage.value)
-            .OrderBy(usage => Math.Abs(usage.Split(" ").Length - sentenceLengthOrigin) )
+            .OrderBy(usage => Math.Abs(usage.Split(" ").Length - settings.SentenceLengthOrigin) )
             .Select(usage => usage) // `select` trick so that I can use `?? []` otherwise the usage of `OrderBy` prevents it.
             ?? [];
     }
@@ -219,7 +209,7 @@ internal class Processor {
             WordClass = wordClass,
             PartOfSpeech = pos,
             Translations = translations.StringJoin(", "),
-            Examples = usages.Take(usageSentencesToTake).StringJoin("<br>"),
+            Examples = usages.Take(settings.UsageSentencesToTake).StringJoin("<br>"),
             Tags = tags,
 
             ProficiencyLevel = proficiencyLevel,

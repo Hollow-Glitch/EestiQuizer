@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text.Json;
-
+using System.Text.Json.Serialization;
+using CommunityToolkit.Mvvm.ComponentModel;
 using static System.Environment;
 using static EestiQuizer.Common.Utilities;
 
@@ -13,11 +14,32 @@ internal static class SettingValues {
 }
 
 
-public sealed class Settings {
-    public string OutputFolderPath { get; set; } = SettingValues.defaultOutputFolderPath;
-    public string EkilexApiKey { get; set; } = String.Empty;
+public partial class Settings : ObservableObject {
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ImageCachePath))]
+    private string outputFolderPath = SettingValues.defaultOutputFolderPath;
+    [ObservableProperty]
+    private string ekilexApiKey = String.Empty;
+    [ObservableProperty]
+    private string ankiProfileName = String.Empty;
+    [ObservableProperty]
+    private string tagForDBChecking = String.Empty;
 
-    internal string ImageCachePath => Path.Combine(OutputFolderPath, "images");
+    /// <summary>
+    /// Represents the baseline example/usage sentence length we are looking for,
+    /// if not found, then we are looking for shorter and longer sentences
+    /// </summary>
+    [ObservableProperty]
+    private int sentenceLengthOrigin = 2;
+
+    /// <summary>
+    /// Number of usage/example sentences we will add to the CardData.
+    /// </summary>
+    [ObservableProperty]
+    private int usageSentencesToTake = 10;
+
+    [JsonIgnore]
+    public string ImageCachePath => Path.Combine(OutputFolderPath, "images");
 
     /// <summary>
     /// Use <see cref="Settings.Load"/> to load from file, this only creates a default instance.
@@ -34,21 +56,31 @@ public sealed class Settings {
             var content = File.ReadAllText(SettingValues.configFilePath);
             Settings? potentialConfig = JsonSerializer.Deserialize<Settings>(content);
             if (potentialConfig is null) {
-                settings = CreateAndSaveNewFile();
+                settings = CreateAndSaveNewSettings();
             } else {
                 settings = potentialConfig;
             }
         } else {
-            settings = CreateAndSaveNewFile();
+            settings = CreateAndSaveNewSettings();
         }
 
         return settings;
     }
 
 
-    private static Settings CreateAndSaveNewFile() {
-        var settings = new Settings();
-        var contentToWrite = JsonSerializer.Serialize(settings);
+    internal void Save() {
+        _ = CreateAndSaveSettings(this);
+    }
+
+
+    private static Settings CreateAndSaveNewSettings() {
+        return CreateAndSaveSettings(new Settings() );
+    }
+
+
+    internal static Settings CreateAndSaveSettings(Settings settings) {
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        var contentToWrite = JsonSerializer.Serialize(settings, options);
         EnsureFileAndWriteAllText(SettingValues.configFilePath, contentToWrite);
         return settings;
     }

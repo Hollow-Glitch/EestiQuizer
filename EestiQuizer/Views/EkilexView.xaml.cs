@@ -11,6 +11,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xaml;
 
 
 namespace EestiQuizer.Views; 
@@ -28,7 +29,7 @@ public partial class EkilexView : UserControl {
         InitializeComponent();
         settings = Settings.Load(); //TODO: just temp location, probably should be called sooner, since settings is not UI related.
         client = new RequestClient(settings.EkilexApiKey, settings.ImageCachePath);
-        processor = new Processor(client);
+        processor = new Processor(client, settings);
         OutputBox.TextChanged += (o,args) => OutputBox.ScrollToEnd();
     }
 
@@ -68,7 +69,17 @@ public partial class EkilexView : UserControl {
     }
 
 
+    void WriteSettings() {
+        WriteLine($"{nameof(settings.AnkiProfileName)}  = \"{settings.AnkiProfileName}\"");
+        WriteLine($"{nameof(settings.OutputFolderPath)} = \"{settings.OutputFolderPath}\"");
+        WriteLine($"{nameof(settings.TagForDBChecking)} = \"{settings.TagForDBChecking}\"");
+        WriteLine($"{nameof(settings.EkilexApiKey)}     = --purposefully ommited--");
+        WriteNewLine();
+    }
+
+
     async private void LoadFilesFromFolder_Click(object sender, RoutedEventArgs e) {
+        WriteSettings();
         var fileDialog = new OpenFileDialog { Multiselect = true, };
         if (fileDialog.ShowDialog() != true) return;
 
@@ -93,7 +104,7 @@ public partial class EkilexView : UserControl {
                 foreach (var wordToLoad in wordsToLoad) allWordsWithoutComments.Add(wordToLoad);
             }
 
-            using var ankiDb = new AnkiDatabase("User 1");
+            using var ankiDb = new AnkiDatabase(settings.AnkiProfileName);
 
             foreach(var (wordToLoad, idx) in allWordsWithoutComments.Select((w, i) => (w,i+1) ) ) {
                 DispatchWrite($"{idx:D3}/{allWordsWithoutComments.Count:D3}  {wordToLoad.Word,-20}");
@@ -105,7 +116,7 @@ public partial class EkilexView : UserControl {
                 foreach(var (wordId, wordIdIdx) in wordIds.Select((w,i) => (w,i+1)) ) {
                     DispatchWrite($"    {wordIdIdx:D2}/{wordIds.Count:D2} {wordId,-10}"); //<< assumption for better output, count is less than 10 so no 
                     try {
-                        var rows = ankiDb.GetNoteFields(wordId.ToString(), "generated").ToList();
+                        var rows = ankiDb.GetNoteFields(wordId.ToString(), settings.TagForDBChecking).ToList();
                         if (rows.Count != 0) {
                             DispatchWriteLine($" ... already in DB.");
                             foreach(var row in rows) DispatchWriteLine($"        {row}");
@@ -151,8 +162,13 @@ public partial class EkilexView : UserControl {
                 WriteLine($"    {problematic.Word}");
             }
         }
+        WriteNewLine();
 
         {   // write file with all rows
+            if (EkilexCardDataCollection.Count == 0) {
+                WriteLine("Nothing to write, no file created.");
+                return;
+            }
             var sb = new StringBuilder();
             var adsf = EkilexCardDataCollection.Select(cd => cd.ToAnkiRow(interFieldSeparator) );
             sb.AppendLine(CardData.Header() );
