@@ -78,3 +78,9 @@
 
 [ ] failure reason for processing a wordId is currently not present in UI, nor is it transfered in code.
     Somehow should be able to tell the user why the given wordId failed.
+[ ] handle duplicate words while loading
+    - duplicates of the same file
+    - duplicates accross multiple files when loading from multiple files
+[ ] when loading words which are already in Anki, detect if the current occurence would add a new tag, and report what tag would be added.
+    (Not sure whether this needs to be a different "button" i.e. maybe it would cause a lot of time, thus should be a separate feature
+    that runs independently from the main load button)

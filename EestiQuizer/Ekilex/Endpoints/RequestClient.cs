@@ -29,18 +29,20 @@ public class RequestClient {
 
 
     HttpClient imageClient = new HttpClient();
-    internal void DownloadImage(string url) {
+    internal string DownloadImage(string url) {
         // ex.: https://sonaveeb.ee/files/images/v6i.svg
+        //TODO: probably we need handling of words with spaces which in url have the funny characters.
         var fileName = url.Split('/').LastOrDefault();
         if (fileName is null) throw new NotImplementedException($"We couldn't get the last slash separated segment of the url: {url}");
         var filePath = Path.Combine(imageOutputFolder, fileName);
-        if (File.Exists(filePath) ) return; //<< early return to prevent wasted effort.
+        if (File.Exists(filePath) ) return fileName; //<< early return to prevent wasted effort.
 
         string svgContent = imageClient.GetStringAsync(url).Result;
         using var downloadStream = imageClient.GetStreamAsync(url).Result;
         Directory.CreateDirectory(imageOutputFolder);
         using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
         downloadStream.CopyTo(fileStream);
+        return fileName;
         //
         //<< need this instead of below because it seems that the below can't handle jpg which is an option.
         //

@@ -185,17 +185,15 @@ internal class Processor {
             tags = generatedTag + " " + tempTagList.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
         }
 
-        List<string> imageNames; { 
-            imageNames = lexeme.meaning?.images
-                ?.Where(i => i.url is not null)
-                .Select(i => 
-                    i.url.Split("/").Last() //TODO: probably we need handling of words with spaces which in url have the funny characters.
-                )
+        List<string> imageNames = []; { 
+            List<string> imageUrls = lexeme.meaning?.images
+                ?.Where(i => i.url is not null).Select(i => i.url!)
                 .ToList()
                 ?? [];
 
-            foreach(var url in imageNames) {
-                client.DownloadImage(url); 
+            foreach(var url in imageUrls) {
+                var fileName = client.DownloadImage(url); 
+                imageNames.Add(fileName);
             }
         }
 

@@ -29,7 +29,7 @@ public class CardData {
 
     internal string ToAnkiRow(string interFieldSeparator) {
         //>> these are intentionally left blank for now
-        var images    = ImageNamesInCache.StringJoin(" ");
+        var images    = ImageNamesInCache.Select(i => $"""<img src="{i}" />""").StringJoin(" ");
         var audio     = "";
         var frontHint = "";
         var backHint  = "";
