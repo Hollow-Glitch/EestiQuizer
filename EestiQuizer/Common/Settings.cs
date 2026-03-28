@@ -14,6 +14,11 @@ internal static class SettingValues {
 }
 
 
+/// <summary>
+/// This class has multiple purposes:
+/// - UI   : hence ObservableObject.
+/// - JSON : deserialized from file with JsonSerilizer.
+/// </summary>
 public partial class Settings : ObservableObject {
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ImageCachePath))]

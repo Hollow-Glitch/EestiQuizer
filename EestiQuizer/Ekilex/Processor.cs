@@ -136,7 +136,9 @@ internal class Processor {
             if (translations.Count == 0) return null; //<< if we don't have any translations then there is nothing to learn hence meaningless to continue.
         }
 
-        string form1 = ""; string form2 = ""; string form3 = ""; string wordClass; {
+        string form1 = ""; string form2 = ""; string form3 = "";
+        string form4 = ""; string form5 = ""; string form6 = "";
+        string wordClass; {
             var paradigms = wordDetail?.word?.paradigms
                 ?.Where(paradigm => paradigm.wordClass is not null).ToList()
                 ?? [];
@@ -151,6 +153,13 @@ internal class Processor {
                 form1 = paradigm.forms.Where(form => form.morphCode.Equals(SgN) ).Select(form => form.value).Distinct().StringJoin(", ");
                 form2 = paradigm.forms.Where(form => form.morphCode.Equals(SgG) ).Select(form => form.value).Distinct().StringJoin(", ");
                 form3 = paradigm.forms.Where(form => form.morphCode.Equals(SgP) ).Select(form => form.value).Distinct().StringJoin(", ");
+
+                const string PlN = nameof(PlN);
+                const string PlG = nameof(PlG);
+                const string PlP = nameof(PlP);
+                form4 = paradigm.forms.Where(form => form.morphCode.Equals(SgN) ).Select(form => form.value).Distinct().StringJoin(", ");
+                form5 = paradigm.forms.Where(form => form.morphCode.Equals(SgG) ).Select(form => form.value).Distinct().StringJoin(", ");
+                form6 = paradigm.forms.Where(form => form.morphCode.Equals(SgP) ).Select(form => form.value).Distinct().StringJoin(", ");
             } else 
             if (wordClass.Equals("verb", InvariantCultureIgnoreCase) ) {
                 const string IndPrSg1 = nameof(IndPrSg1);
@@ -204,6 +213,9 @@ internal class Processor {
             Form1 = form1,
             Form2 = form2,
             Form3 = form3,
+            Form4 = form4,
+            Form5 = form5,
+            Form6 = form6,
             WordClass = wordClass,
             PartOfSpeech = pos,
             Translations = translations.StringJoin(", "),
