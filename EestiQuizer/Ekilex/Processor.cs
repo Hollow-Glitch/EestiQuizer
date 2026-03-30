@@ -81,15 +81,43 @@ internal class Processor {
     }
 
 
-    internal CardData? LoadWord(WordToLoad wordToLoad, int wordId) {
+    string PosToName(string posCode) {
+        return posCode switch {
+            "adj"   => "omadussõna", //<< double "s"
+            "prep"  => "eessõna",    //<< double "s"
+            "postp" => "tagasõna",
+            "s"     => "nimisõna",
+            "v"     => "tegusõna",
+            "konj"  => "sidesõna",
+            "num"   => "marvsõna",
+            "adv"   => "määrsõna",
+            ""      => "! MISSING !",
+            _ => throw new NotImplementedException()
+        };
+    }
+
+
+    /// <summary>
+    /// In case `cardData` is null, then `reason` contains the reason why it is null.
+    /// This is to ensure that in UI we can communicate this with user.
+    /// </summary>
+    internal struct LoadWordResult {
+        internal LoadWordResult(CardData? cardData, string? reason) {
+            this.cardData = cardData;
+            this.reason = reason;
+        }
+        internal CardData? cardData;
+        internal string? reason;
+    }
+    internal LoadWordResult LoadWord(WordToLoad wordToLoad, int wordId) {
         var potWordDetail = client.WordDetails(wordId);
         if (potWordDetail is null) {
             throw new ArgumentNullException();
         }
         var wordDetail = potWordDetail!;
         //>> Let's ignore prefixes and sufixes
-        if (wordDetail.word?.prefixoid ?? false) return null;
-        if (wordDetail.word?.suffixoid ?? false) return null;
+        if (wordDetail.word?.prefixoid ?? false) return new LoadWordResult(null, "It is a prefixoid, hence ignoring.");
+        if (wordDetail.word?.suffixoid ?? false) return new LoadWordResult(null, "it is a suffixoid, hence ignoring.");
 
         //>> I must choose a lexeme and work with only one otherwise I could mix examples of one with the translation of another incompatible one...
         //   Big assumption, the first lexeme is what soneveeb chooses which shall be good enough for me
@@ -99,7 +127,7 @@ internal class Processor {
                 ?.Where(l => l.@public ?? false)
                 .OrderBy(l => l.datasetCode == "eki" ? 0 : 1) //<< prioritize eki as it is the most authoritative.
                 .FirstOrDefault();
-            if (_lexeme is null) return null;
+            if (_lexeme is null) return new LoadWordResult(null, "No lexemes sufficing criteria found.");
             lexeme = _lexeme!;
         }
 
@@ -112,7 +140,10 @@ internal class Processor {
                         .SelectMany(langGroup => langGroup.synonyms)
                         .ToList()
                         ?? [];
-                if (_synonyms.Count == 0) return null; //<< in case we have zero then we can't translate, then it is meaningless to continue.
+
+                if (_synonyms.Count == 0) return new LoadWordResult(null, "No synonyms found.");
+                //<< in case we have zero then we can't translate, then it is meaningless to continue.
+
                 synonyms = _synonyms.Where(synonym => synonym.type?.Equals(MEANING_WORD, InvariantCultureIgnoreCase) ?? false ).ToList();
                 if (synonyms.Count == 0) {
                     synonyms = _synonyms; //<< we reset back in case we now have nothing because then all we had were MEANING_RELs
@@ -133,7 +164,8 @@ internal class Processor {
                     .Distinct()
                     .Take(4)
                     .ToList();
-            if (translations.Count == 0) return null; //<< if we don't have any translations then there is nothing to learn hence meaningless to continue.
+            if (translations.Count == 0) return new LoadWordResult(null, "No translations found.");
+            //<< if we don't have any translations then there is nothing to learn hence meaningless to continue.
         }
 
         string form1 = ""; string form2 = ""; string form3 = "";
@@ -142,7 +174,7 @@ internal class Processor {
             var paradigms = wordDetail?.word?.paradigms
                 ?.Where(paradigm => paradigm.wordClass is not null).ToList()
                 ?? [];
-            if (paradigms.Count == 0) return null;
+            if (paradigms.Count == 0) return new LoadWordResult(null, "No paradigms found.");
             //if (paradigms.Count is not 1) throw new NotImplementedException(); //TODO: deal with this
             var paradigm = paradigms[0];
             wordClass = paradigm.wordClass; // one of: muutumatu, noomen, verb
@@ -157,9 +189,9 @@ internal class Processor {
                 const string PlN = nameof(PlN);
                 const string PlG = nameof(PlG);
                 const string PlP = nameof(PlP);
-                form4 = paradigm.forms.Where(form => form.morphCode.Equals(SgN) ).Select(form => form.value).Distinct().StringJoin(", ");
-                form5 = paradigm.forms.Where(form => form.morphCode.Equals(SgG) ).Select(form => form.value).Distinct().StringJoin(", ");
-                form6 = paradigm.forms.Where(form => form.morphCode.Equals(SgP) ).Select(form => form.value).Distinct().StringJoin(", ");
+                form4 = paradigm.forms.Where(form => form.morphCode.Equals(PlN) ).Select(form => form.value).Distinct().StringJoin(", ");
+                form5 = paradigm.forms.Where(form => form.morphCode.Equals(PlG) ).Select(form => form.value).Distinct().StringJoin(", ");
+                form6 = paradigm.forms.Where(form => form.morphCode.Equals(PlP) ).Select(form => form.value).Distinct().StringJoin(", ");
             } else 
             if (wordClass.Equals("verb", InvariantCultureIgnoreCase) ) {
                 const string IndPrSg1 = nameof(IndPrSg1);
@@ -180,8 +212,11 @@ internal class Processor {
         var proficiencyLevel = lexeme.lexemeProficiencyLevelCode ?? "";
         //var usages = lexeme.usages?.Select(usage => usage.value) ?? [];
         var usages = CollectUsages(lexeme.usages);
-        //string pos = lexeme.pos?.FirstOrDefault()?.code ?? throw new NotImplementedException();
-        string pos = lexeme.pos?.FirstOrDefault()?.code ?? ""; //TODO check this
+
+        //== Part of speech
+        //string pos = (lexeme.pos?.FirstOrDefault()?.code ?? "") + " " + (lexeme.pos?.FirstOrDefault()?.value ?? "");
+        //<< in case something new pops-up comment below and uncomment this to see what it is.
+        string pos = PosToName(lexeme.pos?.FirstOrDefault()?.code ?? "");
 
         string tags; {
             // We are prepending everything here so that in Anki all these tags are cleanly subtags of the generated tag.
@@ -206,7 +241,7 @@ internal class Processor {
             }
         }
 
-        return new CardData() {
+        var cardData = new CardData() {
             RequestedWord = wordToLoad.Word,
 
             Id = form1 + " " + wordId,
@@ -225,5 +260,6 @@ internal class Processor {
             ProficiencyLevel = proficiencyLevel,
             ImageNamesInCache = imageNames,
         };
+        return new LoadWordResult(cardData, null);
     }
 }

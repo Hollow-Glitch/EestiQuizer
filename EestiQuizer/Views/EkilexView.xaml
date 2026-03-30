@@ -82,6 +82,21 @@
                     Binding="{Binding Form3}"
                     Width="100"
                 />
+                <DataGridTextColumn 
+                    Header="Form4"
+                    Binding="{Binding Form4}"
+                    Width="100"
+                />
+                <DataGridTextColumn 
+                    Header="Form5"
+                    Binding="{Binding Form5}"
+                    Width="100"
+                />
+                <DataGridTextColumn 
+                    Header="Form6"
+                    Binding="{Binding Form6}"
+                    Width="100"
+                />
                 <DataGridTextColumn
                     Header="WordClass"
                     Binding="{Binding WordClass}"

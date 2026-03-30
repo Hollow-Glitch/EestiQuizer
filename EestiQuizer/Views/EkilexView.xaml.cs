@@ -58,8 +58,8 @@ public partial class EkilexView : UserControl {
         var wordIds = processor.DetermineWordIds(wordToLoad.Word);
         foreach(var wordId in wordIds) {
             WriteLine($"{wordId}");
-            var cardData = processor.LoadWord(wordToLoad, wordId);
-            if (cardData is not null) EkilexCardDataCollection.Add(cardData);
+            var loadWordResult = processor.LoadWord(wordToLoad, wordId);
+            if (loadWordResult.cardData is not null) EkilexCardDataCollection.Add(loadWordResult.cardData);
         }
     }
 
@@ -130,17 +130,18 @@ public partial class EkilexView : UserControl {
                         return;
                     }
                     var sw_getWordDetail = Stopwatch.StartNew();
-                    var cardData = processor.LoadWord(wordToLoad, wordId);
+                    var loadWordResult = processor.LoadWord(wordToLoad, wordId);
                     sw_getWordDetail.Stop();
                     const string success = nameof(success);
                     const string failure = nameof(failure);
                     string report;
-                    if (cardData is not null) {
-                        Dispatch( () => EkilexCardDataCollection.Add(cardData) );
+                    if (loadWordResult.cardData is not null) {
+                        Dispatch( () => EkilexCardDataCollection.Add(loadWordResult.cardData) );
                         hasLoadedAtLeastOne = true;
                         report = success;
                     } else {
                         report = failure;
+                        report = $"{failure} - {loadWordResult.reason}";
                     }
                     DispatchWriteLine($" ... {report}  time=({sw_getWordDetail.ElapsedMilliseconds,5})");
                     Dispatch( () => CardDataGrid.ScrollIntoView(CardDataGrid.Items[CardDataGrid.Items.Count - 1]) );
