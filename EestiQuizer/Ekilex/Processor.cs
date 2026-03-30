@@ -83,15 +83,18 @@ internal class Processor {
 
     string PosToName(string posCode) {
         return posCode switch {
-            "adj"   => "omadussõna", //<< double "s"
-            "prep"  => "eessõna",    //<< double "s"
-            "postp" => "tagasõna",
-            "s"     => "nimisõna",
-            "v"     => "tegusõna",
-            "konj"  => "sidesõna",
-            "num"   => "marvsõna",
-            "adv"   => "määrsõna",
-            ""      => "! MISSING !",
+            "adj"    => "omadussõna", //<< double "s"
+            "prep"   => "eessõna",    //<< double "s"
+            "postp"  => "tagasõna",
+            "s"      => "nimisõna",
+            "v"      => "tegusõna",
+            "konj"   => "sidesõna",
+            "num"    => "marvsõna",
+            "adv"    => "määrsõna",
+            "prop"   => "pärisnimi",
+            "pron"   => "asesõna",
+            "interj" => "hüüdsõna",
+            ""       => "! MISSING !",
             _ => throw new NotImplementedException()
         };
     }

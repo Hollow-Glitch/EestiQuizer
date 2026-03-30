@@ -74,10 +74,11 @@
 [x] currently profileName, tag/-s, example limit, etc., are hard coded values, make these configurable either via settings or with UI - or both
     (i.e. changing UI will change settings and when opened will load and add value to UI).
 
+[x] failure reason for processing a wordId is currently not present in UI, nor is it transfered in code.
+    Somehow should be able to tell the user why the given wordId failed.
+
 ----------------------------------------------------------------------------------------------------
 
-[ ] failure reason for processing a wordId is currently not present in UI, nor is it transfered in code.
-    Somehow should be able to tell the user why the given wordId failed.
 [ ] handle duplicate words while loading
     - duplicates of the same file
     - duplicates accross multiple files when loading from multiple files
