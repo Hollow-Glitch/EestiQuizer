@@ -195,14 +195,21 @@ internal class Processor {
                 form4 = paradigm.forms.Where(form => form.morphCode.Equals(PlN) ).Select(form => form.value).Distinct().StringJoin(", ");
                 form5 = paradigm.forms.Where(form => form.morphCode.Equals(PlG) ).Select(form => form.value).Distinct().StringJoin(", ");
                 form6 = paradigm.forms.Where(form => form.morphCode.Equals(PlP) ).Select(form => form.value).Distinct().StringJoin(", ");
-            } else 
+            } else
             if (wordClass.Equals("verb", InvariantCultureIgnoreCase) ) {
-                const string IndPrSg1 = nameof(IndPrSg1);
                 const string Sup = nameof(Sup);
+                const string IndPrSg1 = nameof(IndPrSg1);   // [Ind]icattive [Pr]esent
+                const string PtsPtIps = nameof(PtsPtIps);   //... tud / dud
+                form1 = paradigm.forms.Where(form => form.morphCode.Equals(Sup)       ).Select(form => form.value).Distinct().StringJoin(", "); // ma
+                form2 = paradigm.forms.Where(form => form.morphCode.Equals(IndPrSg1)  ).Select(form => form.value).Distinct().StringJoin(", "); // olevik 1p sg
+                form3 = paradigm.forms.Where(form => form.morphCode.Equals(PtsPtIps)  ).Select(form => form.value).Distinct().StringJoin(", "); // nud
+
                 const string Inf = nameof(Inf);
-                form1 = paradigm.forms.Where(form => form.morphCode.Equals(Sup)      ).Select(form => form.value).Distinct().StringJoin(", ");
-                form2 = paradigm.forms.Where(form => form.morphCode.Equals(Inf)      ).Select(form => form.value).Distinct().StringJoin(", ");
-                form3 = paradigm.forms.Where(form => form.morphCode.Equals(IndPrSg1) ).Select(form => form.value).Distinct().StringJoin(", ");
+                const string IndIpfSg1 = nameof(IndIpfSg1); // [Ind]dicative [I]m[p]erfect
+                const string PtsPtPs = nameof(PtsPtPs);     //... nud
+                form4 = paradigm.forms.Where(form => form.morphCode.Equals(Inf)       ).Select(form => form.value).Distinct().StringJoin(", "); // da
+                form5 = paradigm.forms.Where(form => form.morphCode.Equals(IndIpfSg1) ).Select(form => form.value).Distinct().StringJoin(", "); // lihtminevik 1p sg
+                form6 = paradigm.forms.Where(form => form.morphCode.Equals(PtsPtPs)   ).Select(form => form.value).Distinct().StringJoin(", "); // tud / dud
             } else
             if (wordClass.Equals("muutumatu", InvariantCultureIgnoreCase) ) {
                 const string ID = nameof(ID);

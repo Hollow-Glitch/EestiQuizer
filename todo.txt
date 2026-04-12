@@ -81,7 +81,25 @@
   - The tag was added by anki because we generated the tag "generated::" when the proficiencyLevel was nothing.
   - Now we are adding levels as for example: "generated::level::A1"; and explicitly adding "generated::level::none".
 
+--- Idea
+    Shouldn't it rather be better if we would not just use generic forms like form1, form2, form3, etc
+    but rather have a field for Nsg, Gsg, ..., ma, da, tud-dud, ...?
+    - noOO!!!! then I would have a brutal number of fields, I already have a lot of fields! 
+
+[x] For verbs I think (later gemini confirmed more or less)
+    form1(ma     ) form4(da,ta,a    )
+    form2(olevik ) form5(lihtminevik)
+    form3(tud,dud) form6(nud        )
+    maybe I need the impersonal(umbisikuline)? (-dakse, -takse, -akse.)
+    - gemini says that I don't need the umbi because it is 99% of the time derivable from the (tud,dud)
+    - on sõnaveeb in the top right little table, the forms which they are showing there I assume ar the most important ones
+      whiche are:
+        ma, da, sg3p, tud-dud, lihtminevik, nud, imperative, 
+
 ----------------------------------------------------------------------------------------------------
+
+[ ] write logs from textbox into a file!
+[ ] add the word classes somehow? because at the moment locating all the muutumatu is not possible neither with tags nor with text search...
 
 [ ] handle duplicate words while loading
     - duplicates of the same file
@@ -89,3 +107,4 @@
 [ ] when loading words which are already in Anki, detect if the current occurence would add a new tag, and report what tag would be added.
     (Not sure whether this needs to be a different "button" i.e. maybe it would cause a lot of time, thus should be a separate feature
     that runs independently from the main load button)
+
