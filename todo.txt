@@ -97,10 +97,10 @@
         ma, da, sg3p, tud-dud, lihtminevik, nud, imperative, 
 [x] write logs from textbox into a file!
 
-----------------------------------------------------------------------------------------------------
-
 [x] add the word classes somehow? because at the moment locating all the muutumatu is not possible neither with tags nor with text search...
   - added PoF and wordClass as tag.
+
+----------------------------------------------------------------------------------------------------
 
 [ ] handle duplicate words while loading
     - duplicates of the same file
