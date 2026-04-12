@@ -212,14 +212,23 @@ internal class Processor {
             }
         }
 
-        var proficiencyLevel = lexeme.lexemeProficiencyLevelCode ?? "";
+        var proficiencyLevel = lexeme.lexemeProficiencyLevelCode ?? "none";
         //var usages = lexeme.usages?.Select(usage => usage.value) ?? [];
         var usages = CollectUsages(lexeme.usages);
 
         //== Part of speech
         //string pos = (lexeme.pos?.FirstOrDefault()?.code ?? "") + " " + (lexeme.pos?.FirstOrDefault()?.value ?? "");
         //<< in case something new pops-up comment below and uncomment this to see what it is.
-        string pos = PosToName(lexeme.pos?.FirstOrDefault()?.code ?? "");
+        var posCode = lexeme.pos?.FirstOrDefault()?.code ?? "";
+        string pos = PosToName(posCode);
+        if (posCode.Equals("v") ) {
+            // English translations for verbs are missing the "to"
+            // word here we add it back if the estonian word is a verb, hopefully this is a sufficient check.
+            // Modal english verbs shouldn't have the "to" but I guess I will fix it by hand when I discover them.
+            for (int i = 0; i < translations.Count; i++) {
+                translations[i] = "to " + translations[i];
+            }
+        }
 
         string tags; {
             // We are prepending everything here so that in Anki all these tags are cleanly subtags of the generated tag.
@@ -228,7 +237,7 @@ internal class Processor {
             const string generatedTag = "generated";
             IEnumerable<string> tempTagList =
                 wordToLoad.Tags
-                .Append(proficiencyLevel);
+                .Append("level::" + proficiencyLevel);
             tags = generatedTag + " " + tempTagList.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
         }
 
