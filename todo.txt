@@ -20,7 +20,7 @@
 [x] (sonapi) create new translation loading algo which would read the meaning translations rather than the top list
     - irrelevant since I switched to ekilex
 
-[x] mauybe deprecate the current `SonapiResponse.WordFormValues` function and make it take a `SearchResult` since that is the only thing it is currently
+[x] maybe deprecate the current `SonapiResponse.WordFormValues` function and make it take a `SearchResult` since that is the only thing it is currently
     operating upon.
     - started using ekilex
 
@@ -76,6 +76,10 @@
 
 [x] failure reason for processing a wordId is currently not present in UI, nor is it transfered in code.
     Somehow should be able to tell the user why the given wordId failed.
+
+[x] fix bug where "blank" tag is added somehow implicitly
+  - The tag was added by anki because we generated the tag "generated::" when the proficiencyLevel was nothing.
+  - Now we are adding levels as for example: "generated::level::A1"; and explicitly adding "generated::level::none".
 
 ----------------------------------------------------------------------------------------------------
 
