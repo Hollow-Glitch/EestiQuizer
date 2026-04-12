@@ -95,10 +95,10 @@
     - on sõnaveeb in the top right little table, the forms which they are showing there I assume ar the most important ones
       whiche are:
         ma, da, sg3p, tud-dud, lihtminevik, nud, imperative, 
+[x] write logs from textbox into a file!
 
 ----------------------------------------------------------------------------------------------------
 
-[ ] write logs from textbox into a file!
 [ ] add the word classes somehow? because at the moment locating all the muutumatu is not possible neither with tags nor with text search...
 
 [ ] handle duplicate words while loading

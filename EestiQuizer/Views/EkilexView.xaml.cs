@@ -11,6 +11,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents.Serialization;
 using System.Xaml;
 
 
@@ -170,20 +171,23 @@ public partial class EkilexView : UserControl {
                 WriteLine("Nothing to write, no file created.");
                 return;
             }
+            
+            var timePrefix = DateTime.Now.ToString($"yyyy-MM-dd_HH-mm-ss");
+            var ankiFilePath = Path.Combine(settings.OutputFolderPath, $"{timePrefix}.txt");
+            var logFilePath = Path.Combine(settings.OutputFolderPath, $"{timePrefix}.log");
+
             var sb = new StringBuilder();
             var adsf = EkilexCardDataCollection.Select(cd => cd.ToAnkiRow(interFieldSeparator) );
             sb.AppendLine(CardData.Header() );
             sb.AppendJoin("\n", adsf);
-            //var rows =
-            //    EkilexCardDataCollection.Select(cd => cd.ToAnkiRow(interFieldSeparator) )
-            //    .StringJoin("\n");
-            WriteLine($"Writing `{EkilexCardDataCollection.Count}` cards to `{settings.OutputFolderPath}`.");
-            
-            var timePrefix = DateTime.Now.ToString($"yyyy-MM-dd_HH-mm-ss");
-            var fileName = $"{timePrefix}.txt";
-            var filePath = Path.Combine(settings.OutputFolderPath, fileName);
-            //Utilities.EnsureFileAndWriteAllText(filePath, rows);
-            Utilities.EnsureFileAndWriteAllText(filePath, sb.ToString() );
+
+            Utilities.EnsureFileAndWriteAllText(ankiFilePath, sb.ToString() );
+            Utilities.EnsureFileAndWriteAllText(logFilePath, OutputBox.Text);
+
+            WriteLine("Files written:");
+            WriteLine($"- {ankiFilePath}");
+            WriteLine($"  written {EkilexCardDataCollection.Count} cards/rows.");
+            WriteLine($"- {logFilePath}");
         }
     }
 
