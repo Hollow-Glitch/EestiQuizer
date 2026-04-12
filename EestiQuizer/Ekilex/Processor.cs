@@ -244,7 +244,9 @@ internal class Processor {
             const string generatedTag = "generated";
             IEnumerable<string> tempTagList =
                 wordToLoad.Tags
-                .Append("level::" + proficiencyLevel);
+                .Append("level::" + proficiencyLevel)
+                .Append("wordClass::" + wordClass)
+                .Append("pos::" + pos);
             tags = generatedTag + " " + tempTagList.Select(tag => $"{generatedTag}::{tag}").StringJoin(" ");
         }
 
