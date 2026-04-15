@@ -96,14 +96,18 @@ public partial class EkilexView : UserControl {
         List<WordToLoad> problematicWords = [];
         var sqliteExceptionOccured = false;
         await Task.Run( () => {
-            var allWordsWithoutComments = new List<WordToLoad>();
+            var _allWordsWithoutComments = new List<WordToLoad>();
             foreach (var fileName in fileDialog.FileNames) {
                 var wordsOfFile = File.ReadAllLines(fileName)
                     .Where(line => !line.Contains("#") && !string.IsNullOrWhiteSpace(line));
                 string[] tags = Path.GetFileNameWithoutExtension(fileName).Split("__") ?? [];
                 var wordsToLoad = wordsOfFile.Select(word => new WordToLoad(word, tags));
-                foreach (var wordToLoad in wordsToLoad) allWordsWithoutComments.Add(wordToLoad);
+                foreach (var wordToLoad in wordsToLoad) _allWordsWithoutComments.Add(wordToLoad);
             }
+            var allWordsWithoutComments = _allWordsWithoutComments
+                .GroupBy(item => item.Word)
+                .Select(group => new WordToLoad(group.Key, group.SelectMany(x => x.Tags).Distinct() ))
+                .ToList();
 
             using var ankiDb = new AnkiDatabase(settings.AnkiProfileName);
 

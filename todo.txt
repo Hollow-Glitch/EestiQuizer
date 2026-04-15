@@ -104,11 +104,22 @@
     Don't put in the <ul> or <ol> so that it remains a free choice for anki template - also this allows us to define the list tag in anki with
     an attached class which if we would have multiple lists would allow us to differentiate between them in the styling section (in anki).
 
-----------------------------------------------------------------------------------------------------
+ !  I don't need to add the wordclasses to the card, the PoS is already there to help with dissambiguating if needed or with confusion.
 
-[ ] handle duplicate words while loading
+[x] handle duplicate words while loading
     - duplicates of the same file
     - duplicates accross multiple files when loading from multiple files
+    i.e. if a given occurence of a word would give it a set of tags, let that be A and it is also in another file and that occurrence would give it tag set B
+    then merge together these sets and only load the word once with the tag set = \union{A, B}
+    Furthermore ensure that there are no multiple instances of the same tag-path.
+
+----------------------------------------------------------------------------------------------------
+
+
+[ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
+    Thus enabling automatic tag updates - since then we now know how to deserialize the Tags field from Anki DB and search and add in case some is missing
+    (they can be considered missing because now we may have files which in the past when the current DB instance was generated we did not have.
+    Maybe this just needs to be a part of the mentioned new button/feature so that is able to be configurable and hence able to react.
 [ ] when loading words which are already in Anki, detect if the current occurence would add a new tag, and report what tag would be added.
     (Not sure whether this needs to be a different "button" i.e. maybe it would cause a lot of time, thus should be a separate feature
     that runs independently from the main load button)
