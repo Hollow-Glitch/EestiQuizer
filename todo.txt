@@ -115,6 +115,37 @@
 
 ----------------------------------------------------------------------------------------------------
 
+[ ] introduce file level tag set setting or something like that, i.e. we set tag "x" and "z::y" with line "#tags: x z::y" and until another #tags:
+    comes along we will be loading words with associating them with the tags "x" and "z::y".
+    Syntactic elements
+        %  ... comment, will be totally ignored, this is what # was till now.
+        #  ... set tag level-1
+        ## ... set tag level-2
+        ###... set tag level-3
+    Example:
+        # A::B C D::E::F
+        eesnimi
+        % eesnimi will have the tags: A::B C D::E::F
+        % Thus with only # you can do everything, and the additional tag levels are only for convenience and probably an overkill feature.
+    Example:
+        #  A B
+        ## C D
+        eesnimi
+        % now eesnimi will have tags: A::C A::D B::C B::D
+    Thus the way this is evaluated is that for each tag in level x it appends tag from tag level x+1
+    Thus if you don't want complex multiple times occuring tags under another tags then don't use this and only write for example
+        #  A
+        ## C D
+        eesnimi
+        % then you will only have eesnimi with tags: A::C A::D
+        % Or just write as what the first example suggested:
+        # A::C A::D
+    Example:
+        #  A::C
+        ## B
+        eesnimi
+        % now there is only a single tag: A::C::B
+    
 
 [ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
     Thus enabling automatic tag updates - since then we now know how to deserialize the Tags field from Anki DB and search and add in case some is missing
