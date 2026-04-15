@@ -100,6 +100,10 @@
 [x] add the word classes somehow? because at the moment locating all the muutumatu is not possible neither with tags nor with text search...
   - added PoF and wordClass as tag.
 
+[x] In order to gain flexibility in anki and ability to format prettier the list of examples serialize examples as a sequence of html list items.
+    Don't put in the <ul> or <ol> so that it remains a free choice for anki template - also this allows us to define the list tag in anki with
+    an attached class which if we would have multiple lists would allow us to differentiate between them in the styling section (in anki).
+
 ----------------------------------------------------------------------------------------------------
 
 [ ] handle duplicate words while loading

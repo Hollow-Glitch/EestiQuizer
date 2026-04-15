@@ -275,7 +275,9 @@ internal class Processor {
             WordClass = wordClass,
             PartOfSpeech = pos,
             Translations = translations.StringJoin(", "),
-            Examples = usages.Take(settings.UsageSentencesToTake).StringJoin("<br>"),
+            Examples = usages.Take(settings.UsageSentencesToTake)
+                .Select(ex => $"<li>{ex}</li>")
+                .StringJoin(""),
             Tags = tags,
 
             ProficiencyLevel = proficiencyLevel,
