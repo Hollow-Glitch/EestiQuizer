@@ -118,10 +118,13 @@
 [ ] introduce file level tag set setting or something like that, i.e. we set tag "x" and "z::y" with line "#tags: x z::y" and until another #tags:
     comes along we will be loading words with associating them with the tags "x" and "z::y".
     Syntactic elements
-        %  ... comment, will be totally ignored, this is what # was till now.
-        #  ... set tag level-1
-        ## ... set tag level-2
-        ###... set tag level-3
+        %    ... comment, will be totally ignored, this is what # was till now.
+        #    ... set   tag level-1, reset tag levels above, tag list required
+        ##   ... set   tag level-2, reset tag levels above, tag list required
+        ###  ... set   tag level-3, reset tag levels above, tag list required
+        #-   ... reset tag level-1, reset tag levels above, tag list dissallowed
+        ##-  ... reset tag level-2, reset tag levels above, tag list dissallowed
+        ###- ... reset tag level-3, reset tag levels above, tag list dissallowed
     Example:
         # A::B C D::E::F
         eesnimi
@@ -145,6 +148,62 @@
         ## B
         eesnimi
         % now there is only a single tag: A::C::B
+    The point of this
+        is to write a file, be able to set the root or 2 which will be used for all but set level-2 tags for sub-sets of the file.
+        Example usage would be the Tere book, there I want to be able to have the tags source::Tere::chapt_05 for example.
+        That at the moment with the file name based solution (i.e. that you define a list of tags by the separator being "__") is not possible
+        because its not possible probably to have colons in file names.
+    The problem I now realized
+        is that I am not handling very smartly another requirement that I have, which is to set some tags which shall be added to all but
+        which shall not be considered during the chaining process.
+        Example:
+            @ source::Tere::bluebox
+            # source::Tere
+            ## chapt_05
+            eesnimi
+            ## chapt_06
+            perekonnanimi
+        Where
+            eesnimi       tags: source::Tere::bluebox source::Tere::chapt_05
+            perekonnanimi tags: source::Tere::bluebox source::Tere::chapt_06
+        NOTE
+            although until now implicit - when you set a particular tag level the previous tags of that level are overwritten with the new ones.
+            I think I also want because it is maybe more intuitive to reset the levels higher than the currently reset one: if we are setting level x then levels >x are reset.
+            Example
+                # A
+                ## B
+                word1  % has tags: A::B
+                ## C
+                word2  % has tags: A::C
+                # D
+                word2  % has tags: D
+            The problem I now realize is that I don't have a way here to reset a tag level without setting another value.
+            So maybe I should reset when I write(options):
+                ##
+                ##-
+                ##!
+                ##--
+                ##==
+                !!
+            I think I will choose #- since the "-" is minus so seems fitting.
+    Grand example with regexes since that way I can trivially handle spaces or their lack of concisely.   
+    (The spaces here are important to test them.
+     You still need to trim the groups.)    % 
+            % asdfasdf
+               % adsfasdf                                             % ^ *%* *$
+            @ source::Tere::bluebox                                   % ^@ *(.*?) *%.*$      OR    ^ *@ *(.*?)(?= *%|$)
+            # source::Tere                                            % ^# *([^#].*)%.*$     OR    ^ *# *([^#].+?)(?= *%|$)
+            ## chapt_05 xy                                            % ^## *([^#].*)%.*$    OR    ^ *## *([^#].+?)(?= *%|$)
+            word1                         % source::Tere::chapt_05    % 
+             ## chapt_06                                               
+            word2                         % source::Tere::chapt_06    % 
+            word3                         % source::Tere::chapt_06    % 
+             # source::piltsõnastik                                   % 
+               @ source::Tere::bluebox
+            word4                         % source::piltsõnastik      % 
+            word5                         % source::piltsõnastik      % 
+            
+
     
 
 [ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"

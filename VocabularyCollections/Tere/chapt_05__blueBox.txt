@@ -1,4 +1,6 @@
-# page 42 - done
+@ source::Tere::chapt_05  source::Tere::blueBox
+
+% page 42 - done
 kell
 täpselt
 kolmveerand
@@ -6,7 +8,7 @@ pool
 praegu
 millal
 
-# page 43 - done
+% page 43 - done
 kohtuma
 tulema
 kokku saama
@@ -20,7 +22,7 @@ umbes
 kuskil
 olgu
 
-# page 47 - done
+% page 47 - done
 aasta
 kui vana sa oled?
 teater

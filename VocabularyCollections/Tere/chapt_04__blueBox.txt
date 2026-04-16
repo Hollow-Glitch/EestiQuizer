@@ -1,4 +1,6 @@
-# page 31 - done
+@ source::Tere::chapt_04  source::Tere::blueBox
+
+% page 31 - done
 eesnimi
 nimi
 perekonnanimi
@@ -8,7 +10,7 @@ naaber
 kolleeg
 töökaaslane
 
-# page 32 - done
+% page 32 - done
 ülemus
 tuttav
 samuti
@@ -16,7 +18,7 @@ tuttavaks saama
 või
 meeldiv
 
-# page 34 - todo
+% page 34 - todo
 ema
 isa
 töö

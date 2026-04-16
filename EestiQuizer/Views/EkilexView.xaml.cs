@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents.Serialization;
@@ -78,6 +79,76 @@ public partial class EkilexView : UserControl {
         WriteNewLine();
     }
 
+    [GeneratedRegex(@"^ *%* *$")]
+    private static partial Regex CommentLine { get; }
+
+    [GeneratedRegex(@"^ *@ *(.*?)(?= *%|$)")]
+    private static partial Regex NonChainingTagsLine { get; }
+
+    [GeneratedRegex(@"^ *# *([^#].+?)(?= *%|$)")]
+    private static partial Regex Level1ChainingTagsLine { get; }
+
+    [GeneratedRegex(@"^ *## *([^#].+?)(?= *%|$)")]
+    private static partial Regex Level2ChainingTagsLine { get; }
+
+    [GeneratedRegex(@"^ *### *([^#].+?)(?= *%|$)")]
+    private static partial Regex Level3ChainingTagsLine { get; }
+
+
+    static List<WordToLoad> LoadFile(string filePath) {
+        List<WordToLoad> words = [];
+        static string[] MatchOfTagFragmentToTags(Match match) =>
+            match.Groups[1].Value.Trim().Split(" ", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        List<string> nonChainingTags = [];
+        List<string> level1Tags = [];
+        List<string> level2Tags = [];
+        List<string> level3Tags = [];
+        foreach(var line in File.ReadAllLines(filePath) ) {
+            if (string.IsNullOrWhiteSpace(line) || CommentLine.IsMatch(line) ) {
+                continue;
+            } else 
+            if (NonChainingTagsLine.Match(line) is { Success: true } match) {
+                var tags = MatchOfTagFragmentToTags(match);
+                nonChainingTags.AddRange(tags);
+            } else
+            if (Level1ChainingTagsLine.Match(line) is { Success: true } matchLevel1) {
+                var tags = MatchOfTagFragmentToTags(matchLevel1).ToList();
+                level1Tags = tags;
+                level2Tags.Clear();
+                level3Tags.Clear();
+            } else
+            if (Level2ChainingTagsLine.Match(line) is { Success: true } matchLevel2) {
+                var tags = MatchOfTagFragmentToTags(matchLevel2).ToList();
+                level2Tags = tags;
+                level3Tags.Clear();
+            } else
+            if (Level3ChainingTagsLine.Match(line) is { Success: true } matchLevel3) {
+                var tags = MatchOfTagFragmentToTags(matchLevel3).ToList();
+                level3Tags = tags;
+            } else {
+                var resultTags = nonChainingTags.Concat(level1Tags).Concat(level2Tags).Concat(level3Tags);
+                words.Add(new WordToLoad(line, resultTags) );
+            }
+        }
+
+        return words;
+    }
+
+
+    List<WordToLoad> LoadFiles(IEnumerable<string> filePaths) {
+        List<WordToLoad> loadedWords = [];
+        foreach(var filePath in filePaths) {
+            loadedWords.AddRange(LoadFile(filePath) );
+        }
+
+        var mergedWords = loadedWords
+            .GroupBy(item => item.Word)
+            .Select(group => new WordToLoad(group.Key, group.SelectMany(x => x.Tags).Distinct() ))
+            .ToList();
+
+        return mergedWords;
+    }
+
 
     async private void LoadFilesFromFolder_Click(object sender, RoutedEventArgs e) {
         WriteSettings();
@@ -96,23 +167,12 @@ public partial class EkilexView : UserControl {
         List<WordToLoad> problematicWords = [];
         var sqliteExceptionOccured = false;
         await Task.Run( () => {
-            var _allWordsWithoutComments = new List<WordToLoad>();
-            foreach (var fileName in fileDialog.FileNames) {
-                var wordsOfFile = File.ReadAllLines(fileName)
-                    .Where(line => !line.Contains("#") && !string.IsNullOrWhiteSpace(line));
-                string[] tags = Path.GetFileNameWithoutExtension(fileName).Split("__") ?? [];
-                var wordsToLoad = wordsOfFile.Select(word => new WordToLoad(word, tags));
-                foreach (var wordToLoad in wordsToLoad) _allWordsWithoutComments.Add(wordToLoad);
-            }
-            var allWordsWithoutComments = _allWordsWithoutComments
-                .GroupBy(item => item.Word)
-                .Select(group => new WordToLoad(group.Key, group.SelectMany(x => x.Tags).Distinct() ))
-                .ToList();
+            var wordsToLoad = LoadFiles(fileDialog.FileNames);
 
             using var ankiDb = new AnkiDatabase(settings.AnkiProfileName);
 
-            foreach(var (wordToLoad, idx) in allWordsWithoutComments.Select((w, i) => (w,i+1) ) ) {
-                DispatchWrite($"{idx:D3}/{allWordsWithoutComments.Count:D3}  {wordToLoad.Word,-20}");
+            foreach(var (wordToLoad, idx) in wordsToLoad.Select((w, i) => (w,i+1) ) ) {
+                DispatchWrite($"{idx:D3}/{wordsToLoad.Count:D3}  {wordToLoad.Word,-20}  {wordToLoad.Tags.StringJoin(" ")}");
                 var wordIds = processor.DetermineWordIds(wordToLoad.Word);
                 DispatchWriteNewLine();
                 //DispatchWriteLine($"    wordId-s: {wordIds.Count}"); //<< think I don't need this since now I am writing x/y ... x out of y

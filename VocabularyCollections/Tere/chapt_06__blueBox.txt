@@ -1,4 +1,6 @@
-# page 52 - todo
+@ source::Tere::chapt_06  source::Tere::blueBox
+
+% page 52 - todo
 suurepärane
 kord
 normaalne
@@ -9,7 +11,7 @@ nagu
 alati
 haige
 
-# page 54 - todo
+% page 54 - todo
 toimuma
 üritus
 kaart
@@ -19,7 +21,7 @@ partnerkaart
 sent
 euro
 
-# page 55 - todo
+% page 55 - todo
 õigus
 palavik
 nohu
