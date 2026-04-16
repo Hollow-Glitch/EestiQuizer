@@ -113,9 +113,7 @@
     then merge together these sets and only load the word once with the tag set = \union{A, B}
     Furthermore ensure that there are no multiple instances of the same tag-path.
 
-----------------------------------------------------------------------------------------------------
-
-[ ] introduce file level tag set setting or something like that, i.e. we set tag "x" and "z::y" with line "#tags: x z::y" and until another #tags:
+[x] introduce file level tag set setting or something like that, i.e. we set tag "x" and "z::y" with line "#tags: x z::y" and until another #tags:
     comes along we will be loading words with associating them with the tags "x" and "z::y".
     Syntactic elements
         %    ... comment, will be totally ignored, this is what # was till now.
@@ -203,7 +201,7 @@
             word4                         % source::piltsõnastik      % 
             word5                         % source::piltsõnastik      % 
             
-
+----------------------------------------------------------------------------------------------------
     
 
 [ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
