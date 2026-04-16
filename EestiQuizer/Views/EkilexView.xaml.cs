@@ -79,7 +79,7 @@ public partial class EkilexView : UserControl {
         WriteNewLine();
     }
 
-    [GeneratedRegex(@"^ *%* *$")]
+    [GeneratedRegex(@"^ *%+.*$")]
     private static partial Regex CommentLine { get; }
 
     [GeneratedRegex(@"^ *@ *(.*?)(?= *%|$)")]
