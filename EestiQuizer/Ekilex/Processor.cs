@@ -1,8 +1,8 @@
-﻿using System.IO;
-using EestiQuizer.Ekilex.Endpoints;
+﻿using EestiQuizer.Ekilex.Endpoints;
 
 using static System.StringComparison;
 using EestiQuizer.Common;
+using System.Net.Http.Headers;
 
 
 namespace EestiQuizer.Ekilex; 
@@ -21,20 +21,24 @@ namespace EestiQuizer.Ekilex;
  *
  */
 
-internal class Processor {
+internal partial class Processor {
     RequestClient client;
     Settings settings;
+    Cache cache;
 
-    internal Processor(RequestClient client, Settings settings) {
+    internal Processor(RequestClient client, Settings settings, Cache cache) {
         this.client = client;
         this.settings = settings;
+        this.cache = cache;
     }
 
 
     internal List<int> DetermineWordIds(string word) {
-        var wordSearch = client.WordSearch(word);
+        var potWordIds = cache.LoadWordIds(word);
+        if (potWordIds is not null) return potWordIds;
 
         List<int> wordIds;
+        var wordSearch = client.WordSearch(word);
         if (wordSearch is null) {
             var formSearch = client.FormSearch(word);
             wordIds = formSearch! //<< dunno how things will work out, so for now I will assume whatever.
@@ -46,6 +50,8 @@ internal class Processor {
                 ?.Select(res => res.wordId).ToList()
                 ?? []; // in case we feed in a phrase and not a word then it can happen that we don't find an id. Thus empty here.
         }
+
+        cache.SaveWordIds(word, wordIds);
 
         return wordIds;
     }
@@ -113,9 +119,15 @@ internal class Processor {
         internal string? reason;
     }
     internal LoadWordResult LoadWord(WordToLoad wordToLoad, int wordId) {
-        var potWordDetail = client.WordDetails(wordId);
-        if (potWordDetail is null) {
-            throw new ArgumentNullException();
+        WordDetailsEndpoint.Root? potWordDetail; {
+            potWordDetail = cache.LoadWordDetails(wordId);
+            if (potWordDetail is null) {
+                potWordDetail = client.WordDetails(wordId);
+
+                if (potWordDetail is null) throw new ArgumentNullException();
+
+                cache.SaveWordDetails(wordId, potWordDetail);
+            }
         }
         var wordDetail = potWordDetail!;
         //>> Let's ignore prefixes and sufixes

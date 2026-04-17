@@ -22,6 +22,8 @@ internal static class SettingValues {
 public partial class Settings : ObservableObject {
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ImageCachePath))]
+    [NotifyPropertyChangedFor(nameof(WordDetailsCachePath))]
+    [NotifyPropertyChangedFor(nameof(WordIdsCachePath))]
     private string outputFolderPath = SettingValues.defaultOutputFolderPath;
     [ObservableProperty]
     private string ekilexApiKey = String.Empty;
@@ -45,6 +47,12 @@ public partial class Settings : ObservableObject {
 
     [JsonIgnore]
     public string ImageCachePath => Path.Combine(OutputFolderPath, "images");
+
+    [JsonIgnore]
+    public string WordIdsCachePath => Path.Combine(OutputFolderPath, "wordIds");
+
+    [JsonIgnore]
+    public string WordDetailsCachePath => Path.Combine(OutputFolderPath, "wordDetails");
 
     /// <summary>
     /// Use <see cref="Settings.Load"/> to load from file, this only creates a default instance.

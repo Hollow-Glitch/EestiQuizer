@@ -24,6 +24,7 @@ public partial class EkilexView : UserControl {
     Settings settings;
     Processor processor;
     RequestClient client;
+    Cache cache;
 
     const string interFieldSeparator = "|";
 
@@ -31,7 +32,8 @@ public partial class EkilexView : UserControl {
         InitializeComponent();
         settings = Settings.Load(); //TODO: just temp location, probably should be called sooner, since settings is not UI related.
         client = new RequestClient(settings.EkilexApiKey, settings.ImageCachePath);
-        processor = new Processor(client, settings);
+        cache = new Cache(settings.WordIdsCachePath, settings.WordDetailsCachePath);
+        processor = new Processor(client, settings, cache);
         OutputBox.TextChanged += (o,args) => OutputBox.ScrollToEnd();
     }
 
