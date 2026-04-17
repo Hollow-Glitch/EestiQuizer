@@ -104,6 +104,8 @@ public partial class EkilexView : UserControl {
         List<string> level2Tags = [];
         List<string> level3Tags = [];
         foreach(var line in File.ReadAllLines(filePath) ) {
+            // NOTE: I mean speed wise here it is currently unimportant, but it would have been smarter to first detect a non-instruction line
+            //       since 90% of the time that is the line that we can expect.
             if (string.IsNullOrWhiteSpace(line) || CommentLine.IsMatch(line) ) {
                 continue;
             } else 
@@ -127,7 +129,8 @@ public partial class EkilexView : UserControl {
                 level3Tags = tags;
             } else {
                 var resultTags = nonChainingTags.Concat(level1Tags).Concat(level2Tags).Concat(level3Tags);
-                words.Add(new WordToLoad(line, resultTags) );
+                var word = line.Trim();
+                words.Add(new WordToLoad(word, resultTags) );
             }
         }
 

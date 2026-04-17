@@ -1,0 +1,26 @@
+# == noomen
+# nimisona
+kolleeg
+# omadussona
+roheline
+# arvsona
+kaks
+# asesona
+see, kõik
+
+#== verb
+vabandama
+
+#== muutumatu
+# sidesõna
+kuid
+ja
+# määrsõna
+koos
+ka
+# tagasõna
+pärast
+# eessõna
+ilma
+# hüüdsõna
+pst
