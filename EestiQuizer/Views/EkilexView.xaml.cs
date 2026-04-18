@@ -103,14 +103,14 @@ public partial class EkilexView : UserControl {
             match.Groups[1].Value.Trim().Split(" ", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         List<string> nonChainingTags = [];
         List<string> level1Tags = [];
-        List<string> level2Tags = [];
-        List<string> level3Tags = [];
+        List<string?> level2Tags = [];
+        List<string?> level3Tags = [];
         foreach(var line in File.ReadAllLines(filePath) ) {
             // NOTE: I mean speed wise here it is currently unimportant, but it would have been smarter to first detect a non-instruction line
             //       since 90% of the time that is the line that we can expect.
             if (string.IsNullOrWhiteSpace(line) || CommentLine.IsMatch(line) ) {
                 continue;
-            } else 
+            } else
             if (NonChainingTagsLine.Match(line) is { Success: true } match) {
                 var tags = MatchOfTagFragmentToTags(match);
                 nonChainingTags.AddRange(tags);
@@ -130,7 +130,23 @@ public partial class EkilexView : UserControl {
                 var tags = MatchOfTagFragmentToTags(matchLevel3).ToList();
                 level3Tags = tags;
             } else {
-                var resultTags = nonChainingTags.Concat(level1Tags).Concat(level2Tags).Concat(level3Tags);
+                List<string> levelTags = [];
+                if ( level1Tags.Any() ) {
+                    if ( ! level2Tags.Any() && level3Tags.Any() ) throw new InvalidDataException("lvl2 not defined while lvl3 defined");
+                    if ( ! level2Tags.Any() ) level2Tags.Add(null);
+                    if ( ! level3Tags.Any() ) level3Tags.Add(null);
+                    foreach(var lvl1 in level1Tags) {
+                        foreach(var lvl2 in level2Tags) {
+                            foreach(var lvl3 in level3Tags) {
+                                List<string> tags = [lvl1];
+                                if (lvl2 is not null) tags.Add(lvl2);
+                                if (lvl3 is not null) tags.Add(lvl3);
+                                levelTags.AddRange(tags.StringJoin("::") );
+                            }
+                        }
+                    }
+                }
+                var resultTags = nonChainingTags.Concat(levelTags);
                 var word = line.Trim();
                 words.Add(new WordToLoad(word, resultTags) );
             }

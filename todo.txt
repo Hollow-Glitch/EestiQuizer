@@ -202,10 +202,10 @@
             word5                         % source::piltsõnastik      % 
 
 [x] implement caching of: wordIds, wordDetails
+[x] fix construction of tags, at the momemnt I have the feeling that the various tag levels are not put together
             
 ----------------------------------------------------------------------------------------------------
     
-[ ] fix construction of tags, at the momemnt I have the feeling that the various tag levels are not put together
 
 [ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
     Thus enabling automatic tag updates - since then we now know how to deserialize the Tags field from Anki DB and search and add in case some is missing
