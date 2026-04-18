@@ -234,11 +234,13 @@
     - and then for each unique form we call the word search REST as well
       because for the word tulema, the form search returns 2 while the
       word search returns 3.
+
+[x] BUG:
+    the word "Elukutse", "Aastaajad" are not loading properly, and no reason is logged.
+    The problem was that they started with capital letters, so now we are auto lowering, not sure how I feel about that...
             
 ----------------------------------------------------------------------------------------------------
 
-[ ] BUG:
-    the word "elukutse" is not loading properly, and no reason is logged.
 
 [ ] BUG:
     for phrases which are in ekilex, I am currently having issues with images at least on the UI level

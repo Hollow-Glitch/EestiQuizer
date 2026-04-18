@@ -38,8 +38,9 @@ internal partial class Processor {
         var potWordIds = cache.LoadWordIds(word);
         if (potWordIds is not null) return potWordIds;
 
-        var forms = client.FormSearch(word)
-            ?.Select(form => form.wordValue)
+        //>> this lowering is questionable but without it words like Aastaajad were not being found...
+        var forms = client.FormSearch(word.ToLower() )
+            ?.Select(form => form.wordValue) 
             .Distinct()
             .ToList();
         if (forms is null || forms.Count == 0) return [];
