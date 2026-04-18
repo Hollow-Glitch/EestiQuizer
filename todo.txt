@@ -226,8 +226,19 @@
       here also I don't see in sonaveeb entries for `kloppima` which are not lexemePublic but since my lexeme lookup is incorrect,
       I found one which is not even showing up in the sonaveeb UI.
 --- these two bugs are related and currently they are implemented in the same Where clause by searching for a lexeme that sufficess both.
+
+[x] BUG:
+    the word `mähkmed` which is not in base form, sõnaveeb says it is `mähe`
+    is not found currently.
+    - the solution is to always perform a form search first.
+    - and then for each unique form we call the word search REST as well
+      because for the word tulema, the form search returns 2 while the
+      word search returns 3.
             
 ----------------------------------------------------------------------------------------------------
+
+[ ] BUG:
+    the word "elukutse" is not loading properly, and no reason is logged.
 
 [ ] BUG:
     for phrases which are in ekilex, I am currently having issues with images at least on the UI level

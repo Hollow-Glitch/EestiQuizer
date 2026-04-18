@@ -36,21 +36,20 @@ internal partial class Processor {
 
     internal List<int> DetermineWordIds(string word) {
         var potWordIds = cache.LoadWordIds(word);
-        if (potWordIds is not null && potWordIds.Count != 0) return potWordIds; //TODO: remove count check, this is just to refresh cache
+        if (potWordIds is not null) return potWordIds;
 
-        List<int> wordIds;
-        var wordSearch = client.WordSearch(word);
-        if (wordSearch is null || wordSearch.totalCount == 0) {
-            var formSearch = client.FormSearch(word);
-            wordIds = formSearch! //<< dunno how things will work out, so for now I will assume whatever.
-                .Select(res => res.wordId)
-                .ToList();
-        } else {
-            wordIds = wordSearch.words
-                ?.Where(res => res.lang?.Equals("est", InvariantCultureIgnoreCase) ?? false)
-                ?.Select(res => res.wordId).ToList()
-                ?? []; // in case we feed in a phrase and not a word then it can happen that we don't find an id. Thus empty here.
-        }
+        var forms = client.FormSearch(word)
+            ?.Select(form => form.wordValue)
+            .Distinct()
+            .ToList();
+        if (forms is null || forms.Count == 0) return [];
+
+        var wordIds = forms
+            .SelectMany(form => client.FormSearch(form) ?? [] )
+            .Where(res => res.lang?.Equals("est", InvariantCultureIgnoreCase) ?? false)
+            .Select(res => res.wordId)
+            .Distinct()
+            .ToList() ?? []; // in case we feed in a phrase and not a word then it can happen that we don't find an id. Thus empty here.
 
         cache.SaveWordIds(word, wordIds);
 
