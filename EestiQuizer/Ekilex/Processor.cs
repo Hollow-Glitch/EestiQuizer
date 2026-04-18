@@ -3,6 +3,7 @@
 using static System.StringComparison;
 using EestiQuizer.Common;
 using System.Net.Http.Headers;
+using System.CodeDom.Compiler;
 
 
 namespace EestiQuizer.Ekilex; 
@@ -35,11 +36,11 @@ internal partial class Processor {
 
     internal List<int> DetermineWordIds(string word) {
         var potWordIds = cache.LoadWordIds(word);
-        if (potWordIds is not null) return potWordIds;
+        if (potWordIds is not null && potWordIds.Count != 0) return potWordIds; //TODO: remove count check, this is just to refresh cache
 
         List<int> wordIds;
         var wordSearch = client.WordSearch(word);
-        if (wordSearch is null) {
+        if (wordSearch is null || wordSearch.totalCount == 0) {
             var formSearch = client.FormSearch(word);
             wordIds = formSearch! //<< dunno how things will work out, so for now I will assume whatever.
                 .Select(res => res.wordId)
@@ -141,7 +142,23 @@ internal partial class Processor {
             WordDetailsEndpoint.Lexeme? _lexeme = wordDetail
                 ?.lexemes
                 ?.Where(l => l.@public ?? false)
-                .OrderBy(l => l.datasetCode == "eki" ? 0 : 1) //<< prioritize eki as it is the most authoritative.
+                //>> prioritize eki as it is the most authoritative.
+                .OrderBy(l => l.datasetCode == "eki" ? 0 : 1)
+                //>> We must choose such a lexeme which has an english translation/synonym, otherwise we will choose one
+                //   which for example only has russian translations - but maybe the next one would have had an english one.
+// merged into next one, let's see whether helps            //    .Where(l => l.synonymLangGroups?.Any(group => group.lang.Equals("eng") ) ?? false)
+                //>> We must find such a lexeme, for which we will be able to find translations, otherwise in the next section we would fail.
+                //   Without the next condition, we can indeed find a lexeme but sometimes it won't be translatable.
+                //   Thus here we are requiring that synonymLangGroups[*].synonyms[*].words[*].lexemePublic is true otherwise we default to false which means that we don't accept it.
+                .Where(l => {
+                    var synonymGroup = l.synonymLangGroups?.FirstOrDefault(g => g.lang.Equals("eng"));
+                    return synonymGroup?.synonyms.Any(s => s.words.Any(w => w.lexemePublic is true) ) ?? false;
+
+                    //l.synonymLangGroups?.Any(g
+                    //    => g.lang.Equals("eng")
+                    //    && g.synonyms.Any(s => s.words.Any(w => w.lexemePublic is true) ) 
+                    //) ?? false
+                })
                 .FirstOrDefault();
             if (_lexeme is null) return new LoadWordResult(null, "No lexemes sufficing criteria found.");
             lexeme = _lexeme!;

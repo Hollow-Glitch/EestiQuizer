@@ -211,14 +211,30 @@
 
 [x] BUG:
     missing posCode, add vrm => siirdevorm mapping.
-            
-----------------------------------------------------------------------------------------------------
-    
 
-[ ] BUG:
+[x] BUG:
     in case of words like "müüja" which don't have an english synonym in their first definition
     we categorize the word as failed, altough in its second definition(or whatever its called) it has an eng synonym.
     Thus implement checking the next one in case the first one fails.
+[x] BUG:
+    Currently lexeme lookup is incorrect/incomplete, it altough can find a lexeme
+    but it can find such a lexeme which doesn't have an english synonym which is lexemePublic
+    thus "the next section fails because the previous section did not gave it a chance".
+    In other words, the lexeme must be chosen such that there is a lexemePublic synonym
+    - why lexemePublic? apart from the fact that it is how I did it till now,
+      probably because I figured out sometime ago that those are which I see in sonaveeb,
+      here also I don't see in sonaveeb entries for `kloppima` which are not lexemePublic but since my lexeme lookup is incorrect,
+      I found one which is not even showing up in the sonaveeb UI.
+--- these two bugs are related and currently they are implemented in the same Where clause by searching for a lexeme that sufficess both.
+            
+----------------------------------------------------------------------------------------------------
+
+[ ] BUG:
+    for phrases which are in ekilex, I am currently having issues with images at least on the UI level
+    because it is not loading in this application. Not yet tested in anki.
+    But I want them to show correctly here as well. Currently the image file name seems weird
+    it is: peale%20minema.svg
+    Probably the % there is not good, not sure why I did not get an exception when was saving it.
 
 [ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
     Thus enabling automatic tag updates - since then we now know how to deserialize the Tags field from Anki DB and search and add in case some is missing
