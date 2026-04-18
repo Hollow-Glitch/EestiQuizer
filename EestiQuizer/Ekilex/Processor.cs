@@ -100,6 +100,7 @@ internal partial class Processor {
             "prop"   => "pärisnimi",
             "pron"   => "asesõna",
             "interj" => "hüüdsõna",
+            "vrm"    => "siirdevorm", // example: las
             ""       => "! MISSING !",
             _ => throw new NotImplementedException()
         };
@@ -151,7 +152,7 @@ internal partial class Processor {
             List<WordDetailsEndpoint.Synonym> synonyms; {
                 List<WordDetailsEndpoint.Synonym> _synonyms = lexeme.synonymLangGroups
                     //== group
-                        ?.Where(group => group.lang.Equals("eng", InvariantCultureIgnoreCase) )
+                        ?.Where(group => group.lang?.Equals("eng", InvariantCultureIgnoreCase) ?? false )
                         .SelectMany(langGroup => langGroup.synonyms)
                         .ToList()
                         ?? [];

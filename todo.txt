@@ -203,9 +203,22 @@
 
 [x] implement caching of: wordIds, wordDetails
 [x] fix construction of tags, at the momemnt I have the feeling that the various tag levels are not put together
+
+[x] BUG:
+    in case of input lines like "kui vana sa oled?" we are crashing while saving
+    wordId cache file because of invalid characters.
+    Thus implement file name sanitization.
+
+[x] BUG:
+    missing posCode, add vrm => siirdevorm mapping.
             
 ----------------------------------------------------------------------------------------------------
     
+
+[ ] BUG:
+    in case of words like "müüja" which don't have an english synonym in their first definition
+    we categorize the word as failed, altough in its second definition(or whatever its called) it has an eng synonym.
+    Thus implement checking the next one in case the first one fails.
 
 [ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
     Thus enabling automatic tag updates - since then we now know how to deserialize the Tags field from Anki DB and search and add in case some is missing
