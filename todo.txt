@@ -238,16 +238,16 @@
 [x] BUG:
     the word "Elukutse", "Aastaajad" are not loading properly, and no reason is logged.
     The problem was that they started with capital letters, so now we are auto lowering, not sure how I feel about that...
-            
-----------------------------------------------------------------------------------------------------
 
-
-[ ] BUG:
+[x] BUG:
     for phrases which are in ekilex, I am currently having issues with images at least on the UI level
     because it is not loading in this application. Not yet tested in anki.
     But I want them to show correctly here as well. Currently the image file name seems weird
     it is: peale%20minema.svg
     Probably the % there is not good, not sure why I did not get an exception when was saving it.
+    - when downloading an image, we are now saving it by first transforming "%20" to " ".
+
+----------------------------------------------------------------------------------------------------
 
 [ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
     Thus enabling automatic tag updates - since then we now know how to deserialize the Tags field from Anki DB and search and add in case some is missing

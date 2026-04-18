@@ -32,7 +32,7 @@ public class RequestClient {
     internal string DownloadImage(string url) {
         // ex.: https://sonaveeb.ee/files/images/v6i.svg
         //TODO: probably we need handling of words with spaces which in url have the funny characters.
-        var fileName = url.Split('/').LastOrDefault();
+        var fileName = url.Split('/').LastOrDefault()?.Replace("%20", " ");
         if (fileName is null) throw new NotImplementedException($"We couldn't get the last slash separated segment of the url: {url}");
         var filePath = Path.Combine(imageOutputFolder, fileName);
         if (File.Exists(filePath) ) return fileName; //<< early return to prevent wasted effort.
