@@ -36,7 +36,7 @@
             />
             <MenuItem
                 Header="Load word"
-                Click="TextBoxToEkilex_Click"
+                Click="LoadWord_Click"
             />
             <MenuItem
                 Header="Load files"

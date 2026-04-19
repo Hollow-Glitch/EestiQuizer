@@ -55,7 +55,7 @@ public partial class EkilexView : UserControl {
     // ================================================================================
 
 
-    private void TextBoxToEkilex_Click(object sender, RoutedEventArgs e) {
+    private void LoadWord_Click(object sender, RoutedEventArgs e) {
         var word = InputBox.Text;
 
         var wordToLoad = new WordToLoad(word, []);
@@ -199,6 +199,10 @@ public partial class EkilexView : UserControl {
                 //DispatchWriteLine($"    wordId-s: {wordIds.Count}"); //<< think I don't need this since now I am writing x/y ... x out of y
 
                 bool hasLoadedAtLeastOne = false;
+                if (wordIds.Count == 0) {
+                    // the loop won't even start, then the FAILED message is written.
+                    DispatchWriteLine($"    ... No word id-s found.");
+                }
                 foreach(var (wordId, wordIdIdx) in wordIds.Select((w,i) => (w,i+1)) ) {
                     DispatchWrite($"    {wordIdIdx:D2}/{wordIds.Count:D2} {wordId,-10}"); //<< assumption for better output, count is less than 10 so no 
                     try {

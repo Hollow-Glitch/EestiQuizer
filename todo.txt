@@ -247,7 +247,23 @@
     Probably the % there is not good, not sure why I did not get an exception when was saving it.
     - when downloading an image, we are now saving it by first transforming "%20" to " ".
 
+[x] BUG:
+    make words like s‰‰stukaart write some sensible reason to log why it FAILED.
+
+[-] Ensure that the "load word" button and "load words" button do the same.
+    That means saving a file as well.
+    - naaah, a lot of work for nothing, this is just perfectionism...
+
+[x] Ensure that with words like "m‰ngima" we load and save all the pictures
+    and that in anki they work.
+    - it's already how it works.
+
 ----------------------------------------------------------------------------------------------------
+
+
+[ ] It's not just that the input may contain multiple occurences of the same word
+    the problem is that the input may contain multiple times the same word in multiple forms.
+    In that case I think I am loading it multiple times, this needs to be investigated.
 
 [ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
     Thus enabling automatic tag updates - since then we now know how to deserialize the Tags field from Anki DB and search and add in case some is missing
