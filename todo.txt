@@ -258,12 +258,31 @@
     and that in anki they work.
     - it's already how it works.
 
+[x] Change logging in the ui to a listbox or something because seemingly especially calling ScrollToEnd every time is killing performance!!!
+    But the reallocation due to the text changing is absolutely not helping either.
+
 ----------------------------------------------------------------------------------------------------
 
 
-[ ] It's not just that the input may contain multiple occurences of the same word
+[ongoing?] It's not just that the input may contain multiple occurences of the same word
     the problem is that the input may contain multiple times the same word in multiple forms.
     In that case I think I am loading it multiple times, this needs to be investigated.
+    - VERIFIED : it happens, used a file with: tulema, tulen, tuled and I got the same word with same wordId multiple times.
+    - IMPL NOTE: I thought that I can just "Select()" the wordIds to the wordToLoad list and keep the rest of the implementation 
+      as is and still iterate through the new list as if it was the wordToLoad list.
+      BUT
+      if the input line is "tuled" then that is a shared form between "tulema"(to come) and "tuli"(fire)
+      hence not possible.
+      Thus I need to
+      - deduplicate the input lines (i.e. wordToLoad list) to minimize REST calls to form search
+      - since we want to report words for which no id was obtainable:
+        create a map in the form of a List<(WordToLoad wordToLoad, int[] ids)> - i.e. a map of wordToLoad -> ids
+        where the ids are obtained from the formSearch
+      - report all for which could not obtain an id
+      - transform the map by flattening into a List<(id, wordToLoad)>
+      - remove duplicates by the id
+      - do more or less the same logic we were doing till now.
+
 
 [ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
     Thus enabling automatic tag updates - since then we now know how to deserialize the Tags field from Anki DB and search and add in case some is missing

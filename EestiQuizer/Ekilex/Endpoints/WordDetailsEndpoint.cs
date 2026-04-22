@@ -373,7 +373,7 @@ public static class WordDetailsEndpoint {
 
     public class SynonymLangGroup
     {
-        public required string lang { get; set; }
+        public required string? lang { get; set; }
         public bool? selected { get; set; }
         public required List<Synonym> synonyms { get; set; }
         public List<object>? inexactSynonyms { get; set; }

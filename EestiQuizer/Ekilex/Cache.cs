@@ -55,18 +55,18 @@ internal class Cache {
         return wordDetails;
     }
 
-    internal void SaveWordIds(string word, List<int> wordIds) {
+    internal void SaveWordIds(string word, List<NormalizedWord> wordIds) {
         var filePath = PathToWordIdCollectionFileOfWordOrPhrase(word);
         var content = JsonSerializer.Serialize(wordIds);
         Utilities.EnsureFileAndWriteAllText(filePath, content);
     }
 
-    internal List<int>? LoadWordIds(string word) {
+    internal List<NormalizedWord>? LoadWordIds(string word) {
         var filePath = PathToWordIdCollectionFileOfWordOrPhrase(word);
         if ( ! File.Exists(filePath) ) return null;
 
         var content = File.ReadAllText(filePath);
-        var wordIds = JsonSerializer.Deserialize<List<int>>(content);
+        var wordIds = JsonSerializer.Deserialize<List<NormalizedWord>>(content);
         return wordIds;
     }
 }

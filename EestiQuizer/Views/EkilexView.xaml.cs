@@ -13,6 +13,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents.Serialization;
+using System.Windows.Media;
+using System.Windows.Threading;
 using System.Xaml;
 
 
@@ -21,10 +23,14 @@ namespace EestiQuizer.Views;
 
 public partial class EkilexView : UserControl {
     public ObservableCollection<CardData> EkilexCardDataCollection { get; set; } = new();
+    public ObservableCollection<string> Logs { get; set; } = new();
     Settings settings;
     Processor processor;
     RequestClient client;
     Cache cache;
+
+    private DispatcherTimer logAutoScroll = new(DispatcherPriority.Background);
+    private ScrollViewer? logScrollViewer;
 
     const string interFieldSeparator = "|";
 
@@ -34,21 +40,75 @@ public partial class EkilexView : UserControl {
         client = new RequestClient(settings.EkilexApiKey, settings.ImageCachePath);
         cache = new Cache(settings.WordIdsCachePath, settings.WordDetailsCachePath);
         processor = new Processor(client, settings, cache);
-        OutputBox.TextChanged += (o,args) => OutputBox.ScrollToEnd();
+
+        //>> Find the scroll viewer of the Log listbox so that we can auto scroll sanely without jumps.
+        this.Loaded += (object sender, RoutedEventArgs e) => {
+            // https://biggert.github.io/2009/04/01/virtualized-wpf-listbox-scrolling-because-scrollintoview-doesnt-always-work
+            logScrollViewer = GetVisualChild<ScrollViewer>(LogView)!;
+        };
+        //>> We use a DispatcherTimer which we can start and stop with
+        //   `StartAutoScroll` and `StopAutoScroll` (see below).
+        logAutoScroll.Interval = TimeSpan.FromMilliseconds(100);
+        logAutoScroll.Tick += ProcessBuffer;
     }
 
-    void WriteNewLine() { OutputBox.Text += "\n"; }
-    void WriteLine(string text) { OutputBox.Text += text + "\n"; }
-    void Write(string text) { OutputBox.Text += text; }
+    void WriteNewLine() => Logs.Add("");
+    void WriteLine(string text) => Logs.Add(text);
+    //void Write(string text) { OutputBox.Text += text; }
+    //TODO: figure out how to write non-line logs with the list based logging approach
+
+    //>> Method that scrolls the log ListBox the DispatcherTimer calls to 
+    //   enable auto scrolling implementation.
+    private void ProcessBuffer(object? sender, EventArgs e) {
+        if (Logs.Count == 0) return;
+        logScrollViewer.ScrollToBottom();
+        LogView.UpdateLayout();
+    }
+
+
+    /// <summary>
+    /// The point of this is to be used for finding the ScrollViewer of the ListBox.
+    /// I couldn't find another way to scroll without jumps to the right on long lines.
+    /// </summary>
+    public static T? GetVisualChild<T>(DependencyObject parent) where T : DependencyObject {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++) {
+            DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T target) return target;
+            
+            T? childOfChild = GetVisualChild<T>(child);
+            if (childOfChild != null) return childOfChild;
+        }
+        return null;
+    }
+
+
+    /// <summary>
+    /// Use this instead <see cref="logAutoScroll.Start"/>.
+    /// </summary>
+    private void StartAutoScroll() {
+        logAutoScroll.Start();
+    }
+
+    /// Use this instead <see cref="logAutoScroll.Stop"/>.
+    /// Reason is that this handles the very last moment by scrolling down
+    /// so that timing is not an issue.
+    private void StopAutoScroll() {
+        logAutoScroll.Stop();
+        //>> ensures that we don't end up without auto scrolling to the bottom at the end.
+        //   Could have happened if the timer did not run at the end before we stopped it.
+        LogView.ScrollIntoView(LogView.Items[Logs.Count - 1]);
+    }
 
 
     void DispatchWriteNewLine() => Dispatch( WriteNewLine );
     void DispatchWriteLine(string text) => Dispatch( () => WriteLine(text) );
-    void DispatchWrite(string text) => Dispatch( () => Write(text) );
+    //void DispatchWrite(string text) => Dispatch( () => Write(text) );
+    //TODO: figure out how to write non-line logs with the list based logging approach
+    //      See commented out `Write` above.
 
 
     private void ClearOutput_Click(object sender, RoutedEventArgs e) {
-        OutputBox.Text = "";
+        Logs.Clear();
         EkilexCardDataCollection.Clear();
     }
 
@@ -58,11 +118,11 @@ public partial class EkilexView : UserControl {
     private void LoadWord_Click(object sender, RoutedEventArgs e) {
         var word = InputBox.Text;
 
-        var wordToLoad = new WordToLoad(word, []);
-        var wordIds = processor.DetermineWordIds(wordToLoad.Word);
-        foreach(var wordId in wordIds) {
-            WriteLine($"{wordId}");
-            var loadWordResult = processor.LoadWord(wordToLoad, wordId);
+        var wordToLoad = new WordToLoad(word, [], []);
+        var normalizedWords = processor.DetermineWordIds(wordToLoad.Word);
+        foreach(var normalizedWord in normalizedWords) {
+            WriteLine($"{normalizedWord.BaseForm}  {normalizedWord.Id}");
+            var loadWordResult = processor.LoadWord(wordToLoad, normalizedWord.Id);
             if (loadWordResult.cardData is not null) EkilexCardDataCollection.Add(loadWordResult.cardData);
         }
     }
@@ -105,7 +165,7 @@ public partial class EkilexView : UserControl {
         List<string> level1Tags = [];
         List<string?> level2Tags = [];
         List<string?> level3Tags = [];
-        foreach(var line in File.ReadAllLines(filePath) ) {
+        foreach(var (line, lineNumber) in File.ReadAllLines(filePath).WithIndexBase1() ) {
             // NOTE: I mean speed wise here it is currently unimportant, but it would have been smarter to first detect a non-instruction line
             //       since 90% of the time that is the line that we can expect.
             if (string.IsNullOrWhiteSpace(line) || CommentLine.IsMatch(line) ) {
@@ -146,9 +206,10 @@ public partial class EkilexView : UserControl {
                         }
                     }
                 }
-                var resultTags = nonChainingTags.Concat(levelTags);
+                var resultTags = nonChainingTags.Concat(levelTags).ToList();
                 var word = line.Trim();
-                words.Add(new WordToLoad(word, resultTags) );
+                var sourceLocation = new SourceLocation(filePath, lineNumber);
+                words.Add(new WordToLoad(word, resultTags, [sourceLocation]) );
             }
         }
 
@@ -156,6 +217,17 @@ public partial class EkilexView : UserControl {
     }
 
 
+    /// <summary>
+    /// Loads words to load from files and merges them together.
+    /// This merge happens in the sense that all the info of all the word instances
+    /// become part of the new merged instance.
+    ///
+    /// This does not solve the does not solve the duplication due to potential
+    /// multiple alternative forms of the same word!
+    /// That is handle separately elsewhere for now.
+    /// </summary>
+    /// <param name="filePaths"></param>
+    /// <returns></returns>
     List<WordToLoad> LoadFiles(IEnumerable<string> filePaths) {
         List<WordToLoad> loadedWords = [];
         foreach(var filePath in filePaths) {
@@ -164,14 +236,32 @@ public partial class EkilexView : UserControl {
 
         var mergedWords = loadedWords
             .GroupBy(item => item.Word)
-            .Select(group => new WordToLoad(group.Key, group.SelectMany(x => x.Tags).Distinct() ))
+            .Select(group => {
+                var tags = group.SelectMany(x => x.Tags).Distinct().ToList();
+                var locations = group.SelectMany(x => x.SourceLocations).Distinct().ToList();
+                return new WordToLoad(group.Key, tags, locations);
+            })
             .ToList();
 
-        return mergedWords;
+         return mergedWords;
     }
 
+    // IDEA
+    // ====
+    // > LoadFiles
+    //   -> List<WordToLoad>
+    // > Deduplicate by word while merging tags and source locations.
+    //   - memorize duplicates (we call these verbatim duplicates)
+    // > Log verbatime duplicates
+    // > map each to 0-or-more base form based instances by calling ekilex form api.
+    //   -> List<NormalizedWord>
+    // > Deduplicate by id while merging tags and source locations.
+    //   - memorize duplicates (we call these form duplicates)
+    // > Log form duplicates 
+    // > Process normalized words
 
     async private void LoadFilesFromFolder_Click(object sender, RoutedEventArgs e) {
+        StartAutoScroll();
         WriteSettings();
         var fileDialog = new OpenFileDialog { Multiselect = true, };
         if (fileDialog.ShowDialog() != true) return;
@@ -185,59 +275,102 @@ public partial class EkilexView : UserControl {
 
         var sw_getDetails = Stopwatch.StartNew();
         //TODO: explore using the new `await foreach` syntax here that utilizes `IAsynchEnumerable` thingies.
-        List<WordToLoad> problematicWords = [];
+        List<(WordToLoad wordToLoad, string problem)> problematicWords = [];
         var sqliteExceptionOccured = false;
         await Task.Run( () => {
-            var wordsToLoad = LoadFiles(fileDialog.FileNames);
-
             using var ankiDb = new AnkiDatabase(settings.AnkiProfileName);
 
-            foreach(var (wordToLoad, idx) in wordsToLoad.Select((w, i) => (w,i+1) ) ) {
-                DispatchWrite($"{idx:D3}/{wordsToLoad.Count:D3}  {wordToLoad.Word,-20}  {wordToLoad.Tags.StringJoin(" ")}");
-                var wordIds = processor.DetermineWordIds(wordToLoad.Word);
-                DispatchWriteNewLine();
+            var wordsToLoad = LoadFiles(fileDialog.FileNames);
+            DispatchWriteNewLine();
+            DispatchWriteLine("Loading word id-s:");
+            DispatchWriteLine("------------------");
+
+            List<(NormalizedWord, WordToLoad)> duplicates = [];
+            Dictionary<int, WordToLoad> entriesToLoad = [];
+            foreach(var (wordToLoad, idx) in wordsToLoad.WithIndexBase1() ) {
+                DispatchWriteLine($"{idx:D3}/{wordsToLoad.Count:D3} {wordToLoad.Word}");
+                var normalizedWords = processor.DetermineWordIds(wordToLoad.Word);
+                if (normalizedWords.Count == 0) {
+                    var problem = "No word id-s found.";
+                    DispatchWriteLine($"    {problem}");
+                    problematicWords.Add( (wordToLoad, problem) );
+                    continue;
+                }
+
+                foreach(var normalizedWord in normalizedWords) {
+                    DispatchWriteLine($"    [{normalizedWord.Id,8}]  {normalizedWord.BaseForm}");
+                    if ( entriesToLoad.TryGetValue(normalizedWord.Id, out var existingWordToLoad) ) {
+                        duplicates.Add( (normalizedWord, wordToLoad) );
+                        DispatchWriteLine($"        Duplicate.");
+                        foreach(var tag in wordToLoad.Tags) {
+                            if ( ! existingWordToLoad.Tags.Contains(tag) )
+                                existingWordToLoad.Tags.Add(tag);
+                        }
+                        foreach(var location in wordToLoad.SourceLocations) {
+                            if ( ! existingWordToLoad.SourceLocations.Contains(location) ) //<< TODO: this is probably not necessary, we can't visit the word coming from the same line twice, right?
+                                existingWordToLoad.SourceLocations.Add(location);
+                        }
+                    } else {
+                        DispatchWriteLine($"        New.");
+                        var newWordToLoad = new WordToLoad(normalizedWord.BaseForm, wordToLoad.Tags, wordToLoad.SourceLocations);
+                        entriesToLoad.Add(normalizedWord.Id, newWordToLoad);
+                    }
+                }
+            }
+            //<< TODO: this hasLoadedAtLeastOne thing is now with the change to id based processing no longer seems fit.
+
+            DispatchWriteNewLine();
+            DispatchWriteLine("Duplicates:");
+            DispatchWriteLine("----------");
+            foreach(var (normalizedWord, wordToLoad) in duplicates) {
+                var locations = wordToLoad.SourceLocations.Select(s => $"{s.LineNumber} @ {s.FileName}").StringJoin(" ");
+                DispatchWriteLine($"{normalizedWord.BaseForm} {wordToLoad.Word} {locations}");
+            }
+
+            DispatchWriteNewLine();
+            DispatchWriteLine("Processing words/word-id-s:");
+            DispatchWriteLine("--------------------------");
+            foreach(var (idWithWordToLoad, idx) in entriesToLoad.WithIndexBase1() ) {
+                var id = idWithWordToLoad.Key;
+                var wordToLoad = idWithWordToLoad.Value;
+                DispatchWriteLine($"{idx:D3}/{entriesToLoad.Count:D3}  [{id,8}] {wordToLoad.Word,-20}  {wordToLoad.Tags.StringJoin(" ")}");
                 //DispatchWriteLine($"    wordId-s: {wordIds.Count}"); //<< think I don't need this since now I am writing x/y ... x out of y
 
                 bool hasLoadedAtLeastOne = false;
-                if (wordIds.Count == 0) {
-                    // the loop won't even start, then the FAILED message is written.
-                    DispatchWriteLine($"    ... No word id-s found.");
-                }
-                foreach(var (wordId, wordIdIdx) in wordIds.Select((w,i) => (w,i+1)) ) {
-                    DispatchWrite($"    {wordIdIdx:D2}/{wordIds.Count:D2} {wordId,-10}"); //<< assumption for better output, count is less than 10 so no 
-                    try {
-                        var rows = ankiDb.GetNoteFields(wordId.ToString(), settings.TagForDBChecking).ToList();
-                        if (rows.Count != 0) {
-                            DispatchWriteLine($" ... already in DB.");
-                            foreach(var row in rows) DispatchWriteLine($"        {row}");
-                            hasLoadedAtLeastOne = true; //<< finding it in the DB is equivalent to loading it, because then it is not a problematic word.
-                            continue;
-                        }
-                    } catch (SqliteException e) {
-                        DispatchWriteNewLine();
-                        DispatchWriteLine(e.Message);
-                        sqliteExceptionOccured = true;
-                        return;
+
+                try {
+                    var rows = ankiDb.GetNoteFields(id.ToString(), settings.TagForDBChecking).ToList();
+                    if (rows.Count != 0) {
+                        DispatchWriteLine($"    already in DB.");
+                        foreach(var row in rows) DispatchWriteLine($"        {row}");
+                        hasLoadedAtLeastOne = true; //<< finding it in the DB is equivalent to loading it, because then it is not a problematic word.
+                        continue;
                     }
-                    var sw_getWordDetail = Stopwatch.StartNew();
-                    var loadWordResult = processor.LoadWord(wordToLoad, wordId);
-                    sw_getWordDetail.Stop();
-                    const string success = nameof(success);
-                    const string failure = nameof(failure);
-                    string report;
-                    if (loadWordResult.cardData is not null) {
-                        Dispatch( () => EkilexCardDataCollection.Add(loadWordResult.cardData) );
-                        hasLoadedAtLeastOne = true;
-                        report = success;
-                    } else {
-                        report = failure;
-                        report = $"{failure} - {loadWordResult.reason}";
-                    }
-                    DispatchWriteLine($" ... {report}  time=({sw_getWordDetail.ElapsedMilliseconds,5})");
-                    Dispatch( () => CardDataGrid.ScrollIntoView(CardDataGrid.Items[CardDataGrid.Items.Count - 1]) );
+                } catch (SqliteException e) {
+                    DispatchWriteNewLine();
+                    DispatchWriteLine(e.Message);
+                    sqliteExceptionOccured = true;
+                    return;
                 }
+                var sw_getWordDetail = Stopwatch.StartNew();
+                var loadWordResult = processor.LoadWord(wordToLoad, id);
+                sw_getWordDetail.Stop();
+                const string success = nameof(success);
+                const string failure = nameof(failure);
+                string report;
+                if (loadWordResult.cardData is not null) {
+                    Dispatch( () => EkilexCardDataCollection.Add(loadWordResult.cardData) );
+                    hasLoadedAtLeastOne = true;
+                    report = success;
+                } else {
+                    report = failure;
+                    report = $"{failure} - {loadWordResult.reason}";
+                }
+                DispatchWriteLine($"    {report}  time=({sw_getWordDetail.ElapsedMilliseconds,5})");
+                Dispatch( () => CardDataGrid.ScrollIntoView(CardDataGrid.Items[CardDataGrid.Items.Count - 1]) );
+
                 if ( ! hasLoadedAtLeastOne) {
-                    problematicWords.Add(wordToLoad);
+                    problematicWords.Add( (wordToLoad, loadWordResult.reason!) );
                     DispatchWriteLine("    FAILED.");
                 }
             }
@@ -250,7 +383,7 @@ public partial class EkilexView : UserControl {
             WriteNewLine();
             WriteLine("The following did not load correctly");
             foreach(var problematic in problematicWords) {
-                WriteLine($"    {problematic.Word}");
+                WriteLine($"    {problematic.wordToLoad.Word}  ... {problematic.problem}");
             }
         }
         WriteNewLine();
@@ -271,13 +404,14 @@ public partial class EkilexView : UserControl {
             sb.AppendJoin("\n", adsf);
 
             Utilities.EnsureFileAndWriteAllText(ankiFilePath, sb.ToString() );
-            Utilities.EnsureFileAndWriteAllText(logFilePath, OutputBox.Text);
+            Utilities.EnsureFileAndWriteAllText(logFilePath, Logs.StringJoin(Environment.NewLine) );
 
             WriteLine("Files written:");
             WriteLine($"- {ankiFilePath}");
             WriteLine($"  written {EkilexCardDataCollection.Count} cards/rows.");
             WriteLine($"- {logFilePath}");
         }
+        StopAutoScroll();
     }
 
 

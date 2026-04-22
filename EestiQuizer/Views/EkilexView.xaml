@@ -54,78 +54,78 @@
             x:Name="CardDataGrid"
             Grid.Row="2"
             AutoGenerateColumns="False"
-            ItemsSource="{Binding EkilexCardDataCollection}"
+            ItemsSource="{Binding Path=EkilexCardDataCollection}"
             >
             <DataGrid.Columns>
                 <DataGridTextColumn 
                     Header="level"
-                    Binding="{Binding ProficiencyLevel}"
+                    Binding="{Binding Path=ProficiencyLevel}"
                     Width="Auto"
                 />
                 <DataGridTextColumn 
                     Header="Id"
-                    Binding="{Binding Id}"
+                    Binding="{Binding Path=Id}"
                     Width="100"
                 />
                 <DataGridTextColumn 
                     Header="Form1"
-                    Binding="{Binding Form1}"
+                    Binding="{Binding Path=Form1}"
                     Width="100"
                 />
                 <DataGridTextColumn 
                     Header="Form2"
-                    Binding="{Binding Form2}"
+                    Binding="{Binding Path=Form2}"
                     Width="100"
                 />
                 <DataGridTextColumn 
                     Header="Form3"
-                    Binding="{Binding Form3}"
+                    Binding="{Binding Path=Form3}"
                     Width="100"
                 />
                 <DataGridTextColumn 
                     Header="Form4"
-                    Binding="{Binding Form4}"
+                    Binding="{Binding Path=Form4}"
                     Width="100"
                 />
                 <DataGridTextColumn 
                     Header="Form5"
-                    Binding="{Binding Form5}"
+                    Binding="{Binding Path=Form5}"
                     Width="100"
                 />
                 <DataGridTextColumn 
                     Header="Form6"
-                    Binding="{Binding Form6}"
+                    Binding="{Binding Path=Form6}"
                     Width="100"
                 />
                 <DataGridTextColumn
                     Header="WordClass"
-                    Binding="{Binding WordClass}"
+                    Binding="{Binding Path=WordClass}"
                     Width="100" 
                 />
                 <DataGridTextColumn
                     Header="PartOfSpeech"
-                    Binding="{Binding PartOfSpeech}"
+                    Binding="{Binding Path=PartOfSpeech}"
                     Width="100"
                 />
                 <DataGridTextColumn
                     Header="Translations"
-                    Binding="{Binding Translations}"
+                    Binding="{Binding Path=Translations}"
                     Width="300"
                 />
                 <DataGridTextColumn
                     Header="Tags"
-                    Binding="{Binding Tags}"
+                    Binding="{Binding Path=Tags}"
                     Width="300"
                 />
                 <DataGridTextColumn
                     Header="Examples"
-                    Binding="{Binding Examples}"
+                    Binding="{Binding Path=Examples}"
                     Width="1000"
                 />
                 <DataGridTextColumn 
                     Header="image urls" 
                     Binding="{Binding 
-                        ImageNamesInCache,
+                        Path=ImageNamesInCache,
                         Converter={StaticResource EnumerableToStringConverter}
                     }" 
                     Width="1000" 
@@ -145,14 +145,26 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TextBox
+
+            <!-- This listbox is this complicated because AI suggested
+                 to ensure the virtualization with these incantations.-->
+            <ListBox
+                Name="LogView"
                 Grid.Column="0"
-                Name="OutputBox"
-                IsReadOnly="True"
-                HorizontalScrollBarVisibility="Visible"
-                VerticalScrollBarVisibility="Visible"
+                ItemsSource="{Binding Path=Logs}"
                 FontFamily="Courier New"
-            />
+                VirtualizingStackPanel.IsVirtualizing="True"
+                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                ScrollViewer.CanContentScroll="True"
+                HorizontalContentAlignment="Left"
+            >
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+
             <Wpf:WebView2 
                 x:Name="ImageWebView"
                 Grid.Column="1"

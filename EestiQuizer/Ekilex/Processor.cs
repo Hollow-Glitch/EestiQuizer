@@ -34,7 +34,7 @@ internal partial class Processor {
     }
 
 
-    internal List<int> DetermineWordIds(string word) {
+    internal List<NormalizedWord> DetermineWordIds(string word) {
         var potWordIds = cache.LoadWordIds(word);
         if (potWordIds is not null) return potWordIds;
 
@@ -45,16 +45,16 @@ internal partial class Processor {
             .ToList();
         if (forms is null || forms.Count == 0) return [];
 
-        var wordIds = forms
-            .SelectMany(form => client.FormSearch(form) ?? [] )
+        var idAndBaseForm = forms
+            .SelectMany(form => client.WordSearch(form)?.words ?? [] )
             .Where(res => res.lang?.Equals("est", InvariantCultureIgnoreCase) ?? false)
-            .Select(res => res.wordId)
+            .Select(res => new NormalizedWord(res.wordValue!, res.wordId) )
             .Distinct()
             .ToList() ?? []; // in case we feed in a phrase and not a word then it can happen that we don't find an id. Thus empty here.
 
-        cache.SaveWordIds(word, wordIds);
+        cache.SaveWordIds(word, idAndBaseForm);
 
-        return wordIds;
+        return idAndBaseForm;
     }
 
 
@@ -151,7 +151,8 @@ internal partial class Processor {
                 //   Without the next condition, we can indeed find a lexeme but sometimes it won't be translatable.
                 //   Thus here we are requiring that synonymLangGroups[*].synonyms[*].words[*].lexemePublic is true otherwise we default to false which means that we don't accept it.
                 .Where(l => {
-                    var synonymGroup = l.synonymLangGroups?.FirstOrDefault(g => g.lang.Equals("eng"));
+                    var synonymGroup = l.synonymLangGroups?
+                        .FirstOrDefault(g => g.lang?.Equals("eng") ?? false);
                     return synonymGroup?.synonyms.Any(s => s.words.Any(w => w.lexemePublic is true) ) ?? false;
 
                     //l.synonymLangGroups?.Any(g
