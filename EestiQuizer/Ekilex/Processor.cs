@@ -38,11 +38,19 @@ internal partial class Processor {
         var potWordIds = cache.LoadWordIds(word);
         if (potWordIds is not null) return potWordIds;
 
-        //>> this lowering is questionable but without it words like Aastaajad were not being found...
-        var forms = client.FormSearch(word.ToLower() )
+        //>> Some words like Aastaajad need to be lowered otherwise not found...
+        //   Then again we have Veevalaja won't be found if lowered...
+        //   Hence do both and merge.
+        var formsAsIs = client.FormSearch(word)
             ?.Select(form => form.wordValue) 
             .Distinct()
             .ToList();
+        var formsWithLower = client.FormSearch(word.ToLower() )
+            ?.Select(form => form.wordValue) 
+            .Distinct()
+            .ToList();
+        var forms = (formsAsIs ?? []).Concat(formsWithLower ?? []).Distinct().ToList();
+
         if (forms is null || forms.Count == 0) return [];
 
         var idAndBaseForm = forms

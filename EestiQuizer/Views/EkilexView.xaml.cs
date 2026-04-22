@@ -381,9 +381,14 @@ public partial class EkilexView : UserControl {
 
         if (problematicWords.Count is not 0) {
             WriteNewLine();
-            WriteLine("The following did not load correctly");
-            foreach(var problematic in problematicWords) {
-                WriteLine($"    {problematic.wordToLoad.Word}  ... {problematic.problem}");
+            WriteLine("Problematic words/phrases:");
+            WriteLine("-------------------------");
+
+            foreach(var group in problematicWords.GroupBy(pw => pw.problem) ) {
+                WriteLine($":: {group.Key}");
+                foreach(var word in group) {
+                    WriteLine($"    {word.wordToLoad.Word}");
+                }
             }
         }
         WriteNewLine();
