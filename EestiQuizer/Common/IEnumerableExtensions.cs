@@ -7,6 +7,9 @@ internal static class IEnumerableExtensions {
     {
         public string StringJoin(string separator) => 
             string.Join(separator, strings.Where(s => s is not null) );
+
+        public string StringJoin(char separator) => 
+            string.Join(separator, strings.Where(s => s is not null) );
     }
 
     extension<T>(IEnumerable<T> e) {

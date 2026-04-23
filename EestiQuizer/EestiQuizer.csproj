@@ -8,6 +8,7 @@
 
         <UseWPF>true</UseWPF>
         <OutputType>WinExe</OutputType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>

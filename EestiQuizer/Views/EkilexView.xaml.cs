@@ -12,10 +12,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents.Serialization;
 using System.Windows.Media;
 using System.Windows.Threading;
-using System.Xaml;
 
 
 namespace EestiQuizer.Views; 
@@ -29,10 +27,8 @@ public partial class EkilexView : UserControl {
     RequestClient client;
     Cache cache;
 
-    private DispatcherTimer logAutoScroll = new(DispatcherPriority.Background);
+    private DispatcherTimer logAutoScroll;
     private ScrollViewer? logScrollViewer;
-
-    const string interFieldSeparator = "|";
 
     public EkilexView() {
         InitializeComponent();
@@ -48,7 +44,8 @@ public partial class EkilexView : UserControl {
         };
         //>> We use a DispatcherTimer which we can start and stop with
         //   `StartAutoScroll` and `StopAutoScroll` (see below).
-        logAutoScroll.Interval = TimeSpan.FromMilliseconds(100);
+        logAutoScroll = new(DispatcherPriority.Render);
+        logAutoScroll.Interval = TimeSpan.FromMilliseconds(150);
         logAutoScroll.Tick += ProcessBuffer;
     }
 
@@ -56,12 +53,13 @@ public partial class EkilexView : UserControl {
     void WriteLine(string text) => Logs.Add(text);
     //void Write(string text) { OutputBox.Text += text; }
     //TODO: figure out how to write non-line logs with the list based logging approach
+    void AppendToPreviousLine(string text) => Logs[Logs.Count-1] += text;
 
     //>> Method that scrolls the log ListBox the DispatcherTimer calls to 
     //   enable auto scrolling implementation.
     private void ProcessBuffer(object? sender, EventArgs e) {
-        if (Logs.Count == 0) return;
-        logScrollViewer.ScrollToBottom();
+        CardDataGrid.ScrollIntoView(CardDataGrid.Items[CardDataGrid.Items.Count - 1]);
+        logScrollViewer?.ScrollToBottom();
         LogView.UpdateLayout();
     }
 
@@ -334,6 +332,7 @@ public partial class EkilexView : UserControl {
                 var id = idWithWordToLoad.Key;
                 var wordToLoad = idWithWordToLoad.Value;
                 DispatchWriteLine($"{idx:D3}/{entriesToLoad.Count:D3}  [{id,8}] {wordToLoad.Word,-20}  {wordToLoad.Tags.StringJoin(" ")}");
+                DispatchWriteLine($"    {wordToLoad.SourceLocations.Select(l => $"{l.LineNumber} @ {l.FileName}").StringJoin(", ")}");
                 //DispatchWriteLine($"    wordId-s: {wordIds.Count}"); //<< think I don't need this since now I am writing x/y ... x out of y
 
                 bool hasLoadedAtLeastOne = false;
@@ -367,7 +366,6 @@ public partial class EkilexView : UserControl {
                     report = $"{failure} - {loadWordResult.reason}";
                 }
                 DispatchWriteLine($"    {report}  time=({sw_getWordDetail.ElapsedMilliseconds,5})");
-                Dispatch( () => CardDataGrid.ScrollIntoView(CardDataGrid.Items[CardDataGrid.Items.Count - 1]) );
 
                 if ( ! hasLoadedAtLeastOne) {
                     problematicWords.Add( (wordToLoad, loadWordResult.reason!) );
@@ -383,12 +381,25 @@ public partial class EkilexView : UserControl {
             WriteNewLine();
             WriteLine("Problematic words/phrases:");
             WriteLine("-------------------------");
-
+            List<WordToLoad> wordsWithoutRepresentant = [];
             foreach(var group in problematicWords.GroupBy(pw => pw.problem) ) {
                 WriteLine($":: {group.Key}");
                 foreach(var word in group) {
                     WriteLine($"    {word.wordToLoad.Word}");
+                    if (EkilexCardDataCollection.Any(c => c.Form1.ToLower().Equals(word.wordToLoad.Word.ToLower()) ) ) {
+                        AppendToPreviousLine($" ... has representant.");
+                    } else {
+                        AppendToPreviousLine($" ... NO REPRESENTANT.");
+                        wordsWithoutRepresentant.Add(word.wordToLoad);
+                    }
                 }
+            }
+
+            WriteNewLine();
+            WriteLine("Words without representants:");
+            WriteLine("---------------------------");
+            foreach(var word in wordsWithoutRepresentant) {
+                WriteLine($"{word.Word}");
             }
         }
         WriteNewLine();
@@ -404,7 +415,7 @@ public partial class EkilexView : UserControl {
             var logFilePath = Path.Combine(settings.OutputFolderPath, $"{timePrefix}.log");
 
             var sb = new StringBuilder();
-            var adsf = EkilexCardDataCollection.Select(cd => cd.ToAnkiRow(interFieldSeparator) );
+            var adsf = EkilexCardDataCollection.Select(cd => cd.ToAnkiRow() );
             sb.AppendLine(CardData.Header() );
             sb.AppendJoin("\n", adsf);
 

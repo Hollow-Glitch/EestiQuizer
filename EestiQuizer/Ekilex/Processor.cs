@@ -2,8 +2,7 @@
 
 using static System.StringComparison;
 using EestiQuizer.Common;
-using System.Net.Http.Headers;
-using System.CodeDom.Compiler;
+using System.Text.RegularExpressions;
 
 
 namespace EestiQuizer.Ekilex; 
@@ -110,7 +109,7 @@ internal partial class Processor {
             "pron"   => "asesõna",
             "interj" => "hüüdsõna",
             "vrm"    => "siirdevorm", // example: las
-            ""       => "! MISSING !",
+            ""       => "_MISSING", //<< underscore so that in anki the tag is at the top in the current level
             _ => throw new NotImplementedException()
         };
     }
@@ -258,7 +257,7 @@ internal partial class Processor {
             }
         }
 
-        var proficiencyLevel = lexeme.lexemeProficiencyLevelCode ?? "none";
+        var proficiencyLevel = lexeme.lexemeProficiencyLevelCode ?? "_MISSING"; //<< underscore so that in anki the tag is at the top in the current level
         //var usages = lexeme.usages?.Select(usage => usage.value) ?? [];
         var usages = CollectUsages(lexeme.usages);
 
@@ -301,10 +300,33 @@ internal partial class Processor {
             }
         }
 
+        string id; {
+            (bool isFit, string word)[] idChoicePrioList = [
+                (EstonianLetters.IsMatch(form1), form1),
+                (EstonianLetters.IsMatch(form4), form4),
+                (EstonianLetters.IsMatch(form2), form2),
+                (EstonianLetters.IsMatch(form5), form5),
+                (EstonianLetters.IsMatch(form3), form3),
+                (EstonianLetters.IsMatch(form6), form6)
+            ];
+            string? idWord = null;
+            foreach(var pair in idChoicePrioList) {
+                if (pair.isFit) {
+                    idWord = pair.word;
+                    break;
+                }
+            }
+            if (idWord is null) {
+                id = wordId.ToString();
+            } else {
+                id = idWord + " " + wordId;
+            }
+        }
+
         var cardData = new CardData() {
             RequestedWord = wordToLoad.Word,
 
-            Id = form1 + " " + wordId,
+            Id = id,
             Form1 = form1,
             Form2 = form2,
             Form3 = form3,
@@ -324,4 +346,7 @@ internal partial class Processor {
         };
         return new LoadWordResult(cardData, null);
     }
+
+    [GeneratedRegex(@"[a-zäüöõšžA-ZÄÜÖÕŠŽ]+")]
+    private static partial Regex EstonianLetters { get; }
 }

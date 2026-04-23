@@ -261,10 +261,7 @@
 [x] Change logging in the ui to a listbox or something because seemingly especially calling ScrollToEnd every time is killing performance!!!
     But the reallocation due to the text changing is absolutely not helping either.
 
-----------------------------------------------------------------------------------------------------
-
-
-[ongoing?] It's not just that the input may contain multiple occurences of the same word
+[x] It's not just that the input may contain multiple occurences of the same word
     the problem is that the input may contain multiple times the same word in multiple forms.
     In that case I think I am loading it multiple times, this needs to be investigated.
     - VERIFIED : it happens, used a file with: tulema, tulen, tuled and I got the same word with same wordId multiple times.
@@ -282,7 +279,16 @@
       - transform the map by flattening into a List<(id, wordToLoad)>
       - remove duplicates by the id
       - do more or less the same logic we were doing till now.
+    - as always, the thing that was maybe temporary became ethernal, whatever...
 
+[x] handle words which don't have a form1 but are valid words like: mõtlema, küünetangid
+    - the id is now generated with the first form in the prio list that has letters.
+[x] some input lines cause/result-in cards which don't have tags, or no forms whatsoever
+    - some strings in ekilex's payload had newlines, so implemented alloc-free sanitization by replacing newline characters and pipe.
+
+----------------------------------------------------------------------------------------------------
+
+[ ] Figure out a way to detect if there are todos in the loaded file
 
 [ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
     Thus enabling automatic tag updates - since then we now know how to deserialize the Tags field from Anki DB and search and add in case some is missing

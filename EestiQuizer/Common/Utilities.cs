@@ -37,4 +37,17 @@ internal static class Utilities {
         Directory.CreateDirectory(fileInfo.DirectoryName);
         File.WriteAllText(filePath, content, encoding);
     }
+
+
+    internal static void ReplaceAll(string text, Dictionary<char,char> replaceMap) {
+        unsafe {
+            fixed (char* p = text) {
+                for(int i = 0; i < text.Count(); i++) {
+                    if ( replaceMap.TryGetValue(p[i], out var mapedValue) ) {
+                        p[i] = mapedValue;
+                    }
+                }
+            }
+        }
+    }
 }

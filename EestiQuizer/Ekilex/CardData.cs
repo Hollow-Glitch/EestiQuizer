@@ -30,17 +30,25 @@ public class CardData {
         #separator:Pipe
         #columns:id|form1|form2|form3|form4|form5|form6|partOfSpeech|meaning|examples|image|audio|frontHint|backHint|tags
         """;
+    private static char separator = '|';
+    private static Dictionary<char,char> saneMap = new() {
+        { separator, '/' },
+        { '\n', ' ' },
+        { '\r', ' ' },
+    };
+    internal static void Sanitize(string text) {
+        Utilities.ReplaceAll(text, saneMap);
+    }
 
-
-    internal string ToAnkiRow(string interFieldSeparator) {
+    internal string ToAnkiRow() {
         //>> these are intentionally left blank for now
-        var images    = ImageNamesInCache.Select(i => $"""<img src="{i}" />""").StringJoin(" ");
+        string images = ImageNamesInCache.Select(i => $"""<img src="{i}" />""").StringJoin(" ");
         var audio     = ""; // tried and integration would be a fucking headache.
         var frontHint = "";
         var backHint  = "";
 
         // !!! Keep this in synch with the above `Header` method.
-        var asdf = new string?[] {
+        var ankiFields = new string[] {
             Id,
             Form1,
             Form2,
@@ -57,8 +65,12 @@ public class CardData {
             frontHint,
             backHint,
             Tags,
-        }.StringJoin(interFieldSeparator);
+        };
 
-        return asdf;
+        foreach(var ankiField in ankiFields) {
+            Sanitize(ankiField);
+        }
+
+        return ankiFields.StringJoin(separator);
     }
 }
