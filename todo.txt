@@ -287,14 +287,38 @@
     - some strings in ekilex's payload had newlines, so implemented alloc-free sanitization by replacing newline characters and pipe.
 
 ----------------------------------------------------------------------------------------------------
+-- todo-s
 
-[ ] Figure out a way to detect if there are todos in the loaded file
-
-[ ] Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
+[ ] new field was added to my anki note type called `meta note`, hence update the card generation logic.
+[ ] through experimentation I found that an older idea, i.e. to have separate note types for noomen, tegusõna, muutumatu
+    because this way the back-side can contain describe what the cells of the word's table actually contain.
+    Thus now 3 separate files need to be generated.
+[ ] Till now this was nice-to-have, but now this is neccessary because friction is a show-stopper
+    Make the root tag to which we are adding all the tags/tag-paths to so that it is not automatically assumed to be "generated"
     Thus enabling automatic tag updates - since then we now know how to deserialize the Tags field from Anki DB and search and add in case some is missing
     (they can be considered missing because now we may have files which in the past when the current DB instance was generated we did not have.
     Maybe this just needs to be a part of the mentioned new button/feature so that is able to be configurable and hence able to react.
+    - i.e. we are generating automatically a couple tags, make it so that in settings I can define their starting "fragment" separately
+    - this I think is one of the things which is currently breaking me from immediately using this tool for new words again.
+
+[ ] after the must-do modifications are done, import letters, and then remove all from every other category so that they won't anoy me again...
+    - initially I did not import them because I didn't care about them that time already,
+      but the problem with that approach now is that I don't have a central tag where I could go through each so that I remove
+      them from every other category and still have in Anki so that the app can detect that I have them and not re-add them again.
+[ ] investigate via the word "pool" why some example sentences which I have collected actually are not shown in sonaveeb.
+
+[ ] Figure out a way to detect if there are todos in the loaded file
+    Maybe I need a new syntax for this.
+[ ] Add the file syntax to the UI so that I can just switch to a new tab to see the rules for writing the file.
+    Maybe also suggestions on how to write the file and what are the usual use-cases for replacing and handling problematic words, etc..
+
 [ ] when loading words which are already in Anki, detect if the current occurence would add a new tag, and report what tag would be added.
     (Not sure whether this needs to be a different "button" i.e. maybe it would cause a lot of time, thus should be a separate feature
     that runs independently from the main load button)
+    - now after I used Anki with the generated dataset for a couple days, this idea is shaky and I am just pushing it more down.
+      I have manually removed tags from some words, so for those I would get unnecessarily reports.
+    - Oh wait, Here I meant that if a file I would write would cause a new tag AAaaaaah, okay
+    - Yeah, this is needed, it's just not immediately a must.
 
+[ ] (maybe)
+    if a word has _MISSING_ part of speech shouldn't that rather be a disqualifying property
