@@ -1,7 +1,8 @@
 # EestiQuizer
 
 This is a anki card generator for Estonian vocabulary which given a set of words
-generates importable ascii Anki files. Most useful if you have a book
+generates importable ascii Anki files + also collects images for words for which
+ekilex has any. Most useful if you have a book
 or article or something and you manually collect those words - then this
 software collects the rest of the details about that word/words
 (even plural since detects homonyms synonyms etc).
