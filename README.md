@@ -11,13 +11,9 @@ If you find this interesting or useful and would like to use it but it is not cl
 how then leave an issue and I will include some instructions.
 It only supports Windows.
 
-Code is located under `EestiQuizer\` while `EestiQuizer\Sonapi` is obsoleted by
-`EestiQuizer\Ekilex`.
-
 Nowadays as priorities have shifted I don't actively use it but there was a couple months
 where it was fulfilling its purpose for simplifying my learnings.
 
+**Code** is located under `EestiQuizer\` while `EestiQuizer\Sonapi` is obsoleted by
+`EestiQuizer\Ekilex`.
 Maybe there are other solutions out there but I wanted an own solution.
-
-Security note: if you are looking for mistakes then you may find a commit with
-an old ekilex api key of mine but it has been revoked ;)
